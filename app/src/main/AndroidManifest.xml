@@ -18,7 +18,7 @@
         <!-- ここにAPIキーを追加する -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBYjuaOu04drUxDrXtzAwBJuM3beRWVx3k" />
+            android:value="" />
 
         <activity android:name=".StartActivity">
             <intent-filter>

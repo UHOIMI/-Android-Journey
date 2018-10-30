@@ -1,5 +1,6 @@
 package com.example.g015c1140.journey
 
+//import io.realm.kotlin.createObject
 import android.content.ContentUris
 import android.content.Context
 import android.content.DialogInterface
@@ -29,15 +30,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapFragment
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.SupportMapFragment;
 import io.realm.Realm
 import io.realm.RealmConfiguration
-//import io.realm.kotlin.createObject
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.BufferedReader
@@ -46,8 +48,8 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
@@ -435,7 +437,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             }
         }else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
-            print(mRealm.where(RealmSpotData::class.java).findAll())
+            //print(mRealm.where(RealmSpotData::class.java).findAll())
             startActivity(Intent(this, StartActivity::class.java))
         }
     }
