@@ -3,6 +3,7 @@ package com.example.g015c1140.journey
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -12,6 +13,9 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import io.realm.RealmResults
 import java.text.SimpleDateFormat
+//import sun.misc.MessageUtils.where
+
+
 
 class SpotListActivity : AppCompatActivity() {
 
@@ -21,6 +25,7 @@ class SpotListActivity : AppCompatActivity() {
 
     //private lateinit var spotDataList : RealmResults<TestRea>
     private lateinit var listView : ListView
+    private lateinit var adapter : ArrayAdapter<String>
 
     var nowSort = "昇順"
 
@@ -44,7 +49,7 @@ class SpotListActivity : AppCompatActivity() {
         }
 
         listView = findViewById(R.id.spotList) as ListView
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
+        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
         listView.adapter = adapter
 
         listView.setOnItemClickListener {parent, view, position, id ->
@@ -53,6 +58,29 @@ class SpotListActivity : AppCompatActivity() {
             var tappedSpot = SpotData(spotDataList[position]!!.id,spotDataList[position]!!.name,spotDataList[position]!!.latitude,spotDataList[position]!!.longitude,spotDataList[position]!!.comment,spotDataList[position]!!.image_A,spotDataList[position]!!.image_B,spotDataList[position]!!.image_C,spotDataList[position]!!.datetime)
             intent.putExtra("SPOT",tappedSpot)
             startActivity(intent)
+        }
+
+        listView.setOnItemLongClickListener {  _, _, position, _ ->
+            AlertDialog.Builder(this).apply {
+                setTitle("スポット削除")
+                setMessage("スポット:${dataList[position]} を削除しますか？")
+                setPositiveButton("削除", { _, _ ->
+                    mRealm.executeTransaction {
+                        var delSpot = mRealm.where(TestRea::class.java).equalTo("id", spotDataList[position].id).findAll()
+                        delSpot.deleteFromRealm(0)
+                    }
+                    // 削除をタップしたときの処理
+                    //spotListAdapter.remove(spotListAdapter.getItem(position))
+                    dataList.removeAt(position)
+                    spotDataList.removeAt(position)
+                    //spotList.removeAt(position)
+                    //削除した項目以下の連番更新
+                    adapter.notifyDataSetChanged()
+                })
+                setNegativeButton("戻る", null)
+                show()
+            }
+            return@setOnItemLongClickListener true
         }
 
         val spinner = findViewById<Spinner>(R.id.sort)
@@ -75,10 +103,13 @@ class SpotListActivity : AppCompatActivity() {
         }
     }
 
+
+
     fun sortList(){
         spotDataList.reverse()
         dataList.reverse()
-        val userSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
-        listView.adapter = userSpotAdapter
+        adapter.notifyDataSetChanged()
+        //val userSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
+        //listView.adapter = userSpotAdapter
     }
 }

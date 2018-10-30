@@ -2,6 +2,7 @@ package com.example.g015c1140.journey
 
 import android.content.ContentUris
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -76,6 +77,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     var editFlag : Boolean = false
 
     val df = SimpleDateFormat("yyyyMMddHHmmssSSS")
+    var errorMessage = ""
 
     val RESULT_SUBACTIVITY = 1000
     var JsonArray = JSONArray()
@@ -411,9 +413,31 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     }
 
     fun savaSpot(){
-        createSpot(spotNameTextView!!.text.toString(),latitude,longitude,commentTextView!!.text.toString(), image_A,image_B,image_C )
-        print(mRealm.where(RealmSpotData::class.java).findAll())
-        startActivity(Intent(this, StartActivity::class.java))
+        if(spotNameTextView!!.text.count() <= 0){
+            errorMessage = "スポット名を入力してください。/n"
+        }else if(spotNameTextView!!.text.count() > 20){
+            errorMessage = "スポット名の文字数が20文字を超えています。/n"
+        }
+
+        if (commentTextView!!.text.count() > 140){
+            errorMessage += "スポット説明の文字数が140文字を超えています。"
+        }
+
+        if (!errorMessage.equals("")) {
+            AlertDialog.Builder(this).apply {
+                setTitle("エラー")
+                setMessage(errorMessage)
+                setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    // OKをタップしたときの処理
+                    errorMessage = ""
+                })
+                show()
+            }
+        }else {
+            createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
+            print(mRealm.where(RealmSpotData::class.java).findAll())
+            startActivity(Intent(this, StartActivity::class.java))
+        }
     }
 
     fun createSpot(name : String, latitude : Double, longitude : Double, comment : String, image_A : String, image_B : String, image_C : String){
