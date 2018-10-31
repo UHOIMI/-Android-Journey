@@ -48,9 +48,9 @@ class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
                             "&spot_title=${it.title}" +
                             "&spot_address=${it.latitude},${it.longitude}" +
                             "&spot_comment=${it.comment}" +
-                            "&spot_image_A=${it.image_A}" +
-                            "&spot_image_B=${it.image_B}" +
-                            "&spot_image_C=${it.image_C}"
+                            "&spot_image_a=${it.image_A}" +
+                            "&spot_image_b=${it.image_B}" +
+                            "&spot_image_c=${it.image_C}"
                             ).toByteArray()
                     )
                     out.flush()

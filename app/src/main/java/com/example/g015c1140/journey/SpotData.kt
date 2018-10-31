@@ -9,9 +9,9 @@ data class SpotData(
         val latitude : Double,
         val longitude : Double,
         val comment: String,
-        val image_A: String,
-        val image_B: String,
-        val image_C: String,
+        var image_A: String,
+        var image_B: String,
+        var image_C: String,
         val dateTime : Date
 ): Serializable
 

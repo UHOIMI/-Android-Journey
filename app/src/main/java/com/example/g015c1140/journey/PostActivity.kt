@@ -22,20 +22,21 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_post.*
+import org.json.JSONArray
 
-class PostActivity : AppCompatActivity(), OnMapReadyCallback{
+class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //スポットリスト用アダプター
     private lateinit var spotListAdapter: ArrayAdapter<String>
 
     //スポット名リスト用データ
-    private lateinit var spotNameList:MutableList<String>
+    private lateinit var spotNameList: MutableList<String>
 
     //交通手段ボタン用
     private lateinit var transportationImageButton: MutableList<ImageButton>
 
     //交通手段ボタンフラグ用
-    private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0,0,0,0,0,0,0)
+    private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0, 0, 0, 0, 0, 0, 0)
 
     //受け渡しスポットリスト用
     var spotList = mutableListOf<SpotData>()
@@ -45,7 +46,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
     private val RESULT_CODE = 1123
 
     //MapPinAdd用
-    private lateinit var mMap:GoogleMap
+    private lateinit var mMap: GoogleMap
     private val MARKER_LIST = mutableListOf<Marker>()
     /******************/
 
@@ -80,7 +81,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         //リストビュー設定
         // リスト項目とListViewを対応付けるArrayAdapterを用意する
         spotNameList = mutableListOf("スポット追加＋")
-        spotListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,spotNameList)
+        spotListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spotNameList)
         // ListViewにArrayAdapterを設定する
         val spotListView: ListView = findViewById(R.id.spotListView)
         spotListView.adapter = spotListAdapter
@@ -91,11 +92,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
             if (position == 0) {
                 if (spotList.size < 20) {
                     /************************************************/
-                    startActivityForResult(Intent(this, SelectSpotActivity::class.java).putExtra("SPOTCNT",spotList.size),RESULT_CODE)
+                    startActivityForResult(Intent(this, SelectSpotActivity::class.java).putExtra("SPOTCNT", spotList.size), RESULT_CODE)
                     /************************************************/
                 }
-            }else {
-                startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT",spotList[position - 1]))
+            } else {
+                startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
             }
         }
 
@@ -103,10 +104,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         spotListView.setOnItemLongClickListener { _, _, position, _ ->
 
             // 一番下の項目以外は長押しで削除
-            when(position){
+            when (position) {
                 0 -> return@setOnItemLongClickListener false
 
-                else ->{
+                else -> {
                     AlertDialog.Builder(this).apply {
                         setTitle("スポット削除")
                         setMessage("スポット:${spotNameList[position]} を削除しますか？")
@@ -114,10 +115,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
                             // 削除をタップしたときの処理
                             //spotListAdapter.remove(spotListAdapter.getItem(position))
                             spotNameList.removeAt(position)
-                            spotList.removeAt(position -1)
+                            spotList.removeAt(position - 1)
                             //削除した項目以下の連番更新
-                            for (_cnt in position until spotNameList.size){
-                                spotNameList[_cnt] = "${_cnt}：${spotList[_cnt -1].title}"
+                            for (_cnt in position until spotNameList.size) {
+                                spotNameList[_cnt] = "${_cnt}：${spotList[_cnt - 1].title}"
                             }
                             spotNameList[0] = "スポット追加＋"
                             spotListAdapter.notifyDataSetChanged()
@@ -138,18 +139,18 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
-        Log.d("test" , "onResult   resultCode$resultCode        requestCode$requestCode   Intent$intent")
+        Log.d("test", "onResult   resultCode$resultCode        requestCode$requestCode   Intent$intent")
 
-        if(resultCode == RESULT_OK && requestCode == RESULT_CODE && intent != null){
+        if (resultCode == RESULT_OK && requestCode == RESULT_CODE && intent != null) {
 
             val selectSpotList = intent.getSerializableExtra("SPOTDATA") as MutableList<SpotData>
 
             spotList.addAll(selectSpotList)
             selectSpotList.forEach { spotNameList.add("${spotNameList.size}：${it.title}") }
 
-            if (spotList.size >= 20){
+            if (spotList.size >= 20) {
                 spotNameList[0] = "これ以上スポットを追加できません"
-            }else{
+            } else {
                 spotNameList[0] = "スポット追加＋"
             }
             spotListAdapter.notifyDataSetChanged()
@@ -158,6 +159,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
             mapPinEdit()
         }
     }
+
     /************************************************/
 
     //GoogleMap 設定
@@ -176,13 +178,13 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
-    private fun mapPinEdit(){
+    private fun mapPinEdit() {
 
         //Pin全削除
         MARKER_LIST.forEach { it.remove() }
         MARKER_LIST.clear()
 
-        when(spotList.size) {
+        when (spotList.size) {
             //全件削除された場合
             0 -> return
             else -> {
@@ -219,76 +221,76 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     @SuppressLint("PrivateResource")
-    fun onTransportationButtonTapped(view: View){
+    fun onTransportationButtonTapped(view: View) {
 
-        when(view.id){
-            R.id.walkImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[0] = if(TRANSPORTATION_IMAGE_FLG[0] == 1) {
+        when (view.id) {
+            R.id.walkImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[0] = if (TRANSPORTATION_IMAGE_FLG[0] == 1) {
                     transportationImageButton[0].setImageResource(R.drawable.s_walk_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[0].setImageResource(R.drawable.s_walk_on)
                     1
                 }
             }
 
-            R.id.bicycleImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[1] = if(TRANSPORTATION_IMAGE_FLG[1] == 1) {
+            R.id.bicycleImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[1] = if (TRANSPORTATION_IMAGE_FLG[1] == 1) {
                     transportationImageButton[1].setImageResource(R.drawable.s_bicycle_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[1].setImageResource(R.drawable.s_bicycle_on)
                     1
                 }
             }
 
-            R.id.carImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[2] = if(TRANSPORTATION_IMAGE_FLG[2] == 1) {
+            R.id.carImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[2] = if (TRANSPORTATION_IMAGE_FLG[2] == 1) {
                     transportationImageButton[2].setImageResource(R.drawable.s_car_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[2].setImageResource(R.drawable.s_car_on)
                     1
                 }
 
             }
 
-            R.id.busImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[3] = if(TRANSPORTATION_IMAGE_FLG[3] == 1) {
+            R.id.busImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[3] = if (TRANSPORTATION_IMAGE_FLG[3] == 1) {
                     transportationImageButton[3].setImageResource(R.drawable.s_bus_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[3].setImageResource(R.drawable.s_bus_on)
                     1
                 }
 
             }
 
-            R.id.trainImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[4] = if(TRANSPORTATION_IMAGE_FLG[4] == 1) {
+            R.id.trainImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[4] = if (TRANSPORTATION_IMAGE_FLG[4] == 1) {
                     transportationImageButton[4].setImageResource(R.drawable.s_train_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[4].setImageResource(R.drawable.s_train_on)
                     1
                 }
             }
 
-            R.id.airplaneImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[5] = if(TRANSPORTATION_IMAGE_FLG[5] == 1) {
+            R.id.airplaneImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[5] = if (TRANSPORTATION_IMAGE_FLG[5] == 1) {
                     transportationImageButton[5].setImageResource(R.drawable.s_airplane_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[5].setImageResource(R.drawable.s_airplane_on)
                     1
                 }
             }
 
-            R.id.boatImageButton ->{
-                TRANSPORTATION_IMAGE_FLG[6] = if(TRANSPORTATION_IMAGE_FLG[6] == 1) {
+            R.id.boatImageButton -> {
+                TRANSPORTATION_IMAGE_FLG[6] = if (TRANSPORTATION_IMAGE_FLG[6] == 1) {
                     transportationImageButton[6].setImageResource(R.drawable.s_boat_off)
                     0
-                }else {
+                } else {
                     transportationImageButton[6].setImageResource(R.drawable.s_boat_on)
                     1
                 }
@@ -298,7 +300,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     //ボトムバータップ時
-    private val  ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
                 planTitleEditText.setText(R.string.title_home)
@@ -323,110 +325,143 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
     fun onPostButtonTapped(view: View) {
         //全部がOKな場合
         if (checkData()) {
+            var imageList = arrayListOf<String>()
+            spotList.forEach {
+                imageList.add(it.image_A)
+                imageList.add(it.image_B)
+                imageList.add(it.image_C)
+            }
             /********************/
-            //spotを投稿
-            val psat = PostSpotAsyncTask()
-            psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
-                override fun callback(result: String) {
-                    super.callback(result)
+            //imageを投稿
+            val piat = PostImageAsyncTask()
+            piat.setOnCallback(object : PostImageAsyncTask.CallbackPostImageAsyncTask() {
+                override fun callback(result: String, data: String) {
+                    super.callback(result, data)
                     // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test SpotCallback", "非同期処理結果：$result")
-
+                    Log.d("test ImageCallback", "非同期処理$result　　URL $data")
                     if (result == "RESULT-OK") {
+                        //完了した場合
+                        val imageJson = JSONArray(data)
+                        for (_nullCnt in 0 until imageJson.length()) {
+                            if (imageJson.isNull(_nullCnt))
+                                imageJson.put(_nullCnt, "")
+                        }
+                        var _imageCnt = 0
+                        for (_spotCnt in 0 until spotList.size) {
+                            spotList[_spotCnt].image_A = imageJson.getString(_imageCnt++)
+                            spotList[_spotCnt].image_B = imageJson.getString(_imageCnt++)
+                            spotList[_spotCnt].image_C = imageJson.getString(_imageCnt++)
+                        }
                         /********************/
-
-                        //spot取得
-                        //スポットリストがある
-                        val gsat = GetSpotAsyncTask(spotList.size)
-                        gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
-                            override fun callback(result: ArrayList<String>) {
+                        //spotを投稿
+                        val psat = PostSpotAsyncTask()
+                        psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
+                            override fun callback(result: String) {
                                 super.callback(result)
                                 // ここからAsyncTask処理後の処理を記述します。
-                                Log.d("test GetSpotCallback", "非同期処理$result")
+                                Log.d("test SpotCallback", "非同期処理結果：$result")
 
-                                if (result[0] == "RESULT-OK") {
-                                    result.removeAt(0)
-
+                                if (result == "RESULT-OK") {
                                     /********************/
-                                    //Planを投稿
-                                    val ppat = PostPlanAsyncTask(result)
-                                    ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
-                                        override fun callback(result: String) {
+
+                                    //spot取得
+                                    //スポットリストがある
+                                    val gsat = GetSpotAsyncTask(spotList.size)
+                                    gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
+                                        override fun callback(result: ArrayList<String>) {
                                             super.callback(result)
                                             // ここからAsyncTask処理後の処理を記述します。
-                                            Log.d("test PlanCallback", "非同期処理$result")
-                                            if (result == "RESULT-OK") {
-                                                //完了した関数呼び出し
-                                                completePostAsyncTask()
-                                            }else {
+                                            Log.d("test GetSpotCallback", "非同期処理$result")
+
+                                            if (result[0] == "RESULT-OK") {
+                                                result.removeAt(0)
+
+                                                /********************/
+                                                //Planを投稿
+                                                val ppat = PostPlanAsyncTask(result)
+                                                ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
+                                                    override fun callback(result: String) {
+                                                        super.callback(result)
+                                                        // ここからAsyncTask処理後の処理を記述します。
+                                                        Log.d("test PlanCallback", "非同期処理$result")
+                                                        if (result == "RESULT-OK") {
+                                                            //完了した関数呼び出し
+                                                            completePostAsyncTask()
+                                                        } else {
+                                                            failedAsyncTask()
+                                                        }
+                                                    }
+                                                })
+                                                ppat.execute(
+                                                        planTitleEditText.text.toString(),
+                                                        planDetailEditText.text.toString(),
+                                                        TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14),
+                                                        planMoneySpinner.selectedItem.toString(),
+                                                        planPrefecturesSpinner.selectedItem.toString()
+                                                )
+                                                /********************/
+                                            } else {
                                                 failedAsyncTask()
                                             }
                                         }
                                     })
-                                    ppat.execute(
-                                            planTitleEditText.text.toString(),
-                                            planDetailEditText.text.toString(),
-                                            TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14),
-                                            planMoneySpinner.selectedItem.toString(),
-                                            planPrefecturesSpinner.selectedItem.toString()
-                                    )
+                                    gsat.execute()
                                     /********************/
-                                }else {
+                                } else {
                                     failedAsyncTask()
                                 }
                             }
                         })
-                        gsat.execute()
+                        psat.execute(spotList)
                         /********************/
-                    }else {
+                    } else {
                         failedAsyncTask()
                     }
                 }
             })
-            psat.execute(spotList)
-            /********************/
+            piat.execute(imageList)
         }
     }
 
-    private fun checkData() : Boolean{
+    private fun checkData(): Boolean {
         Toast.makeText(this, "投稿", Toast.LENGTH_SHORT).show()
         //spotList.forEach { Log.d("test", "    spotList:${it.title}") }
         //Log.d("test", "spotNameList:$spotNameList")
         var checkResult = ""
 
-        if (planTitleEditText.text.toString().replace(" ","").replace("　","")== ""){
-            Log.d("test CHECK" , "title NG")
+        if (planTitleEditText.text.toString().replace(" ", "").replace("　", "") == "") {
+            Log.d("test CHECK", "title NG")
             checkResult += "プラン名が入力されていません\n"
         }
 
-        if (planPrefecturesSpinner.selectedItem.toString() == "投稿する場所の都道府県別を選択してください"){
-            Log.d("test CHECK" , "prefectures NG")
+        if (planPrefecturesSpinner.selectedItem.toString() == "投稿する場所の都道府県別を選択してください") {
+            Log.d("test CHECK", "prefectures NG")
             checkResult += "都道府県が選択されていません\n"
         }
 
-        if (spotList.size == 0){
-            Log.d("test CHECK" , "spotList NG")
+        if (spotList.size == 0) {
+            Log.d("test CHECK", "spotList NG")
             checkResult += "スポットが登録されていません\n"
         }
 
-        if (TRANSPORTATION_IMAGE_FLG.toString().replace(" ","").substring(1,14) == "0,0,0,0,0,0,0"){
-            Log.d("test CHECK" , "transportation NG")
+        if (TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14) == "0,0,0,0,0,0,0") {
+            Log.d("test CHECK", "transportation NG")
             checkResult += "交通手段が選択されていません\n"
         }
 
-        if (planMoneySpinner.selectedItem.toString() == "プランに掛かる金額を選択してください"){
-            Log.d("test CHECK" , "money NG")
+        if (planMoneySpinner.selectedItem.toString() == "プランに掛かる金額を選択してください") {
+            Log.d("test CHECK", "money NG")
             checkResult += "金額が選択されていません\n"
         }
 
-        if (planDetailEditText.text.toString().replace(" ","").replace("　","")== ""){
-            Log.d("test CHECK" , "comment NG")
+        if (planDetailEditText.text.toString().replace(" ", "").replace("　", "") == "") {
+            Log.d("test CHECK", "comment NG")
             checkResult += "プラン詳細が入力されていません\n"
         }
 
-        return if (checkResult == ""){
+        return if (checkResult == "") {
             true
-        }else{
+        } else {
             AlertDialog.Builder(this).apply {
                 setMessage(checkResult)
                 setPositiveButton("確認", null)
@@ -436,7 +471,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         }
     }
 
-    private fun completePostAsyncTask(){
+    private fun completePostAsyncTask() {
         Log.d("test", "complatePostAsyncTask")
         Toast.makeText(this, "投稿が完了しました", Toast.LENGTH_SHORT).show()
 
@@ -446,8 +481,8 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         spotNameList.forEach { println("スポット一覧：$it") }
         print("交通手段：")
         for (_cnt in 0 until TRANSPORTATION_IMAGE_FLG.size) {
-            if(TRANSPORTATION_IMAGE_FLG[_cnt] == 1) {
-                when(_cnt){
+            if (TRANSPORTATION_IMAGE_FLG[_cnt] == 1) {
+                when (_cnt) {
                     0 -> print("歩き　")
                     1 -> print("自転車　")
                     2 -> print("車　")
@@ -464,7 +499,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback{
         finish()
     }
 
-    private fun failedAsyncTask(){
+    private fun failedAsyncTask() {
         AlertDialog.Builder(this).apply {
             setTitle("投稿に失敗しました")
             setMessage("もう一度実行してください")
