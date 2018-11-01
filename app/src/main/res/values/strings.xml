@@ -10,9 +10,9 @@
     <string-array name="moneyList">
         <item>プランに掛かる金額を選択してください</item>
         <item>500円以下</item>
-        <item>501円～1000円</item>
-        <item>1001円～5000円</item>
-        <item>5001円～10000円</item>
+        <item>501円 ~ 1000円</item>
+        <item>1001円 ~ 5000円</item>
+        <item>5001円 ~ 10000円</item>
         <item>10001円以上</item>
     </string-array>
 
