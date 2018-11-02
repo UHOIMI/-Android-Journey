@@ -6,6 +6,27 @@
     <string name="title_favorite">Favorite</string>
     <string name="title_setting">Setting</string>
 
+    <string-array name="generationList">
+        <item>あなたの年代を選択してください</item>
+        <item>10歳以下</item>
+        <item>10代</item>
+        <item>20代</item>
+        <item>30代</item>
+        <item>40代</item>
+        <item>50代</item>
+        <item>60代</item>
+        <item>70代</item>
+        <item>80代</item>
+        <item>90代</item>
+        <item>100歳以上</item>
+    </string-array>
+
+    <string-array name="genderList">
+        <item>あなたの性別を選択してください</item>
+        <item>男性</item>
+        <item>女性</item>
+    </string-array>
+
     <!-- spinner 金額-->
     <string-array name="moneyList">
         <item>プランに掛かる金額を選択してください</item>

@@ -2,7 +2,10 @@ package com.example.g015c1140.journey
 
 import android.os.AsyncTask
 import android.util.Log
+import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -55,7 +58,18 @@ class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
                     )
                     out.flush()
                     Log.d("test", "flush")
-                    postResult = "SPOT送信OK"
+
+                    val `is` = connection!!.inputStream
+                    val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
+                    val sb = StringBuilder()
+                    for (line in bReader.readLines()) {
+                        line.run { sb.append(line) }
+                    }
+                    bReader.close()
+                    `is`.close()
+                    postResult = JSONObject(sb.toString()).getString("status")
+
+//                    postResult = "SPOT送信OK"
 
                 } catch (e: IOException) {
                     // POST送信エラー
@@ -89,7 +103,7 @@ class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
 
         Log.d("test PostSpot","onPostEx: $result")
         when(result){
-            "HTTP-OK:SPOT送信OK" -> {
+            "HTTP-OK:200" -> {
                 Log.d("test PostSpot","HTTP-OK")
                 callbackPostSpotAsyncTask!!.callback("RESULT-OK")
                 return

@@ -25,5 +25,9 @@ class StartActivity : AppCompatActivity() {
         startActivity(Intent(this, PostActivity::class.java))
     }
 
+    fun userButtonTapped(v:View){
+        startActivity(Intent(this,IndexActivity::class.java))
+    }
+
 
 }
