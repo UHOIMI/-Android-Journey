@@ -6,92 +6,141 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateActivity">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:gravity="center" android:layout_margin="8dp">
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_margin="8dp">
+
             <ImageButton
                 android:layout_width="150dp"
-                android:layout_height="150dp" app:srcCompat="@drawable/no_image"
-                android:id="@+id/iconImageButton" android:background="@drawable/button"
+                android:layout_height="150dp"
+                app:srcCompat="@drawable/no_image"
+                android:id="@+id/iconImageButton"
+                android:background="@drawable/button"
                 android:onClick="onClickImage"/>
+
             <TextView
                 android:text="ユーザーID"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView"/>
+
             <EditText
+                android:id="@+id/createIdEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="16dp"
                 android:ems="10"
-                android:id="@+id/createIdEditText" tools:layout_editor_absoluteY="134dp"
-                tools:layout_editor_absoluteX="85dp" android:hint="20字以内" android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp" android:maxLength="20"/>
+                android:hint="20字以内"
+                android:inputType="textPersonName"
+                android:longClickable="false"
+                android:maxLength="20" />
+
             <TextView
                 android:text="ユーザー名"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView2"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"/>
+
             <EditText
+                android:id="@+id/nameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="16dp"
                 android:ems="10"
-                android:id="@+id/nameEditText" tools:layout_editor_absoluteY="218dp"
-                tools:layout_editor_absoluteX="85dp" android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp" android:hint="20文字以内" android:maxLength="20"/>
+                android:hint="20文字以内"
+                android:inputType="textPersonName"
+                android:maxLength="20" />
+
             <TextView
                 android:text="パスワード"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView3"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"/>
+
             <EditText
+                android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="16dp"
                 android:ems="10"
-                android:id="@+id/passwordEditText"
-                tools:layout_editor_absoluteY="296dp" tools:layout_editor_absoluteX="85dp"
-                android:layout_marginBottom="16dp" android:layout_marginLeft="8dp" android:hint="8文字以上20字以内"
-                android:maxLength="20"/>
+                android:hint="8文字以上20字以内"
+                android:inputType="textPassword"
+                android:longClickable="false"
+                android:maxLength="20" />
+
             <TextView
                 android:text="パスワード再入力"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView6"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView6"/>
+
             <EditText
+                android:id="@+id/confirmationPassEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/confirmationPassEditText" android:layout_marginLeft="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginBottom="16dp"
-                android:hint="確認のため再度入力してください" android:maxLength="20"/>
+                android:ems="10"
+                android:hint="確認のため再度入力してください"
+                android:inputType="textPassword"
+                android:longClickable="false"
+                android:maxLength="20" />
+
             <TextView
                 android:text="年代"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/textView4"/>
+
             <Spinner
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/generationSpinner"
+                android:layout_height="wrap_content"
+                android:id="@+id/generationSpinner"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteY="377dp" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginBottom="16dp" android:entries="@array/generationList"
-                android:spinnerMode="dialog" android:layout_marginLeft="8dp"/>
+                tools:layout_editor_absoluteY="377dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="16dp"
+                android:entries="@array/generationList"
+                android:spinnerMode="dialog"
+                android:layout_marginLeft="8dp"/>
+
             <TextView
                 android:text="性別"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView5"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView5"/>
+
             <Spinner
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/genderSpinner"
-                android:layout_marginBottom="16dp" android:entries="@array/genderList"
-                android:spinnerMode="dialog" android:layout_marginLeft="8dp"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/genderSpinner"
+                android:layout_marginBottom="16dp"
+                android:entries="@array/genderList"
+                android:spinnerMode="dialog"
+                android:layout_marginLeft="8dp"/>
+
             <Button
                 android:text="次へ"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/doneButton"
+                android:layout_height="wrap_content"
+                android:id="@+id/doneButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteY="470dp" app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/button" android:onClick="onDoneButtonTapped"
+                tools:layout_editor_absoluteY="470dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/button"
+                android:onClick="onDoneButtonTapped"
                 android:layout_marginBottom="16dp"/>
+
         </LinearLayout>
-    </ScrollView></android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
