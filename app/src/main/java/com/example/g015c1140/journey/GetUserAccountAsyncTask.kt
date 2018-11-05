@@ -2,7 +2,6 @@ package com.example.g015c1140.journey
 
 import android.os.AsyncTask
 import android.util.Log
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -12,25 +11,24 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>() {
-    private val SPOT_LIST_CNT = cnt
+class GetUserAccountAsyncTask(i: String) : AsyncTask<Void, String, String>() {
+
+    //callBack用
+    private var callbackGetUserAccountAsyncTask: CallbackGetUserAccountAsyncTask? = null
+    private var result: String? = null
     private val USER_ID = i
 
 
-    //callBack用
-    private var callbackGetSpotAsyncTask: CallbackGetSpotAsyncTask? = null
-    private var result:String? = null
-
-    override fun doInBackground(vararg params: String?): String? {
-
-        if (USER_ID =="none")
-            Log.d("test", "USERID-Error")
+    override fun doInBackground(vararg void: Void): String? {
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
 
+        if (USER_ID =="none")
+            Log.d("test", "USERID-Error")
+
         try {
-            val url = URL("${Setting().SPOT_GET_URL}$USER_ID")
+            val url = URL("${Setting().USER_ACCOUNT_GET_URL}$USER_ID")
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。
 
@@ -43,22 +41,15 @@ class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>()
             }
             br.close()
 
-            val spotIdList = ArrayList<String>()
-
             try {
                 val jsonObject = JSONObject(sb.toString())
-                val jsonArray = jsonObject.getJSONArray("record")
+                val userData = jsonObject.getJSONArray("record").getJSONObject(0)
 
-                Log.d("test GSAT", "${jsonArray.length()}             ${sb.length}")
-                for (i in 0 until jsonArray.length()) {
-                    Log.d("test","array.getJSONObject(i): ${jsonArray.getJSONObject(i)}")
-                    spotIdList.add(jsonArray.getJSONObject(i).getString("spot_id"))
-                }
-                result =  spotIdList.toString()
+                Log.d("test GUDAT", "$userData             ${sb.length}")
+                result = userData.toString()
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-
             //ここから下は、接続エラーとかJSONのエラーとかで失敗した時にエラーを処理する為のものです。
         } catch (e: MalformedURLException) {
             e.printStackTrace()
@@ -79,31 +70,23 @@ class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>()
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        if (result == null){
-            Log.d("test GetSpotTask","return null")
-            callbackGetSpotAsyncTask!!.callback(arrayListOf("RESULT-NG"))
+        if (result == null) {
+            Log.d("test GetUserIdTask", "return null")
+            callbackGetUserAccountAsyncTask!!.callback(JSONObject().put("result","RESULT-NG"))
             return
         }
 
-        val resultJSONArray = JSONArray(result)
-        Log.d("test GetSpotTask","result：$result")
-
-        val spotIdList = arrayListOf<String>()
-        spotIdList.add("RESULT-OK")
-
-        for ( backCnt in (resultJSONArray.length() - SPOT_LIST_CNT) until resultJSONArray.length()) {
-            spotIdList.add(resultJSONArray.getString(backCnt))
-        }
-
-        callbackGetSpotAsyncTask!!.callback(spotIdList)
+        val resultJSONObject = JSONObject(result)
+        resultJSONObject.put("result","RESULT-OK")
+        Log.d("test GetUserIdTask", "result：$result")
+        callbackGetUserAccountAsyncTask!!.callback(resultJSONObject)
     }
 
-    fun setOnCallback(cb: CallbackGetSpotAsyncTask) {
-        callbackGetSpotAsyncTask = cb
+    fun setOnCallback(cb: CallbackGetUserAccountAsyncTask) {
+        callbackGetUserAccountAsyncTask = cb
     }
 
-    open class CallbackGetSpotAsyncTask {
-        open fun callback(result: ArrayList<String>){}
+    open class CallbackGetUserAccountAsyncTask {
+        open fun callback(resultJSONObject: JSONObject) {}
     }
-
 }

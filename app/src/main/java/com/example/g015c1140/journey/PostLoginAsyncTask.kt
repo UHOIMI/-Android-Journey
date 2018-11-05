@@ -11,42 +11,42 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
-
+class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>()  {
     //callBack用
-    private var callbackPostPlanAsyncTask: CallbackPostUserAsyncTask? = null
-    private lateinit var token: String
+    private var callbackPostLoginAsyncTask: CallbackPostLoginAsyncTask? = null
+    lateinit var token:String
 
-    //insert
-    override fun doInBackground(vararg params: ArrayList<String>?): String? {
+    override fun doInBackground(vararg params: ArrayList<String>): String? {
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
         var postResult: String? = null
-        var httpResult: String? = null
+        var httpResult:String? = null
 
         try {
-            val url = URL(Setting().USER_POST_URL)
+            val url =  URL(Setting().USER_LOGIN_URL)
+            val list = params[0]
+
+            for (value in list){
+                if (value == "none")
+                    return "PRAM-Error"
+            }
+
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.instanceFollowRedirects = false
             connection.doOutput = true
             connection.connect()  //ここで指定したAPIを叩いてみてます。
 
+
             var out: OutputStream? = null
             try {
-                val userData = params[0]
 
                 out = connection.outputStream
-                out.write(
-                        ("user_icon=${userData!![0]}" +
-                                "&user_id=${userData[1]}" +
-                                "&user_name=${userData[2]}" +
-                                "&user_pass=${userData[3]}" +
-                                "&generation=${userData[4]}" +
-                                "&gender=${userData[5]}"
-                                ).toByteArray()
+                out.write((
+                        "user_id=${list[0]}" + "&user_pass=${list[1]}").toByteArray()
                 )
+
                 out.flush()
                 Log.d("debug", "flush")
 
@@ -59,24 +59,19 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
                 bReader.close()
                 `is`.close()
 
-//                postResult = "200"//JSONObject(sb.toString()).getString("status")
-                Log.d("test", "$sb")
-
                 postResult = try {
                     JSONObject(sb.toString()).getString("status")
                     "PostUserLogin-NG"
-                }catch (e: JSONException){
+                }catch (e:JSONException){
                     e.printStackTrace()
                     token = sb.toString().replace("\"","")
                     200.toString()
                 }
 
-
-
             } catch (e: IOException) {
                 // POST送信エラー
                 e.printStackTrace()
-                postResult = "USER-NG"
+                postResult = "PostUserLogin-Error"
             } finally {
                 out?.close()
             }
@@ -101,27 +96,27 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PlanSpot", "onPostEx: $result")
-        when (result) {
+        Log.d("test PlanSpot","onPostEx: $result")
+        when(result){
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
-                callbackPostPlanAsyncTask!!.callback("RESULT-OK",token)
+                Log.d("test PostSpot","HTTP-OK")
+                callbackPostLoginAsyncTask!!.callback("RESULT-OK",token)
                 return
             }
 
-            else -> {
-                Log.d("test PostSpot", "HTTP-NG")
-                callbackPostPlanAsyncTask!!.callback("RESULT-NG","")
+            else ->{
+                Log.d("test PostSpot","HTTP-NG")
+                callbackPostLoginAsyncTask!!.callback("RESULT-NG","")
                 return
             }
         }
     }
 
-    fun setOnCallback(cb: CallbackPostUserAsyncTask) {
-        callbackPostPlanAsyncTask = cb
+    fun setOnCallback(cb: CallbackPostLoginAsyncTask) {
+        callbackPostLoginAsyncTask = cb
     }
 
-    open class CallbackPostUserAsyncTask {
-        open fun callback(result: String, token:String) {}
+    open class CallbackPostLoginAsyncTask {
+        open fun callback(result: String, token: String) {}
     }
 }

@@ -1,6 +1,7 @@
 package com.example.g015c1140.journey
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -325,6 +326,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     fun onPostButtonTapped(view: View) {
         //全部がOKな場合
         if (checkData()) {
+            val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
             var imageList = arrayListOf<String>()
             spotList.forEach {
                 imageList.add(it.image_A)
@@ -354,7 +356,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         /********************/
                         //spotを投稿
-                        val psat = PostSpotAsyncTask()
+                        val psat = PostSpotAsyncTask(sharedPreferences.getString("token","none"))
                         psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
                             override fun callback(result: String) {
                                 super.callback(result)
@@ -366,7 +368,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                                     //spot取得
                                     //スポットリストがある
-                                    val gsat = GetSpotAsyncTask(spotList.size)
+                                    val gsat = GetSpotAsyncTask(spotList.size,sharedPreferences.getString("id","none"))
                                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                                         override fun callback(result: ArrayList<String>) {
                                             super.callback(result)
@@ -378,7 +380,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                                                 /********************/
                                                 //Planを投稿
-                                                val ppat = PostPlanAsyncTask(result)
+                                                val ppat = PostPlanAsyncTask(result,sharedPreferences.getString("token","none"))
                                                 ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
                                                     override fun callback(result: String) {
                                                         super.callback(result)

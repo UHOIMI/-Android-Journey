@@ -10,10 +10,11 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
+class PostSpotAsyncTask( t: String): AsyncTask<MutableList<SpotData>, String, String>() {
 
     //callBack用
     private var callbackPostSpotAsyncTask: CallbackPostSpotAsyncTask? = null
+    private val TOKEN = t
 
     //insert
     override fun doInBackground(vararg params: MutableList<SpotData>?): String? {
@@ -23,6 +24,9 @@ class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
         var postResult: String? = null
         var httpResult:String? = null
         val url = URL(Setting().SPOT_POST_URL)
+
+        if (TOKEN =="none")
+            return "TOKEN-Error"
 
         val spotList = params[0]
         if (spotList == null) {
@@ -41,19 +45,22 @@ class PostSpotAsyncTask: AsyncTask<MutableList<SpotData>, String, String>() {
                 var out: OutputStream? = null
                 try {
                     out = connection!!.outputStream
-//                    val spotList = params[0]
-//                    if (spotList == null) {
-//                        println("PostSpot 引数異常URL：$params[0]")
-//                        return "引数異常　params"
-//                    }
+/*
+                    val spotList = params[0]
+                    if (spotList == null) {
+                        println("PostSpot 引数異常URL：$params[0]")
+                        return "引数異常　params"
+                    }
+*/
 
-                    out.write(("user_id=${Setting().USER_ID}" +
+                    out.write((
                             "&spot_title=${it.title}" +
                             "&spot_address=${it.latitude},${it.longitude}" +
                             "&spot_comment=${it.comment}" +
                             "&spot_image_a=${it.image_A}" +
                             "&spot_image_b=${it.image_B}" +
-                            "&spot_image_c=${it.image_C}"
+                            "&spot_image_c=${it.image_C}" +
+                            "&token=$TOKEN"
                             ).toByteArray()
                     )
                     out.flush()

@@ -10,12 +10,13 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostPlanAsyncTask(arrayList: ArrayList<String>): AsyncTask<String, String, String>() {
+class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackPostPlanAsyncTask: CallbackPostPlanAsyncTask? = null
     private val SPOT_ID_LIST = arrayList
 
+    private val TOKEN = t
 
     //insert
     override fun doInBackground(vararg params: String?): String? {
@@ -24,6 +25,9 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>): AsyncTask<String, String,
         var connection: HttpURLConnection? = null
         var postResult: String? = null
         var httpResult:String? = null
+
+        if (TOKEN =="none")
+            return "TOKEN-Error"
 
         try {
             val url =  URL(Setting().PLAN_POST_URL)
@@ -47,12 +51,12 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>): AsyncTask<String, String,
 
                 out = connection.outputStream
                 out.write((
-                        "user_id=${Setting().USER_ID}" +
-                                "&plan_title=${params[0]}" +
-                                "&plan_comment=${params[1]}" +
-                                "&transportation=${params[2]}" +
-                                "&price=${params[3]}"+
-                                "&area=${params[4]}"
+                        "&plan_title=${params[0]}" +
+                        "&plan_comment=${params[1]}" +
+                        "&transportation=${params[2]}" +
+                        "&price=${params[3]}"+
+                         "&area=${params[4]}"+
+                        "&token=$TOKEN"
                         ).toByteArray()
                 )
 

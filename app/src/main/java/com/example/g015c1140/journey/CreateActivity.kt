@@ -47,8 +47,10 @@ class CreateActivity : AppCompatActivity() {
         if (editFlg == 100) {
             userData = intent.extras.getStringArrayList("USERDATA")
 
-            if (userData[0] != "")
+            if (userData[0] != "") {
                 iconImageButton.setImageBitmap(getBitmapFromUri(Uri.parse(userData[0])))
+                userIconUri = userData[0]
+            }
             createIdEditText.setText(userData[1])
             nameEditText.setText(userData[2])
             passwordEditText.setText(userData[3])
@@ -112,10 +114,6 @@ class CreateActivity : AppCompatActivity() {
                         }
                         /******************/
                         if (!(nameEditText.text.toString().trim().isEmpty())) {
-                            if (nameEditText.text.toString().trim().length < 8) {
-                                //7文字以下
-                                result += "ユーザー名は8文字以上で入力してください\n"
-                            }
                         } else {
                             result += "ユーザー名を入力してください\n"
                         }

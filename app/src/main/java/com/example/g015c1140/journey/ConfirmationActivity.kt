@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_confirmation.*
 
 class ConfirmationActivity : AppCompatActivity() {
     lateinit var userData: ArrayList<String>
-    lateinit var imageUri: String
+    var imageUri = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,14 +133,50 @@ class ConfirmationActivity : AppCompatActivity() {
         sharedPrefEditor.putString("gender", userData[5])
         sharedPrefEditor.apply()
 
+        if (userData[0] == ""){
+            userCreate()
+        }else {
+            val puiat = PostUserIconAsyncTask()
+            puiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
+                override fun callback(result: String, data: String) {
+                    super.callback(result, data)
+                    // ここからAsyncTask処理後の処理を記述します。
+                    Log.d("test UserImageCallback", "非同期処理$result　　URL $data")
+                    if (result == "RESULT-OK") {
+                        //完了した場合
+                        userData[0] = data
+                        userCreate()
+                    } else {
+                        failedAsyncTask()
+                    }
+                }
+            })
+            puiat.execute(userData[0])
+        }
+    }
+
+    private fun failedAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("ユーザー登録に失敗しました")
+            setMessage("もう一度実行してください")
+            setPositiveButton("確認", null)
+            show()
+        }
+    }
+
+    private fun userCreate(){
         val puat = PostUserAsyncTask()
         puat.setOnCallback(object : PostUserAsyncTask.CallbackPostUserAsyncTask() {
-            override fun callback(result: String) {
-                super.callback(result)
+            override fun callback(result: String,token:String) {
+                super.callback(result,token)
                 // ここからAsyncTask処理後の処理を記述します。
                 Log.d("test UserCallback", "非同期処理$result")
                 if (result == "RESULT-OK") {
                     //完了
+                    val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+                    val sharedPrefEditor = sharedPreferences.edit()
+                    sharedPrefEditor.putString("token", token)
+                    sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
