@@ -178,6 +178,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     sharedPrefEditor.putString("token", token)
                     sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ConfirmationActivity,"Token = 「$token」", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     AlertDialog.Builder(this@ConfirmationActivity).apply {

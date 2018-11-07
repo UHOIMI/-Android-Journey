@@ -39,10 +39,12 @@ class LoginActivity : AppCompatActivity() {
 
         if (!(loginpassEditText.text.toString().isEmpty())) {
             //文字ある
+/*
             if (loginpassEditText.text.toString().length < 8) {
                 //7文字以下
                 result += "パスワードは8文字以上で入力してください\n"
             }
+*/
         } else {
             result += "パスワードを入力してください\n"
         }
@@ -99,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         AlertDialog.Builder(this@LoginActivity).apply {
                             setTitle("引継ぎに失敗しました")
-                            setMessage("ユーザーIDまたは、パスワードが一致しません")
+                            setMessage("ユーザーIDまたは、パスワードが一致していません")
                             setPositiveButton("確認", null)
                             show()
                         }
