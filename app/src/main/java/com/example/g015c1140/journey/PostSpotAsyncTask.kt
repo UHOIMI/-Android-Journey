@@ -10,7 +10,7 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostSpotAsyncTask( t: String): AsyncTask<MutableList<SpotData>, String, String>() {
+class PostSpotAsyncTask(t: String) : AsyncTask<MutableList<SpotData>, String, String>() {
 
     //callBack用
     private var callbackPostSpotAsyncTask: CallbackPostSpotAsyncTask? = null
@@ -22,10 +22,10 @@ class PostSpotAsyncTask( t: String): AsyncTask<MutableList<SpotData>, String, St
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
         var postResult: String? = null
-        var httpResult:String? = null
+        var httpResult: String? = null
         val url = URL(Setting().SPOT_POST_URL)
 
-        if (TOKEN =="none")
+        if (TOKEN == "none")
             return "TOKEN-Error"
 
         val spotList = params[0]
@@ -55,12 +55,12 @@ class PostSpotAsyncTask( t: String): AsyncTask<MutableList<SpotData>, String, St
 
                     out.write((
                             "&spot_title=${it.title}" +
-                            "&spot_address=${it.latitude},${it.longitude}" +
-                            "&spot_comment=${it.comment}" +
-                            "&spot_image_a=${it.image_A}" +
-                            "&spot_image_b=${it.image_B}" +
-                            "&spot_image_c=${it.image_C}" +
-                            "&token=$TOKEN"
+                                    "&spot_address=${it.latitude},${it.longitude}" +
+                                    "&spot_comment=${it.comment}" +
+                                    "&spot_image_a=${it.image_A}" +
+                                    "&spot_image_b=${it.image_B}" +
+                                    "&spot_image_c=${it.image_C}" +
+                                    "&token=$TOKEN"
                             ).toByteArray()
                     )
                     out.flush()
@@ -108,16 +108,16 @@ class PostSpotAsyncTask( t: String): AsyncTask<MutableList<SpotData>, String, St
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PostSpot","onPostEx: $result")
-        when(result){
+        Log.d("test PostSpot", "onPostEx: $result")
+        when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot","HTTP-OK")
+                Log.d("test PostSpot", "HTTP-OK")
                 callbackPostSpotAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
-            else ->{
-                Log.d("test PostSpot","HTTP-NG")
+            else -> {
+                Log.d("test PostSpot", "HTTP-NG")
                 callbackPostSpotAsyncTask!!.callback("RESULT-NG")
                 return
             }

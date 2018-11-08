@@ -17,7 +17,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_select_spot.*
-import kotlinx.android.synthetic.main.activity_select_spot.view.*
 import java.lang.Double.parseDouble
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,7 +27,7 @@ import kotlin.collections.ArrayList
 
 class SelectSpotActivity : AppCompatActivity() {
 
-    private lateinit var mRealm : Realm
+    private lateinit var mRealm: Realm
     var dataList = ArrayList<String>()
     var spotDataList = ArrayList<TestRea>()
 
@@ -47,10 +46,10 @@ class SelectSpotActivity : AppCompatActivity() {
     private val newSpotNameList2 = ArrayList<ListSpot>()
 
     //登録した用
-    private lateinit var userSpotListView : ListView
+    private lateinit var userSpotListView: ListView
 
     //選択した用
-    private lateinit var selectSpotListView : ListView
+    private lateinit var selectSpotListView: ListView
 
     /****************/// test you
     private lateinit var userSpotAdapter: ArrayAdapter<String>
@@ -80,8 +79,8 @@ class SelectSpotActivity : AppCompatActivity() {
 
         val df = SimpleDateFormat("yyyy/MM/dd hh:MM")
 
-        for (_sd in realmList){
-            spotList.add(SpotData(_sd.id,_sd.name,_sd.latitude,_sd.longitude,_sd.comment,_sd.image_A,_sd.image_B,_sd.image_C,_sd.datetime))
+        for (_sd in realmList) {
+            spotList.add(SpotData(_sd.id, _sd.name, _sd.latitude, _sd.longitude, _sd.comment, _sd.image_A, _sd.image_B, _sd.image_C, _sd.datetime))
             spotNameList.add(_sd.name + "\n" + df.format(_sd.datetime))
             var ls = ListSpot()
             ls.name = _sd.name
@@ -105,7 +104,7 @@ class SelectSpotActivity : AppCompatActivity() {
         }*/
 
         /****************/
-        spotCnt = intent.getIntExtra("SPOTCNT",100)
+        spotCnt = intent.getIntExtra("SPOTCNT", 100)
         /****************/
 
         val spinner = findViewById<Spinner>(R.id.sort)
@@ -135,7 +134,7 @@ class SelectSpotActivity : AppCompatActivity() {
                     //val adapter = list.adapter as ArrayAdapter<String>
                     newSpotNameList2.add(userSpotAdapter2.getItem(position) as ListSpot)
                     selectSpotAdapter.add((spotCnt + 1).toString() + "．" + userSpotAdapter2.getName(position))
-                    userSpotAdapter2.setGray(position,true)
+                    userSpotAdapter2.setGray(position, true)
                     view.setBackgroundColor(Color.GRAY)
                     view.isEnabled = false
                     newSpotList.add(spotList[position])
@@ -147,7 +146,7 @@ class SelectSpotActivity : AppCompatActivity() {
             }
         }
 
-        selectSpotListView.setOnItemLongClickListener {  _, _, position, _ ->
+        selectSpotListView.setOnItemLongClickListener { _, _, position, _ ->
             AlertDialog.Builder(this).apply {
                 setTitle("スポット削除")
                 setMessage("スポット:${newSpotNameList[position]} を削除しますか？")
@@ -158,7 +157,7 @@ class SelectSpotActivity : AppCompatActivity() {
                     newSpotNameList.removeAt(position)
                     //spotList.removeAt(position)
                     //削除した項目以下の連番更新
-                    for (_cnt in position until newSpotNameList2.size){
+                    for (_cnt in position until newSpotNameList2.size) {
                         newSpotNameList[_cnt] = "${position + _cnt}．${newSpotNameList2[_cnt].name}"
                     }
                     selectSpotAdapter.notifyDataSetChanged()
@@ -170,8 +169,6 @@ class SelectSpotActivity : AppCompatActivity() {
         }
 
 
-
-
         // リスナーを登録
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             //　アイテムが選択された時
@@ -179,7 +176,7 @@ class SelectSpotActivity : AppCompatActivity() {
                                         view: View, position: Int, id: Long) {
                 val spinner = parent as Spinner
                 val item = spinner.selectedItem as String
-                if(nowSort != item){
+                if (nowSort != item) {
                     sortList()
                     nowSort = item
                 }
@@ -194,9 +191,9 @@ class SelectSpotActivity : AppCompatActivity() {
         val searchButton = findViewById<Button>(R.id.searchButton)
         searchButton.setOnClickListener {
             if (spotCnt < 20) {
-               val intent = Intent(application, PlacePicker::class.java)
+                val intent = Intent(application, PlacePicker::class.java)
                 startActivityForResult(intent, RESULT_SUBACTIVITY)
-            }else{
+            } else {
                 Toast.makeText(this, "スポットは最大20件までです", Toast.LENGTH_SHORT).show()
             }
         }
@@ -231,11 +228,11 @@ class SelectSpotActivity : AppCompatActivity() {
 
     /****************/
     //toolbarタップ時
-    override fun onOptionsItemSelected(item: MenuItem?) = when(item!!.itemId){
+    override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //登録ボタンタップ時
-        R.id.saveButton ->{
+        R.id.saveButton -> {
             Toast.makeText(this, "登録ボタン", Toast.LENGTH_LONG).show()
-            setResult(RESULT_OK,Intent().putExtra("SPOTDATA",newSpotList))
+            setResult(RESULT_OK, Intent().putExtra("SPOTDATA", newSpotList))
             finish()
             true
         }
@@ -255,8 +252,8 @@ class SelectSpotActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_home -> {
                 //spotNameEditText.setText(R.string.title_home)
-                spotList.add(SpotData("tokenID","tmp${spotList.size}",1.0,2.0,"","","","",Date()))
-                spotNameList.add(spotList[spotList.size -1].title)
+                spotList.add(SpotData("tokenID", "tmp${spotList.size}", 1.0, 2.0, "", "", "", "", Date()))
+                spotNameList.add(spotList[spotList.size - 1].title)
                 userSpotAdapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
@@ -275,6 +272,7 @@ class SelectSpotActivity : AppCompatActivity() {
         }
         false
     }
+
     /****************/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -288,9 +286,9 @@ class SelectSpotActivity : AppCompatActivity() {
             /*for(_newSpotList in newSpotList) {
                 newSpotNameList.add(_newSpotList.name)
             }*/
-            val selectSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,newSpotNameList)
+            val selectSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, newSpotNameList)
             selectSpotAdapter.add((spotCnt + 1).toString() + "．" + intent.getStringExtra("NAME"))
-            newSpotList.add(SpotData("tokenID",intent.getStringExtra("NAME"),parseDouble(intent.getStringExtra("LatLngX")),parseDouble(intent.getStringExtra("LatLngY")),"","","","",Date()))
+            newSpotList.add(SpotData("tokenID", intent.getStringExtra("NAME"), parseDouble(intent.getStringExtra("LatLngX")), parseDouble(intent.getStringExtra("LatLngY")), "", "", "", "", Date()))
 
             selectSpotListView.adapter = selectSpotAdapter
 
@@ -298,7 +296,7 @@ class SelectSpotActivity : AppCompatActivity() {
         }
     }
 
-    fun sortList(){
+    fun sortList() {
         //val tempSpotList = spotList
         //val tempSpotNameList = spotNameList
         spotList.reverse()

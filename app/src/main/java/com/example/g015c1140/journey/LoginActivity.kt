@@ -59,15 +59,15 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("test LoginCallback", "非同期処理$result")
                     if (result == "RESULT-OK") {
                         //完了した関数呼び出し
-                        val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+                        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
                         val sharedPrefEditor = sharedPreferences.edit()
-                        sharedPrefEditor.putString("token", token)
-                        sharedPrefEditor.putString("id",loginIdEditText.text.toString())
-                        sharedPrefEditor.putString("password",loginpassEditText.text.toString())
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ID, loginIdEditText.text.toString())
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, loginpassEditText.text.toString())
                         sharedPrefEditor.apply()
 
                         /**************************/
-                        val guaat = GetUserAccountAsyncTask(sharedPreferences.getString("id","none"))
+                        val guaat = GetUserAccountAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"))
                         guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
                             override fun callback(resultJSONObject: JSONObject) {
                                 super.callback(resultJSONObject)
@@ -75,15 +75,15 @@ class LoginActivity : AppCompatActivity() {
                                 Log.d("test GetUserAccCallback", "非同期処理$resultJSONObject")
                                 if (resultJSONObject.getString("result") == "RESULT-OK") {
                                     //完了した関数呼び出し
-                                    sharedPrefEditor.putString("name", resultJSONObject.getString("user_name"))
-                                    sharedPrefEditor.putString("generation",resultJSONObject.getString("generation") )
-                                    sharedPrefEditor.putString("gender",resultJSONObject.getString("gender") )
-                                    sharedPrefEditor.putString("comment",resultJSONObject.getString("comment") )
-                                    sharedPrefEditor.putString("iconImage",resultJSONObject.getString("user_icon") )
-                                    sharedPrefEditor.putString("headerImage",resultJSONObject.getString("user_header") )
-                                    sharedPrefEditor.putBoolean("userFlg", true)
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, resultJSONObject.getString("user_name"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, resultJSONObject.getString("generation"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, resultJSONObject.getString("gender"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, resultJSONObject.getString("comment"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, resultJSONObject.getString("user_icon"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, resultJSONObject.getString("user_header"))
+                                    sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
                                     sharedPrefEditor.apply()
-                                    Toast.makeText(this@LoginActivity,"引継ぎが完了しました",Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@LoginActivity, "引継ぎが完了しました", Toast.LENGTH_SHORT).show()
                                     finish()
                                 } else {
                                     AlertDialog.Builder(this@LoginActivity).apply {
@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
             plat.execute(arrayListOf(loginIdEditText.text.toString(), loginpassEditText.text.toString()))
-        }else{
+        } else {
             AlertDialog.Builder(this).apply {
                 setTitle("入力情報が間違っています")
                 setMessage(result)

@@ -32,7 +32,7 @@ class StartActivity : AppCompatActivity() {
     }
 
     fun userDataDeleteButtonTapped(v:View){
-        val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val sharedPrefEditor = sharedPreferences.edit()
         sharedPrefEditor.clear().apply()
         Toast.makeText(this, "sharedPreferences削除", Toast.LENGTH_SHORT).show()

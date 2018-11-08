@@ -10,7 +10,7 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<String, String, String>() {
+class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackPostPlanAsyncTask: CallbackPostPlanAsyncTask? = null
@@ -24,13 +24,13 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
         var postResult: String? = null
-        var httpResult:String? = null
+        var httpResult: String? = null
 
-        if (TOKEN =="none")
+        if (TOKEN == "none")
             return "TOKEN-Error"
 
         try {
-            val url =  URL(Setting().PLAN_POST_URL)
+            val url = URL(Setting().PLAN_POST_URL)
 
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
@@ -42,8 +42,8 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
             var out: OutputStream? = null
             try {
 
-                for (_cnt in 0 until 5){
-                    if (params[_cnt] == null){
+                for (_cnt in 0 until 5) {
+                    if (params[_cnt] == null) {
                         println("POSTTASK 引数異常WRITE：${params[_cnt]}")
                         return "POSTTASK 引数異常"
                     }
@@ -52,11 +52,11 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
                 out = connection.outputStream
                 out.write((
                         "&plan_title=${params[0]}" +
-                        "&plan_comment=${params[1]}" +
-                        "&transportation=${params[2]}" +
-                        "&price=${params[3]}"+
-                         "&area=${params[4]}"+
-                        "&token=$TOKEN"
+                                "&plan_comment=${params[1]}" +
+                                "&transportation=${params[2]}" +
+                                "&price=${params[3]}" +
+                                "&area=${params[4]}" +
+                                "&token=$TOKEN"
                         ).toByteArray()
                 )
 
@@ -86,12 +86,12 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
                     }
                     out.write(("&spot_id_$_cntAlpha=${SPOT_ID_LIST[_cnt]}").toByteArray())
                 }*/
-                var charArray:CharArray
-                val startValue  = 97
+                var charArray: CharArray
+                val startValue = 97
                 for (_cnt in startValue until (startValue + SPOT_ID_LIST.size)) {
                     charArray = Character.toChars(_cnt)
-                    out.write(("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt-startValue]}").toByteArray())
-                    println("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt-startValue]}")
+                    out.write(("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt - startValue]}").toByteArray())
+                    println("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt - startValue]}")
                 }
 
                 out.flush()
@@ -139,16 +139,16 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PlanSpot","onPostEx: $result")
-        when(result){
+        Log.d("test PlanSpot", "onPostEx: $result")
+        when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot","HTTP-OK")
+                Log.d("test PostSpot", "HTTP-OK")
                 callbackPostPlanAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
-            else ->{
-                Log.d("test PostSpot","HTTP-NG")
+            else -> {
+                Log.d("test PostSpot", "HTTP-NG")
                 callbackPostPlanAsyncTask!!.callback("RESULT-NG")
                 return
             }
@@ -160,6 +160,6 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String): AsyncTask<Stri
     }
 
     open class CallbackPostPlanAsyncTask {
-        open fun callback(result: String){}
+        open fun callback(result: String) {}
     }
 }

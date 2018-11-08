@@ -52,31 +52,31 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
+class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private val m_uri : Uri? = null
-    private var tappedImageNum : Int = 0
+    private val m_uri: Uri? = null
+    private var tappedImageNum: Int = 0
 
     //data class spotData(val name : String, val latitude : Double, val longitude : Double)
     //val spotList: MutableList<SpotData> = mutableListOf()
     val spotList = arrayListOf<SpotData>()
-    var spotNameTextView : EditText? = null
-    var commentTextView : EditText? = null
-    lateinit var spotImageView1 : ImageView
-    lateinit var spotImageView2 : ImageView
-    lateinit var spotImageView3 : ImageView
-    var longitude : Double = 0.0
-    var latitude : Double = 0.0
-    var image_A : String = ""
-    var image_B : String = ""
-    var image_C : String = ""
+    var spotNameTextView: EditText? = null
+    var commentTextView: EditText? = null
+    lateinit var spotImageView1: ImageView
+    lateinit var spotImageView2: ImageView
+    lateinit var spotImageView3: ImageView
+    var longitude: Double = 0.0
+    var latitude: Double = 0.0
+    var image_A: String = ""
+    var image_B: String = ""
+    var image_C: String = ""
 
     var imageIntent = getIntent()
-    private lateinit var mRealm : Realm
-    var editFlag : Boolean = false
+    private lateinit var mRealm: Realm
+    var editFlag: Boolean = false
 
     val df = SimpleDateFormat("yyyyMMddHHmmssSSS")
     var errorMessage = ""
@@ -93,7 +93,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("test","onCreate")
+        Log.d("test", "onCreate")
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_put_spot)
@@ -139,22 +139,22 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         //val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
 
-        if(intent.getSerializableExtra("SPOT") != null) {
+        if (intent.getSerializableExtra("SPOT") != null) {
             editFlag = true
             spot = intent.getSerializableExtra("SPOT") as SpotData
             spotNameTextView!!.setText(spot.title)
             commentTextView!!.setText(spot.comment)
-            if (!spot.image_A.equals("")){
+            if (!spot.image_A.equals("")) {
                 image_A = spot.image_A
                 val bmImg = BitmapFactory.decodeFile(spot.image_A)
                 spotImageView1.setImageBitmap(bmImg)
             }
-            if (!spot.image_B.equals("")){
+            if (!spot.image_B.equals("")) {
                 image_B = spot.image_B
                 val bmImg = BitmapFactory.decodeFile(spot.image_B)
                 spotImageView2.setImageBitmap(bmImg)
             }
-            if (!spot.image_C.equals("")){
+            if (!spot.image_C.equals("")) {
                 image_C = spot.image_C
                 val bmImg = BitmapFactory.decodeFile(spot.image_C)
                 spotImageView3.setImageBitmap(bmImg)
@@ -169,7 +169,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        if(intent.getSerializableExtra("SPOT") == null) {
+        if (intent.getSerializableExtra("SPOT") == null) {
             PinButtonTapped()
             /*spot = intent.getSerializableExtra("SPOT") as SpotData
             if (!spot.image_A.equals("")){
@@ -187,7 +187,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             Log.d("editFlag","エディットフラグ")*/
             //editFlag = true
             //placeMarkerOnMap(LatLng(spot.latitude, spot.longitude))
-        }else{
+        } else {
             //PinButtonTapped()
         }
 
@@ -199,11 +199,11 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     // マーカーをタップすると呼び出される
     override fun onMarkerClick(p0: Marker?) = false
 
-    fun PinButtonTapped(){
+    fun PinButtonTapped() {
         var lm = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if(!gpsEnabled){
+        if (!gpsEnabled) {
             AlertDialog.Builder(this).apply {
                 setTitle("位置情報が有効になっていません")
                 setMessage("このままアプリを続行したい場合は、有効化してください")
@@ -223,9 +223,9 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.d("ttttttttttttttttttttttt","あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
+        Log.d("ttttttttttttttttttttttt", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
 
-        if (editFlag == false){
+        if (editFlag == false) {
             //　位置情報権限確認
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -241,8 +241,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             mMap.setOnMarkerClickListener(this)
             //　現在位置マーカーと現在位置ボタン有効化
             mMap.isMyLocationEnabled = true
-        }else{
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(spot.latitude, spot.longitude),17f))
+        } else {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(spot.latitude, spot.longitude), 17f))
             googleMap.addMarker(MarkerOptions().position(LatLng(spot.latitude, spot.longitude)).title(spot.title)).showInfoWindow()
         }
 
@@ -250,40 +250,40 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        Log.d("vvvvvvvvvvvvvvvvvvvvvv","あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
+        Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
         // 自分のコード以外がrequestPermissionsしているかもしれないので、requestCodeをチェックします。
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
 
             if (grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
                 // リクエストを蹴られた場合はどうしましょ？　今回は、単純にActivityを終了させます。
-                Log.d("check","許可しない")
+                Log.d("check", "許可しない")
                 finish()
                 return
-            }else{
+            } else {
                 setUpMap()
                 onMapReady(mMap)
             }
 
             //onMapReady(mMap)
-        }else{
+        } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
-    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == RESULT_PICK_IMAGEFILE) {
+        if (requestCode == RESULT_PICK_IMAGEFILE) {
 
-            if(resultCode != RESULT_OK) {
+            if (resultCode != RESULT_OK) {
                 // キャンセル時
                 return
             }
 
-            var resultUri : Uri? = if(data != null) data.getData() else m_uri
+            var resultUri: Uri? = if (data != null) data.getData() else m_uri
 
-            if(resultUri == null) {
+            if (resultUri == null) {
                 // 取得失敗
                 return
             }
@@ -298,21 +298,21 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
             Log.d("URI", resultUri.toString())
             Log.d("URI2", resultUri.getPath())
-            Log.d("URI3", getPathFromUri(this,resultUri))
+            Log.d("URI3", getPathFromUri(this, resultUri))
 
-            when(tappedImageNum){
+            when (tappedImageNum) {
                 1 -> {
                     spotImageView1.setImageURI(resultUri)
-                    image_A = getPathFromUri(this,resultUri)
+                    image_A = getPathFromUri(this, resultUri)
                 }
                 2 -> {
                     spotImageView2.setImageURI(resultUri)
-                    image_B = getPathFromUri(this,resultUri)
+                    image_B = getPathFromUri(this, resultUri)
 
                 }
                 3 -> {
                     spotImageView3.setImageURI(resultUri)
-                    image_C = getPathFromUri(this,resultUri)
+                    image_C = getPathFromUri(this, resultUri)
                 }
             }
         }
@@ -349,14 +349,14 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 Log.d("座ひょー2", location.latitude.toLong().toString())
                 longitude = location.longitude.toDouble()
 
-                spotList.add(SpotData("tokenID",spotNameTextView!!.getText().toString(),location.latitude,location.longitude, "","","","",Date()))
+                spotList.add(SpotData("tokenID", spotNameTextView!!.getText().toString(), location.latitude, location.longitude, "", "", "", "", Date()))
 
                 Log.d("テスト", spotList.get(0).title)
 
                 placeMarkerOnMap(currentLatLng)
 
-            }else{
-                Log.d("ヌルチェッカー","null")
+            } else {
+                Log.d("ヌルチェッカー", "null")
             }
         }
     }
@@ -373,7 +373,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         //　文字列設定
         val titleStr = getAddress(location)
         Log.d("test", "アドレス")
-        Log.d("test",titleStr)
+        Log.d("test", titleStr)
 
         markerOptions.title(titleStr)
 
@@ -402,26 +402,26 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (null != addresses && !addresses.isEmpty()) {
                 address = addresses[0]
-                for (i in 0 .. address.maxAddressLineIndex) {
+                for (i in 0..address.maxAddressLineIndex) {
                     addressText += if (i == 0) address.getAddressLine(i).toString() else "\n" + address.getAddressLine(i).toString()
                 }
             }
         } catch (e: IOException) {
-            Log.d("test","アドレスエラー")
+            Log.d("test", "アドレスエラー")
             Log.e("MapsActivity", e.localizedMessage)
         }
 
         return addressText
     }
 
-    fun savaSpot(){
-        if(spotNameTextView!!.text.count() <= 0){
+    fun savaSpot() {
+        if (spotNameTextView!!.text.count() <= 0) {
             errorMessage = "スポット名を入力してください。/n"
-        }else if(spotNameTextView!!.text.count() > 20){
+        } else if (spotNameTextView!!.text.count() > 20) {
             errorMessage = "スポット名の文字数が20文字を超えています。/n"
         }
 
-        if (commentTextView!!.text.count() > 140){
+        if (commentTextView!!.text.count() > 140) {
             errorMessage += "スポット説明の文字数が140文字を超えています。"
         }
 
@@ -435,20 +435,20 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 })
                 show()
             }
-        }else {
+        } else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
             //print(mRealm.where(RealmSpotData::class.java).findAll())
             startActivity(Intent(this, StartActivity::class.java))
         }
     }
 
-    fun createSpot(name : String, latitude : Double, longitude : Double, comment : String, image_A : String, image_B : String, image_C : String){
+    fun createSpot(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
 
-        if(editFlag == false) {
+        if (editFlag == false) {
             create(name, latitude, longitude, comment, image_A, image_B, image_C)
-        }else{
+        } else {
             mRealm.executeTransaction {
-                var editSpot = mRealm.where(TestRea::class.java).equalTo("id",spot.id).findFirst()
+                var editSpot = mRealm.where(TestRea::class.java).equalTo("id", spot.id).findFirst()
                 editSpot!!.name = name
                 editSpot!!.comment = comment
                 editSpot!!.image_A = image_A
@@ -506,59 +506,59 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         mRealm.close()
     }
 
-    fun getPathFromUri(context : Context, uri : Uri) : String {
-        var isAfterKitKat : Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+    fun getPathFromUri(context: Context, uri: Uri): String {
+        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        Log.e("TAG","uri:" + uri.getAuthority());
+        Log.e("TAG", "uri:" + uri.getAuthority());
         if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
             if ("com.android.externalstorage.documents".equals(
-                    uri.getAuthority())) {// ExternalStorageProvider
-                var docId : String = DocumentsContract.getDocumentId(uri)
+                            uri.getAuthority())) {// ExternalStorageProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
                 var split = docId.split(":")
-                var type : String = split[0]
+                var type: String = split[0]
                 //if ("primary".equalsIgnoreCase(type)) {
                 if ("primary".equals(type)) {
                     return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                }else {
-                    return "/stroage/" + type +  "/" + split[1]
+                } else {
+                    return "/stroage/" + type + "/" + split[1]
                 }
-            }else if ("com.android.providers.downloads.documents".equals(
-                    uri.getAuthority())) {// DownloadsProvider
-                var id : String = DocumentsContract.getDocumentId(uri)
-                var contentUri : Uri = ContentUris.withAppendedId(
+            } else if ("com.android.providers.downloads.documents".equals(
+                            uri.getAuthority())) {// DownloadsProvider
+                var id: String = DocumentsContract.getDocumentId(uri)
+                var contentUri: Uri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), id.toLong())
                 return getDataColumn(context, contentUri, null, null)
-            }else if ("com.android.providers.media.documents".equals(
-                    uri.getAuthority())) {// MediaProvider
-                var docId : String = DocumentsContract.getDocumentId(uri)
+            } else if ("com.android.providers.media.documents".equals(
+                            uri.getAuthority())) {// MediaProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
                 var split = docId.split(":")
-                var type : String = split[0]
-                var contentUri : Uri? = null
+                var type: String = split[0]
+                var contentUri: Uri? = null
                 contentUri = MediaStore.Files.getContentUri("external")
-                var selection : String = "_id=?"
+                var selection: String = "_id=?"
                 /*var selectionArgs = {
                         split[1]
                 }*/
                 var selectionArgs = arrayOf(split[1])
                 return getDataColumn(context, contentUri, selection, *selectionArgs)
             }
-        }else if ("content".equals(uri.getScheme())) {//MediaStore
+        } else if ("content".equals(uri.getScheme())) {//MediaStore
             return getDataColumn(context, uri, null, null)
-        }else if ("file".equals(uri.getScheme())) {// File
+        } else if ("file".equals(uri.getScheme())) {// File
             return uri.getPath()
         }
         return ""
     }
 
-    fun getDataColumn(context : Context, uri : Uri, selection : String?,
-                      vararg selectionArgs : String?/*[]*/) : String {
-        var cursor : Cursor? = null
+    fun getDataColumn(context: Context, uri: Uri, selection: String?,
+                      vararg selectionArgs: String?/*[]*/): String {
+        var cursor: Cursor? = null
         var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         try {
             cursor = context.getContentResolver().query(
                     uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
-                var cindex : Int = cursor.getColumnIndexOrThrow(projection[0]);
+                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0]);
                 return cursor.getString(cindex);
             }
         } finally {
@@ -568,9 +568,9 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         return ""
     }
 
-    fun create(name:String, latitude : Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String){
+    fun create(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
         mRealm.executeTransaction {
-            var trea = mRealm.createObject(TestRea::class.java , UUID.randomUUID().toString())
+            var trea = mRealm.createObject(TestRea::class.java, UUID.randomUUID().toString())
             trea.name = name
             trea.latitude = latitude
             trea.longitude = longitude
@@ -583,7 +583,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         }
     }
 
-    inner class GetAllMemoTask: AsyncTask<String, String, String>() {
+    inner class GetAllMemoTask : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg params: String?): String? {
             var connection: HttpURLConnection? = null
@@ -620,9 +620,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 e.printStackTrace()
             } catch (e: JSONException) {
                 e.printStackTrace()
-            }
-
-            finally {
+            } finally {
                 connection?.disconnect()
                 try {
                     reader?.close()

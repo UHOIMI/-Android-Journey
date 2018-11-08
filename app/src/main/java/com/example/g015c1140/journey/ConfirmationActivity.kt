@@ -48,7 +48,7 @@ class ConfirmationActivity : AppCompatActivity() {
         return image
     }
 
-    fun getPathFromUri(context: Context, uri: Uri): String {
+    private fun getPathFromUri(context: Context, uri: Uri): String {
         var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
         Log.e("TAG", "uri:" + uri.authority);
@@ -108,7 +108,7 @@ class ConfirmationActivity : AppCompatActivity() {
     }
 
     fun onModificationButtonTapped(v: View) {
-        startActivity(Intent(this, CreateActivity::class.java).putStringArrayListExtra("USERDATA", userData).putExtra("EditFlg", 100))
+        startActivity(Intent(this, CreateUserActivity::class.java).putStringArrayListExtra("USERDATA", userData).putExtra("EditFlg", 100))
         finish()
     }
 
@@ -122,20 +122,20 @@ class ConfirmationActivity : AppCompatActivity() {
                     else -> userData[4].replace("代", "")
                 }
         userData[5] = userData[5].replace("性", "")
-        val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val sharedPrefEditor = sharedPreferences.edit()
-        sharedPrefEditor.putBoolean("userFlg", true)
-        sharedPrefEditor.putString("iconImage", userData[0])
-        sharedPrefEditor.putString("id", userData[1])
-        sharedPrefEditor.putString("name", userData[2])
-        sharedPrefEditor.putString("password", userData[3])
-        sharedPrefEditor.putString("generation", userData[4])
-        sharedPrefEditor.putString("gender", userData[5])
+        sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ID, userData[1])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[2])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, userData[3])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, userData[4])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, userData[5])
         sharedPrefEditor.apply()
 
-        if (userData[0] == ""){
+        if (userData[0] == "") {
             userCreate()
-        }else {
+        } else {
             val puiat = PostUserIconAsyncTask()
             puiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
                 override fun callback(result: String, data: String) {
@@ -164,21 +164,21 @@ class ConfirmationActivity : AppCompatActivity() {
         }
     }
 
-    private fun userCreate(){
+    private fun userCreate() {
         val puat = PostUserAsyncTask()
         puat.setOnCallback(object : PostUserAsyncTask.CallbackPostUserAsyncTask() {
-            override fun callback(result: String,token:String) {
-                super.callback(result,token)
+            override fun callback(result: String, token: String) {
+                super.callback(result, token)
                 // ここからAsyncTask処理後の処理を記述します。
                 Log.d("test UserCallback", "非同期処理$result")
                 if (result == "RESULT-OK") {
                     //完了
-                    val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+                    val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
                     val sharedPrefEditor = sharedPreferences.edit()
-                    sharedPrefEditor.putString("token", token)
+                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
                     sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this@ConfirmationActivity,"Token = 「$token」", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     AlertDialog.Builder(this@ConfirmationActivity).apply {

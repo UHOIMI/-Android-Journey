@@ -12,10 +12,10 @@ import android.text.InputFilter
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import kotlinx.android.synthetic.main.activity_create.*
+import kotlinx.android.synthetic.main.activity_create_user.*
 import java.io.IOException
 
-class CreateActivity : AppCompatActivity() {
+class CreateUserActivity : AppCompatActivity() {
 
     var userIconUri = ""
     var userData = arrayListOf<String>()
@@ -27,7 +27,7 @@ class CreateActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create)
+        setContentView(R.layout.activity_create_user)
 
         val inputFilter = InputFilter { source, start, end, dest, dstart, dend ->
             if (source.toString().matches("^[a-zA-Z0-9]+$".toRegex())) {

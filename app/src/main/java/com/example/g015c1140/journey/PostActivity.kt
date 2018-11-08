@@ -112,7 +112,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                     AlertDialog.Builder(this).apply {
                         setTitle("スポット削除")
                         setMessage("スポット:${spotNameList[position]} を削除しますか？")
-                        setPositiveButton("削除", { _, _ ->
+                        setPositiveButton("削除") { _, _ ->
                             // 削除をタップしたときの処理
                             //spotListAdapter.remove(spotListAdapter.getItem(position))
                             spotNameList.removeAt(position)
@@ -126,7 +126,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                             //Pin編集
                             mapPinEdit()
-                        })
+                        }
                         setNegativeButton("戻る", null)
                         show()
                     }
@@ -326,8 +326,8 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     fun onPostButtonTapped(view: View) {
         //全部がOKな場合
         if (checkData()) {
-            val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
-            var imageList = arrayListOf<String>()
+            val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+            val imageList = arrayListOf<String>()
             spotList.forEach {
                 imageList.add(it.image_A)
                 imageList.add(it.image_B)
@@ -356,7 +356,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         /********************/
                         //spotを投稿
-                        val psat = PostSpotAsyncTask(sharedPreferences.getString("token","none"))
+                        val psat = PostSpotAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
                         psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
                             override fun callback(result: String) {
                                 super.callback(result)
@@ -368,7 +368,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                                     //spot取得
                                     //スポットリストがある
-                                    val gsat = GetSpotAsyncTask(spotList.size,sharedPreferences.getString("id","none"))
+                                    val gsat = GetSpotAsyncTask(spotList.size,sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"))
                                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                                         override fun callback(result: ArrayList<String>) {
                                             super.callback(result)
@@ -380,7 +380,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                                                 /********************/
                                                 //Planを投稿
-                                                val ppat = PostPlanAsyncTask(result,sharedPreferences.getString("token","none"))
+                                                val ppat = PostPlanAsyncTask(result,sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
                                                 ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
                                                     override fun callback(result: String) {
                                                         super.callback(result)

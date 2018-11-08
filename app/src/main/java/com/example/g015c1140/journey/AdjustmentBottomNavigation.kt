@@ -8,16 +8,14 @@ import android.util.TypedValue
 import android.view.View
 
 
-
-
 class AdjustmentBottomNavigation {
 
     @SuppressLint("RestrictedApi")
             /**
-     * BottomNavigationViewのアイテムのサイズの調整、アイコンサイズ調整、タイトルの削除
-     *
-     * @param view
-     */
+             * BottomNavigationViewのアイテムのサイズの調整、アイコンサイズ調整、タイトルの削除
+             *
+             * @param view
+             */
 
     fun disableShiftMode(view: BottomNavigationView) {
         val menuView = view.getChildAt(0) as BottomNavigationMenuView
@@ -50,7 +48,7 @@ class AdjustmentBottomNavigation {
                 layoutParams.width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, displayMetrics).toInt()
                 iconView.layoutParams = layoutParams
             }
-        } catch (e: NoSuchFieldException ) {
+        } catch (e: NoSuchFieldException) {
             e.printStackTrace()
         } catch (e: IllegalAccessException) {
             e.printStackTrace()

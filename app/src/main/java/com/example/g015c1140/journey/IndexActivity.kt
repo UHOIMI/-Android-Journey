@@ -15,8 +15,8 @@ class IndexActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-        val sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE)
-        if (sharedPreferences.getBoolean("userFlg", false)) {
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+        if (sharedPreferences.getBoolean(Setting().USER_SHARED_PREF_FLG, false)) {
             val plat = PostLoginAsyncTask()
             plat.setOnCallback(object : PostLoginAsyncTask.CallbackPostLoginAsyncTask() {
                 override fun callback(result: String, token: String) {
@@ -26,7 +26,7 @@ class IndexActivity : AppCompatActivity() {
                     if (result == "RESULT-OK") {
                         //完了した関数呼び出し
                         val sharedPrefEditor = sharedPreferences.edit()
-                        sharedPrefEditor.putString("token", token)
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
                         sharedPrefEditor.apply()
                         Toast.makeText(this@IndexActivity,"ログイン情報あり\nToken取得完了",Toast.LENGTH_SHORT).show()
                         finish()
@@ -41,13 +41,13 @@ class IndexActivity : AppCompatActivity() {
                     }
                 }
             })
-            plat.execute( arrayListOf( sharedPreferences.getString("id","none"),sharedPreferences.getString("password","none") ) )
+            plat.execute( arrayListOf( sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"),sharedPreferences.getString(Setting().USER_SHARED_PREF_PASSWORD,"none") ) )
             /********************/
         }
     }
 
     fun onCreateButtonTapped(v: View) {
-        startActivity(Intent(this, CreateActivity::class.java))
+        startActivity(Intent(this, CreateUserActivity::class.java))
         finish()
     }
 

@@ -65,12 +65,11 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
                 postResult = try {
                     JSONObject(sb.toString()).getString("status")
                     "PostUserLogin-NG"
-                }catch (e: JSONException){
+                } catch (e: JSONException) {
                     e.printStackTrace()
-                    token = sb.toString().replace("\"","")
+                    token = sb.toString().replace("\"", "")
                     200.toString()
                 }
-
 
 
             } catch (e: IOException) {
@@ -105,13 +104,13 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
         when (result) {
             "HTTP-OK:200" -> {
                 Log.d("test PostSpot", "HTTP-OK")
-                callbackPostPlanAsyncTask!!.callback("RESULT-OK",token)
+                callbackPostPlanAsyncTask!!.callback("RESULT-OK", token)
                 return
             }
 
             else -> {
                 Log.d("test PostSpot", "HTTP-NG")
-                callbackPostPlanAsyncTask!!.callback("RESULT-NG","")
+                callbackPostPlanAsyncTask!!.callback("RESULT-NG", "")
                 return
             }
         }
@@ -122,6 +121,6 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
     }
 
     open class CallbackPostUserAsyncTask {
-        open fun callback(result: String, token:String) {}
+        open fun callback(result: String, token: String) {}
     }
 }

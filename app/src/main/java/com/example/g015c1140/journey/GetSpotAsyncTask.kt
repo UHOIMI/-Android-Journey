@@ -12,18 +12,18 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>() {
+class GetSpotAsyncTask(cnt: Int, i: String) : AsyncTask<String, String, String>() {
     private val SPOT_LIST_CNT = cnt
     private val USER_ID = i
 
 
     //callBack用
     private var callbackGetSpotAsyncTask: CallbackGetSpotAsyncTask? = null
-    private var result:String? = null
+    private var result: String? = null
 
     override fun doInBackground(vararg params: String?): String? {
 
-        if (USER_ID =="none")
+        if (USER_ID == "none")
             Log.d("test", "USERID-Error")
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
@@ -51,10 +51,10 @@ class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>()
 
                 Log.d("test GSAT", "${jsonArray.length()}             ${sb.length}")
                 for (i in 0 until jsonArray.length()) {
-                    Log.d("test","array.getJSONObject(i): ${jsonArray.getJSONObject(i)}")
+                    Log.d("test", "array.getJSONObject(i): ${jsonArray.getJSONObject(i)}")
                     spotIdList.add(jsonArray.getJSONObject(i).getString("spot_id"))
                 }
-                result =  spotIdList.toString()
+                result = spotIdList.toString()
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -79,19 +79,19 @@ class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>()
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        if (result == null){
-            Log.d("test GetSpotTask","return null")
+        if (result == null) {
+            Log.d("test GetSpotTask", "return null")
             callbackGetSpotAsyncTask!!.callback(arrayListOf("RESULT-NG"))
             return
         }
 
         val resultJSONArray = JSONArray(result)
-        Log.d("test GetSpotTask","result：$result")
+        Log.d("test GetSpotTask", "result：$result")
 
         val spotIdList = arrayListOf<String>()
         spotIdList.add("RESULT-OK")
 
-        for ( backCnt in (resultJSONArray.length() - SPOT_LIST_CNT) until resultJSONArray.length()) {
+        for (backCnt in (resultJSONArray.length() - SPOT_LIST_CNT) until resultJSONArray.length()) {
             spotIdList.add(resultJSONArray.getString(backCnt))
         }
 
@@ -103,7 +103,7 @@ class GetSpotAsyncTask(cnt: Int, i: String): AsyncTask<String, String, String>()
     }
 
     open class CallbackGetSpotAsyncTask {
-        open fun callback(result: ArrayList<String>){}
+        open fun callback(result: ArrayList<String>) {}
     }
 
 }

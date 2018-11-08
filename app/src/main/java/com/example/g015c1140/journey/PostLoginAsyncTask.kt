@@ -11,23 +11,23 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>()  {
+class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>() {
     //callBack用
     private var callbackPostLoginAsyncTask: CallbackPostLoginAsyncTask? = null
-    lateinit var token:String
+    lateinit var token: String
 
     override fun doInBackground(vararg params: ArrayList<String>): String? {
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
         var postResult: String? = null
-        var httpResult:String? = null
+        var httpResult: String? = null
 
         try {
-            val url =  URL(Setting().USER_LOGIN_URL)
+            val url = URL(Setting().USER_LOGIN_URL)
             val list = params[0]
 
-            for (value in list){
+            for (value in list) {
                 if (value == "none")
                     return "PRAM-Error"
             }
@@ -62,9 +62,9 @@ class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>()  {
                 postResult = try {
                     JSONObject(sb.toString()).getString("status")
                     "PostUserLogin-NG"
-                }catch (e:JSONException){
+                } catch (e: JSONException) {
                     e.printStackTrace()
-                    token = sb.toString().replace("\"","")
+                    token = sb.toString().replace("\"", "")
                     200.toString()
                 }
 
@@ -96,17 +96,17 @@ class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>()  {
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PlanSpot","onPostEx: $result")
-        when(result){
+        Log.d("test PlanSpot", "onPostEx: $result")
+        when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot","HTTP-OK")
-                callbackPostLoginAsyncTask!!.callback("RESULT-OK",token)
+                Log.d("test PostSpot", "HTTP-OK")
+                callbackPostLoginAsyncTask!!.callback("RESULT-OK", token)
                 return
             }
 
-            else ->{
-                Log.d("test PostSpot","HTTP-NG")
-                callbackPostLoginAsyncTask!!.callback("RESULT-NG","")
+            else -> {
+                Log.d("test PostSpot", "HTTP-NG")
+                callbackPostLoginAsyncTask!!.callback("RESULT-NG", "")
                 return
             }
         }

@@ -24,7 +24,7 @@ class GetUserAccountAsyncTask(i: String) : AsyncTask<Void, String, String>() {
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
 
-        if (USER_ID =="none")
+        if (USER_ID == "none")
             Log.d("test", "USERID-Error")
 
         try {
@@ -72,12 +72,12 @@ class GetUserAccountAsyncTask(i: String) : AsyncTask<Void, String, String>() {
 
         if (result == null) {
             Log.d("test GetUserIdTask", "return null")
-            callbackGetUserAccountAsyncTask!!.callback(JSONObject().put("result","RESULT-NG"))
+            callbackGetUserAccountAsyncTask!!.callback(JSONObject().put("result", "RESULT-NG"))
             return
         }
 
         val resultJSONObject = JSONObject(result)
-        resultJSONObject.put("result","RESULT-OK")
+        resultJSONObject.put("result", "RESULT-OK")
         Log.d("test GetUserIdTask", "result：$result")
         callbackGetUserAccountAsyncTask!!.callback(resultJSONObject)
     }
