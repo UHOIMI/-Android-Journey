@@ -31,7 +31,7 @@ class ConfirmationActivity : AppCompatActivity() {
 
         if (userData[0] != "") {
             imageUri = getPathFromUri(this, Uri.parse(userData[0]))
-            iconImageView.setImageBitmap(getBitmapFromUri(Uri.parse(userData[0])))
+            confirmUserIconImageView.setImageBitmap(getBitmapFromUri(Uri.parse(userData[0])))
         }
 
         idTextView.text = userData[1]

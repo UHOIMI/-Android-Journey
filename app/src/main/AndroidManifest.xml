@@ -38,9 +38,14 @@
         <activity android:name=".PutSpotActivity" />
         <activity android:name=".SpotListActivity" />
         <activity android:name=".IndexActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".CreateUserActivity" />
-        <activity android:name=".ConfirmationActivity" />
+        <activity android:name=".LoginActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
+        <activity android:name=".CreateUserActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
+        <activity android:name=".ConfirmationActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
+        <activity android:name=".EditUserActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
     </application>
 
 </manifest>

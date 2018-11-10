@@ -176,11 +176,15 @@ class CreateUserActivity : AppCompatActivity() {
                             checkFailure(result)
                         }
                         /******************/
+                    }else{
+                        result += "ユーザーIDを確認してください"
+                        checkFailure(result)
                     }
                 }
             })
             guiat.execute()
         }
+        checkFailure(result)
 /*        if (!(nameEditText.text.toString().trim().isEmpty())) {
             if (nameEditText.text.toString().trim().length < 8) {
                 //7文字以下
