@@ -41,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="104dp"
         android:layout_marginBottom="452dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation2"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -221,7 +221,7 @@
     </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation2"
+        android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

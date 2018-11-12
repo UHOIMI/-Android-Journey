@@ -1,23 +1,14 @@
 package com.example.g015c1140.journey
 
-import android.annotation.TargetApi
-import android.app.Activity
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_create_user.*
-import kotlinx.android.synthetic.main.activity_detail_user.*
 import android.widget.TextView
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_detail_user.*
 
 
 
@@ -49,10 +40,10 @@ class DetailUserActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation2)
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
-        navigation2.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
 
         val tv = findViewById<View>(R.id.showAllTextView) as TextView
