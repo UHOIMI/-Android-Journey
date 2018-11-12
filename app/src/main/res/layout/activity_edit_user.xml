@@ -35,12 +35,13 @@
                 android:id="@+id/editUserHeaderImageButton"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="30dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/guideline7"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/no_image" />
+                app:srcCompat="@drawable/header_default" />
 
             <ImageView
                 android:id="@+id/editUserIconImageView"

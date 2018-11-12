@@ -5,8 +5,6 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detail_user.*
 
@@ -46,17 +44,12 @@ class DetailUserActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
 
-        val tv = findViewById<View>(R.id.showAllTextView) as TextView
-
-        tv.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                //perform your action here
-                
-                //Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
-                finish()
-                true
-            }
-        })
+        detailUserShowAllPlanButton.setOnClickListener {
+            //perform your action here
+            //Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
+            finish()
+            true
+        }
 
     }
 
@@ -73,7 +66,7 @@ class DetailUserActivity : AppCompatActivity() {
         R.id.saveButton -> {
             //val intent = Intent(this, PutSpotActivity::class.java)
             //intent.putExtra("SPOT", spot)
-            startActivity(intent)
+//            startActivity(intent)
             Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
             true
         }
