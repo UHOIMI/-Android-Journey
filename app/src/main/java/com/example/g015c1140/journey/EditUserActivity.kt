@@ -21,7 +21,7 @@ class EditUserActivity : AppCompatActivity() {
         //タイトル名セット
         title = "ユーザー編集"
 
-        val toolbar = userEditToolbar
+        val toolbar = editUserToolbar
         setSupportActionBar(toolbar)
         //戻るボタンセット
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
