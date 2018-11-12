@@ -70,10 +70,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomavigation: BottomNavigationView = findViewById(R.id.navigation)
+        val bottomavigation: BottomNavigationView = findViewById(R.id.navigation2)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
-        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+        navigation2.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         //Map呼び出し
         val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment

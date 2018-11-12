@@ -105,6 +105,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="1dp"
         android:layout_weight="1"
         android:onClick="onClickImage"
         app:layout_constraintEnd_toStartOf="@+id/imageView2"
@@ -112,7 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/commentTextView" />
 
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/navigation2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

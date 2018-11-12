@@ -209,10 +209,10 @@ class SelectSpotActivity : AppCompatActivity() {
 
         /************/
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation2)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation2.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         /****************/
 
     }
