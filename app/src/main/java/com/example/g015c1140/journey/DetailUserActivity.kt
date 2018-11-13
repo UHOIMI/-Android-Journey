@@ -1,5 +1,7 @@
 package com.example.g015c1140.journey
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -14,8 +16,6 @@ import kotlinx.android.synthetic.main.activity_detail_user.*
 class DetailUserActivity : AppCompatActivity() {
 
     //private lateinit var spot: SpotData
-
-    var userIconUri = ""
 
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
@@ -43,12 +43,22 @@ class DetailUserActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+        detailUserNameTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME,"名前が存在しません")
+        detailUserGenderTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENDER,"性別が存在しません")
+        val generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION,"年代が存在しません")
+        detailUserGenerationTextView.text = when(generation){
+            "10" -> "10歳以下"
+            "100" -> "100歳以上"
+            else -> "$generation 代"
+        }
+        detailUserCommentTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_COMMENT,"コメントが存在しません")
+
 
         detailUserShowAllPlanButton.setOnClickListener {
             //perform your action here
-            //Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
-            finish()
-            true
+            Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
+            //finish()
         }
 
     }
@@ -64,9 +74,7 @@ class DetailUserActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         R.id.saveButton -> {
-            //val intent = Intent(this, PutSpotActivity::class.java)
-            //intent.putExtra("SPOT", spot)
-//            startActivity(intent)
+            startActivity(Intent(this,EditUserActivity::class.java))
             Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
             true
         }

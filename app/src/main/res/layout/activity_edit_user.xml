@@ -79,7 +79,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/editUserIdEditText"
+                        android:id="@+id/editUserNameEditText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -139,7 +139,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="****************890"
                         android:textAlignment="center"
                         android:textSize="18sp" />
 
