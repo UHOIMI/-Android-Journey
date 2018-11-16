@@ -1,10 +1,15 @@
 package com.example.g015c1140.journey
 
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
@@ -12,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_edit_user.*
 
 
@@ -19,6 +25,20 @@ import kotlinx.android.synthetic.main.activity_edit_user.*
 class EditUserActivity : AppCompatActivity() {
 
     var sharedPreferences:SharedPreferences? = null
+
+
+    var userIconUri = ""
+    var userData = arrayListOf<String>()
+
+
+    companion object {
+        private const val RESULT_PICK_IMAGEFILE = 1001
+
+        private const val REQUEST_CROP_PICK = 1002
+    }
+
+    val userIconView = findViewById(R.id.editUserIconImageView) as ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +67,9 @@ class EditUserActivity : AppCompatActivity() {
         for (_passCnt in 0 until passLast.length - 4) {
             pass += "*"
         }
-        pass += passLast.substring(passLast.length -4 , passLast.length)
+
+        //↓ここで落ちたのでコメントにしました
+        //pass += passLast.substring(passLast.length -4 , passLast.length)
         editUserPassTextView.text = pass
         val generation = when( sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION,"") ){
             "10" -> "10歳以下"
@@ -57,18 +79,60 @@ class EditUserActivity : AppCompatActivity() {
         editUserGenerationoSpinner.setSelection((editUserGenerationoSpinner.adapter as ArrayAdapter<String>).getPosition(generation))
         editUserCommentEditText.setText( sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT,"") )
 
-/*        //ユーザーアイコン丸くする
+        //ユーザーアイコン丸くする
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val iconPath = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "none")
         if (iconPath != "none") {
             val iconBmp = BitmapFactory.decodeFile(iconPath)
-            val resizedIoconBitmap = Bitmap.createScaledBitmap(iconBmp, 263, 263, false)
-            val drawable = RoundedBitmapDrawableFactory.create(resources, resizedIoconBitmap)
+            val resizedIconBitmap = Bitmap.createScaledBitmap(iconBmp, 263, 263, false)
+            val drawable = RoundedBitmapDrawableFactory.create(resources, resizedIconBitmap)
             //丸く加工
             drawable.cornerRadius = 150f
             editUserIconImageView.setImageDrawable(drawable)
-        }*/
+        }
     }
+
+
+    
+
+
+    fun onClickIconImage(v: View) {
+        // イメージ画像がクリックされたときに実行される処理
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, RESULT_PICK_IMAGEFILE)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        when (requestCode) {
+            RESULT_PICK_IMAGEFILE -> {
+                if (resultCode != Activity.RESULT_OK) return
+                val uri = data.data // 選ばれた写真のUri
+                val intent = Intent("com.android.camera.action.CROP")
+                intent.data = uri
+                intent.putExtra("outputX", 200)
+                intent.putExtra("outputY", 200)
+                intent.putExtra("aspectX", 1)
+                intent.putExtra("aspectY", 1)
+                intent.putExtra("scale", true)
+                intent.putExtra("return-data", true)
+                startActivityForResult(intent, REQUEST_CROP_PICK)
+            }
+            REQUEST_CROP_PICK -> {
+                if (resultCode != Activity.RESULT_OK) return
+                val bitmap = data.extras!!.getParcelable<Bitmap>("data")
+                // 取得したBitmapでごにょごにょする
+                editUserIconImageView.setImageBitmap(bitmap)
+            }
+        }
+    }
+
+
+
+
+
 
     //ToolBarのボタン処理
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
