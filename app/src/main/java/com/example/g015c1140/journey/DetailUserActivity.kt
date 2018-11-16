@@ -76,6 +76,7 @@ class DetailUserActivity : AppCompatActivity() {
         R.id.saveButton -> {
             startActivity(Intent(this,EditUserActivity::class.java))
             Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
+            finish()
             true
         }
         //戻るボタンタップ時
