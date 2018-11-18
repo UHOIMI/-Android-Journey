@@ -18,7 +18,11 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_edit_user.*
+import com.isseiaoki.simplecropview.CropImageView
+
+
 
 
 
@@ -31,13 +35,18 @@ class EditUserActivity : AppCompatActivity() {
     var userData = arrayListOf<String>()
 
 
+
+
+
+
+
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
 
         private const val REQUEST_CROP_PICK = 1002
     }
 
-    val userIconView = findViewById(R.id.editUserIconImageView) as ImageView
+    //val userIconView = findViewById(R.id.editUserIconImageView) as CircleImageView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +102,7 @@ class EditUserActivity : AppCompatActivity() {
     }
 
 
-    
+
 
 
     fun onClickIconImage(v: View) {
@@ -110,7 +119,14 @@ class EditUserActivity : AppCompatActivity() {
             RESULT_PICK_IMAGEFILE -> {
                 if (resultCode != Activity.RESULT_OK) return
                 val uri = data.data // 選ばれた写真のUri
-                val intent = Intent("com.android.camera.action.CROP")
+
+                val cropImageView = findViewById(R.id.editUserIconImageView) as CropImageView
+
+
+                cropImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.id.editUserIconImageView))
+
+
+                /*val intent = Intent("com.android.camera.action.CROP")
                 intent.data = uri
                 intent.putExtra("outputX", 200)
                 intent.putExtra("outputY", 200)
@@ -119,6 +135,7 @@ class EditUserActivity : AppCompatActivity() {
                 intent.putExtra("scale", true)
                 intent.putExtra("return-data", true)
                 startActivityForResult(intent, REQUEST_CROP_PICK)
+                */
             }
             REQUEST_CROP_PICK -> {
                 if (resultCode != Activity.RESULT_OK) return
