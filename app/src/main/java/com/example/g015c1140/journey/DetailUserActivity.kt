@@ -10,9 +10,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detail_user.*
 
-
-
-
 class DetailUserActivity : AppCompatActivity() {
 
     //private lateinit var spot: SpotData

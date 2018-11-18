@@ -21,10 +21,12 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.Settings
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import kotlinx.android.synthetic.main.activity_put_spot.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.BufferedReader
@@ -94,16 +97,29 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("test", "onCreate")
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_put_spot)
+
+        //タイトル名セット
+        title = "スポット追加"
+
+        //戻るボタンセット
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+
+        //ボトムバー設定
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.putSpotNavigation)
+        // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
+        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
+        putSpotNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         spotNameTextView = findViewById(R.id.nameText) as EditText
         commentTextView = findViewById(R.id.commentEditText) as EditText
 
         val saveButton = findViewById<Button>(R.id.saveButton)
         saveButton.setOnClickListener {
-            savaSpot()
+            saveSpot()
         }
 
         imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -191,9 +207,42 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             //PinButtonTapped()
         }
 
-
         //PinButtonTapped()
+    }
 
+    //ToolBarのボタン処理
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                //戻るボタンタップ時
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    //ボトムバータップ時
+    private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                //spotNameTextView.setText(R.string.title_home)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_search -> {
+                //spotNameTextView.setText(R.string.title_search)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_favorite -> {
+                //spotNameTextView.setText(R.string.title_favorite)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_setting -> {
+                //spotNameTextView.setText(R.string.title_setting)
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
     }
 
     // マーカーをタップすると呼び出される
@@ -220,7 +269,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         setUpMap()
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("ttttttttttttttttttttttt", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
@@ -323,7 +371,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         startActivityForResult(imageIntent, RESULT_PICK_IMAGEFILE);
     }
 
-
     private fun setUpMap() {
         Log.d("test", "setUpMap")
 
@@ -414,7 +461,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         return addressText
     }
 
-    fun savaSpot() {
+    fun saveSpot() {
         if (spotNameTextView!!.text.count() <= 0) {
             errorMessage = "スポット名を入力してください。/n"
         } else if (spotNameTextView!!.text.count() > 20) {
