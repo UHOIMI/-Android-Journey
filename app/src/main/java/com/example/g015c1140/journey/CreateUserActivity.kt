@@ -97,6 +97,7 @@ class CreateUserActivity : AppCompatActivity() {
         var result = ""
         if (createIdEditText.text.toString().isEmpty()) {
             result += "ユーザーIDを入力してください\n"
+            checkFailure(result)
         } else {
             val guiat = GetUserIdAsyncTask()
             guiat.setOnCallback(object : GetUserIdAsyncTask.CallbackGetUserIdAsyncTask() {
@@ -184,7 +185,6 @@ class CreateUserActivity : AppCompatActivity() {
             })
             guiat.execute()
         }
-        checkFailure(result)
 /*        if (!(nameEditText.text.toString().trim().isEmpty())) {
             if (nameEditText.text.toString().trim().length < 8) {
                 //7文字以下
