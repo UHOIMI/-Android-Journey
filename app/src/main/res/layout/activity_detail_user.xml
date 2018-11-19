@@ -45,7 +45,7 @@
                 app:srcCompat="@drawable/header_default" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/detailUserIconDetailUserPlanIconCircleView"
+                android:id="@+id/detailUserIconCircleView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/no_image"

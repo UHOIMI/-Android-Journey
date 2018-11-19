@@ -96,6 +96,8 @@ class EditUserActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
+                startActivity(Intent(this,DetailUserActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

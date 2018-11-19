@@ -238,7 +238,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                //spotNameTextView.setText(R.string.title_setting)
+                startActivity(Intent(this,DetailUserActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -463,13 +464,13 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     fun saveSpot() {
         if (spotNameTextView!!.text.count() <= 0) {
-            errorMessage = "スポット名を入力してください。/n"
+            errorMessage = "スポット名を入力してください。\n"
         } else if (spotNameTextView!!.text.count() > 20) {
-            errorMessage = "スポット名の文字数が20文字を超えています。/n"
+            errorMessage = "スポット名の文字数が20文字を超えています。\n"
         }
 
         if (commentTextView!!.text.count() > 140) {
-            errorMessage += "スポット説明の文字数が140文字を超えています。"
+            errorMessage += "スポット説明の文字数が140文字を超えています。\n"
         }
 
         if (!errorMessage.equals("")) {
@@ -485,7 +486,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         } else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
             //print(mRealm.where(RealmSpotData::class.java).findAll())
-            startActivity(Intent(this, StartActivity::class.java))
+            startActivity(Intent(this, SpotListActivity::class.java))
+            finish()
         }
     }
 

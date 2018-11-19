@@ -114,7 +114,8 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                spotNameTextView.setText(R.string.title_setting)
+                startActivity(Intent(this,DetailUserActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

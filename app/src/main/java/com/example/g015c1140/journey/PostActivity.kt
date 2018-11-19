@@ -316,7 +316,8 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                planTitleEditText.setText(R.string.title_setting)
+                startActivity(Intent(this,DetailUserActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -465,6 +466,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         } else {
             AlertDialog.Builder(this).apply {
+                setTitle("入力情報が間違っています")
                 setMessage(checkResult)
                 setPositiveButton("確認", null)
                 show()

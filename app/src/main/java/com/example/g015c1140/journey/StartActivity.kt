@@ -42,5 +42,4 @@ class StartActivity : AppCompatActivity() {
         Toast.makeText(this, "sharedPreferences削除", Toast.LENGTH_SHORT).show()
     }
 
-
 }
