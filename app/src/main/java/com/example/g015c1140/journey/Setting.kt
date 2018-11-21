@@ -9,6 +9,7 @@ class Setting {
     val USER_GET_URL = "http://$IP_ADDRESS/api/v1/users/find"
     val USER_ACCOUNT_GET_URL = "http://$IP_ADDRESS/api/v1/users/find?user_id="
     val USER_POST_URL = "http://$IP_ADDRESS/api/v1/users/register"
+    val USER_GET_IMAGE_URL = "http://35.200.26.70:8080/test1/"
     val USER_PUT_URL = "http://$IP_ADDRESS/api/v1/users/update"
     val SPOT_IMAGE_POST_URL = "http://$IP_ADDRESS/api/v1/image/upload"
     val SPOT_POST_URL = "http://$IP_ADDRESS/api/v1/spot/register/"

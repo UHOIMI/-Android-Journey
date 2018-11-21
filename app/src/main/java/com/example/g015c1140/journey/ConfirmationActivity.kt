@@ -125,7 +125,6 @@ class ConfirmationActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val sharedPrefEditor = sharedPreferences.edit()
         sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0])
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ID, userData[1])
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[2])
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, userData[3])
@@ -145,6 +144,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     if (result == "RESULT-OK") {
                         //完了した場合
                         userData[0] = data
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0]).apply()
                         userCreate()
                     } else {
                         failedAsyncTask()
