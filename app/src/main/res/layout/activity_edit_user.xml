@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context=".EditUserActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -43,7 +44,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/header_default" />
 
-            <com.isseiaoki.simplecropview.CropImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/editUserIconImageView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

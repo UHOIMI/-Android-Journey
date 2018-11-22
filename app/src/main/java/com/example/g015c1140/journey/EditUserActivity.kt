@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
@@ -21,6 +22,9 @@ import android.widget.ImageView
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_edit_user.*
 import com.isseiaoki.simplecropview.CropImageView
+import android.provider.MediaStore
+
+
 
 
 
@@ -35,15 +39,12 @@ class EditUserActivity : AppCompatActivity() {
     var userData = arrayListOf<String>()
 
 
-
-
-
-
-
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
 
         private const val REQUEST_CROP_PICK = 1002
+
+        private const val CROP_RESULT = 1003
     }
 
     //val userIconView = findViewById(R.id.editUserIconImageView) as CircleImageView
@@ -120,28 +121,16 @@ class EditUserActivity : AppCompatActivity() {
                 if (resultCode != Activity.RESULT_OK) return
                 val uri = data.data // 選ばれた写真のUri
 
-                val cropImageView = findViewById(R.id.editUserIconImageView) as CropImageView
-
-
-                cropImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.id.editUserIconImageView))
-
-
-                /*val intent = Intent("com.android.camera.action.CROP")
-                intent.data = uri
-                intent.putExtra("outputX", 200)
-                intent.putExtra("outputY", 200)
-                intent.putExtra("aspectX", 1)
-                intent.putExtra("aspectY", 1)
-                intent.putExtra("scale", true)
-                intent.putExtra("return-data", true)
-                startActivityForResult(intent, REQUEST_CROP_PICK)
-                */
+                val intent = Intent(this, CropIconActivity::class.java)
+                intent.putExtra("data", uri)
+                startActivityForResult(intent, CROP_RESULT)
             }
-            REQUEST_CROP_PICK -> {
-                if (resultCode != Activity.RESULT_OK) return
-                val bitmap = data.extras!!.getParcelable<Bitmap>("data")
-                // 取得したBitmapでごにょごにょする
-                editUserIconImageView.setImageBitmap(bitmap)
+
+            CROP_RESULT -> {
+                val intent = getIntent()
+                val b = intent.extras
+                val bmp = b.get("data") as Bitmap
+                editUserIconImageView.setImageBitmap(bmp)
             }
         }
     }

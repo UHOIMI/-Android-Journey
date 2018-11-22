@@ -27,6 +27,11 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
