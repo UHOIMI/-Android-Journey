@@ -85,7 +85,7 @@ class DetailUserActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         R.id.saveButton -> {
-            startActivity(Intent(this,EditUserActivity::class.java))
+            startActivity(Intent(this, EditUserActivity::class.java))
             Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
             finish()
             true

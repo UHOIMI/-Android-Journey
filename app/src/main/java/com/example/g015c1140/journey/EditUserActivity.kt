@@ -1,14 +1,17 @@
 package com.example.g015c1140.journey
 
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
+import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +23,13 @@ import kotlinx.android.synthetic.main.activity_edit_user.*
 class EditUserActivity : AppCompatActivity() {
 
     var sharedPreferences: SharedPreferences? = null
+    var imageFlg = 0
+
+    companion object {
+        private const val RESULT_PICK_IMAGEFILE = 1001
+
+        private const val RESULT_CROP = 2003
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +58,9 @@ class EditUserActivity : AppCompatActivity() {
         for (_passCnt in 0 until passLast.length - 4) {
             pass += "*"
         }
-        pass += passLast.substring(passLast.length - 4, passLast.length)
+
+        //↓ここで落ちたのでコメントにしました
+        pass += passLast.substring(passLast.length -4 , passLast.length)
         editUserPassTextView.text = pass
         val generation = when (sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")) {
             "10" -> "10歳以下"
@@ -56,19 +68,45 @@ class EditUserActivity : AppCompatActivity() {
             else -> "${sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")}代"
         }
         editUserGenerationoSpinner.setSelection((editUserGenerationoSpinner.adapter as ArrayAdapter<String>).getPosition(generation))
-        editUserCommentEditText.setText(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT, ""))
+        editUserCommentEditText.setText( sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT,"") )
+    }
 
-/*        //ユーザーアイコン丸くする
-        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-        val iconPath = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "none")
-        if (iconPath != "none") {
-            val iconBmp = BitmapFactory.decodeFile(iconPath)
-            val resizedIoconBitmap = Bitmap.createScaledBitmap(iconBmp, 263, 263, false)
-            val drawable = RoundedBitmapDrawableFactory.create(resources, resizedIoconBitmap)
-            //丸く加工
-            drawable.cornerRadius = 150f
-            editUserIconImageView.setImageDrawable(drawable)
-        }*/
+
+    fun onClickImage(v: View) {
+        // イメージ画像がクリックされたときに実行される処理
+        when(v.id){
+            R.id.editUserHeaderImageButton -> imageFlg = 1
+            R.id.editUserIconImageView -> imageFlg = 2
+        }
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, RESULT_PICK_IMAGEFILE)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        when (requestCode) {
+            RESULT_PICK_IMAGEFILE -> {
+                if (resultCode != Activity.RESULT_OK) return
+                val uri = data.data // 選ばれた写真のUri
+                val intent = Intent(this, CropIconActivity::class.java)
+                intent.putExtra("uri", uri)
+                intent.putExtra("imageFlg", imageFlg)
+                startActivityForResult(intent, RESULT_CROP)
+            }
+
+            RESULT_CROP -> {
+                val base64String = sharedPreferences!!.getString("IMAGE_BASE64","")
+                sharedPreferences!!.edit().remove("IMAGE_BASE64").apply()
+                val decodedByte = Base64.decode(base64String, 0)
+                val bmp =  BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
+                when(imageFlg){
+                    1 -> editUserHeaderImageButton.setImageBitmap(bmp)
+                    2 ->  editUserIconImageView.setImageBitmap(bmp)
+                }
+            }
+        }
     }
 
     //ToolBarのボタン処理

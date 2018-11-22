@@ -27,6 +27,11 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -44,4 +49,5 @@ dependencies {
     kapt 'com.android.databinding:compiler:2.3.2'
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.isseiaoki:simplecropview:1.1.8'
 }
