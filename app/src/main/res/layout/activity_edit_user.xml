@@ -34,21 +34,24 @@
 
             <ImageButton
                 android:id="@+id/editUserHeaderImageButton"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="410dp"
+                android:layout_height="160dp"
                 android:layout_marginBottom="30dp"
+                android:onClick="onClickImage"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/guideline7"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/header_default" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/editUserIconImageView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:onClick="onClickIconImage"
+                android:onClick="onClickImage"
                 android:src="@drawable/no_image"
                 app:layout_constraintBottom_toTopOf="@+id/guideline7"
                 app:layout_constraintEnd_toEndOf="parent"

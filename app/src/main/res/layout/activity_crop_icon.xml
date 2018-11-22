@@ -4,21 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CropIconActivity">
+    tools:context=".CropIconActivity"
+    tools:layout_editor_absoluteY="25dp">
 
 
     <com.isseiaoki.simplecropview.CropImageView xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cropImageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:paddingLeft="16dp"
         android:paddingTop="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
-        custom:layout_constraintBottom_toBottomOf="parent"
+        custom:layout_constraintBottom_toTopOf="@+id/crop_button"
         custom:layout_constraintEnd_toEndOf="parent"
-        custom:layout_constraintHorizontal_bias="0.0"
         custom:layout_constraintStart_toStartOf="parent"
         custom:layout_constraintTop_toTopOf="parent"
         custom:scv_crop_mode="ratio_16_9" />
@@ -28,9 +32,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
-        android:text="CROP"
-        />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00000000"
+        android:text="完了"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button8"
+        app:layout_constraintStart_toEndOf="@+id/button7" />
+
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00000000"
+        android:onClick="counterClockwiseButtonTapped"
+        android:text="左回転"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00000000"
+        android:onClick="clockwiseButtonTapped"
+        android:text="右回転"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
