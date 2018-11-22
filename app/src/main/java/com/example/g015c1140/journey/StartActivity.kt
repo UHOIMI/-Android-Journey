@@ -34,6 +34,9 @@ class StartActivity : AppCompatActivity() {
     fun userDetailButtonTapped(v:View){
         startActivity(Intent(this,DetailUserActivity::class.java))
     }
+    fun timelineButtonTapped(v:View){
+        startActivity(Intent(this,TimelineActivity::class.java))
+    }
 
     fun userDataDeleteButtonTapped(v:View){
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
