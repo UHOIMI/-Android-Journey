@@ -6,13 +6,19 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
+import android.widget.AbsListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_timeline.*
 import layout.TimelinePlanListAdapter
 
-
-
 class TimelineActivity : AppCompatActivity() {
+
+    // 1ページ辺りの項目数
+    var timelineCnt: Int? = 10
+
+    // フッターのプログレスバー（クルクル）
+    var progressFooter: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +56,27 @@ class TimelineActivity : AppCompatActivity() {
         timelinePlanListAdapter.setTimelinePlanList(planList)
         timelineListView.adapter = timelinePlanListAdapter
 
+        timelineListView.addFooterView(getProgFooter())
+        timelineListView.setOnScrollListener(object : AbsListView.OnScrollListener {
+            // スクロール中の処理
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+
+                // 最初とスクロール完了したとき
+                if (totalItemCount - visibleItemCount == firstVisibleItem) {
+
+                    // アイテムの数 フッター分の1を引く
+                    val ItemCount = totalItemCount - 1
+
+                    // アダプターにアイテムを追加します
+                    for (i in ItemCount until ItemCount + timelineCnt!!) {
+//                        timelinePlanListAdapter.add("リストビュー：$i")
+                    }
+                }
+            }
+            // ListViewがスクロール中かどうか状態を返すメソッドです
+            override fun onScrollStateChanged(arg0: AbsListView, arg1: Int) {}
+        })
+
         for (_cnt in 0 until 100){
             val timelinePlan = TimelinePlan()
             timelinePlan.planUserName = "Name $_cnt"
@@ -63,6 +90,14 @@ class TimelineActivity : AppCompatActivity() {
         }
         timelinePlanListAdapter.notifyDataSetChanged()
     }
+
+    private fun getProgFooter(): View? {
+        if (progressFooter == null) {
+            progressFooter = layoutInflater.inflate(R.layout.listview_footer, null)
+        }
+        return progressFooter
+    }
+
 
     //ToolBarのボタン処理
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
