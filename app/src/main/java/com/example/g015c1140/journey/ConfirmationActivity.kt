@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,20 +18,22 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_confirmation.*
+import java.io.FileOutputStream
+import java.io.IOException
 
 class ConfirmationActivity : AppCompatActivity() {
     lateinit var userData: ArrayList<String>
-    var imageUri = ""
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirmation)
         userData = intent.extras.getStringArrayList("USERDATA")
 
-        if (userData[0] != "") {
-            imageUri = getPathFromUri(this, Uri.parse(userData[0]))
-            confirmUserIconImageView.setImageBitmap(getBitmapFromUri(Uri.parse(userData[0])))
+        if (userData[0] == "OK") {
+            val myApp: MyApplication = this.application as MyApplication
+            val bmp = myApp.getBmp()
+            myApp.clearBmp()
+            confirmUserIconImageView.setImageBitmap(bmp)
         }
 
         idTextView.text = userData[1]
@@ -40,12 +42,116 @@ class ConfirmationActivity : AppCompatActivity() {
         genderTextView.text = userData[5]
     }
 
-    private fun getBitmapFromUri(uri: Uri): Bitmap {
-        val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
-        val fileDescriptor = parcelFileDescriptor!!.fileDescriptor
-        val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-        parcelFileDescriptor.close()
-        return image
+    fun onModificationButtonTapped(v: View) {
+        startActivity(Intent(this, CreateUserActivity::class.java).putStringArrayListExtra("USERDATA", userData).putExtra("EditFlg", 100))
+        if (userData[0] == "OK") {
+            val myApp = this.application as MyApplication
+            myApp.setBmp((confirmUserIconImageView.drawable as BitmapDrawable).bitmap)
+        }
+        finish()
+    }
+
+    fun onDoneButtonTapped(v: View) {
+        //投稿
+        if (userData[0] == "OK") {
+            userData[0] = seveAndLoadImage()
+        }
+
+        userData[4] =
+                when {
+                    userData[4] == "10歳以下" -> "10"
+                    userData[4] == "100歳以上" -> "100"
+                    else -> userData[4].replace("代", "")
+                }
+        userData[5] = userData[5].replace("性", "")
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+        val sharedPrefEditor = sharedPreferences.edit()
+        sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ID, userData[1])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[2])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, userData[3])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, userData[4])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, userData[5])
+        sharedPrefEditor.apply()
+
+        if (userData[0] == "") {
+            userCreate()
+        } else {
+            val puiat = PostUserIconAsyncTask()
+            puiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
+                override fun callback(result: String, data: String) {
+                    super.callback(result, data)
+                    // ここからAsyncTask処理後の処理を記述します。
+                    Log.d("test UserImageCallback", "非同期処理$result　　URL $data")
+                    if (result == "RESULT-OK") {
+                        //完了した場合
+                        userData[0] = "${Setting().USER_GET_IMAGE_URL}$data"
+                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0]).apply()
+                        userCreate()
+                    } else {
+                        failedAsyncTask()
+                    }
+                }
+            })
+            puiat.execute(userData[0],userData[2])
+        }
+    }
+
+    private fun failedAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("ユーザー登録に失敗しました")
+            setMessage("もう一度実行してください")
+            setPositiveButton("確認", null)
+            show()
+        }
+    }
+
+    private fun userCreate() {
+        val puat = PostUserAsyncTask()
+        puat.setOnCallback(object : PostUserAsyncTask.CallbackPostUserAsyncTask() {
+            override fun callback(result: String, token: String) {
+                super.callback(result, token)
+                // ここからAsyncTask処理後の処理を記述します。
+                Log.d("test UserCallback", "非同期処理$result")
+                if (result == "RESULT-OK") {
+                    //完了
+                    val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+                    val sharedPrefEditor = sharedPreferences.edit()
+                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
+                    sharedPrefEditor.apply()
+                    Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    AlertDialog.Builder(this@ConfirmationActivity).apply {
+                        setTitle("投稿に失敗しました")
+                        setMessage("もう一度実行してください")
+                        setPositiveButton("確認", null)
+                        show()
+                    }
+
+                }
+            }
+        })
+        puat.execute(userData)
+    }
+
+    private fun seveAndLoadImage(): String{
+        var fileOut: FileOutputStream? = null
+        var uri :Uri? = null
+        val imageName = "Icon.jpg"
+        try {
+            // openFileOutputはContextのメソッドなのでActivity内ならばthisでOK
+            fileOut = this.openFileOutput(imageName, Context.MODE_PRIVATE)
+            (confirmUserIconImageView.drawable as BitmapDrawable).bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOut)
+
+            uri = Uri.fromFile(getFileStreamPath(imageName))
+        } catch (e: IOException) {
+            failedAsyncTask()
+        } finally {
+            fileOut?.close()
+            return getPathFromUri(this, uri!!)
+        }
     }
 
     private fun getPathFromUri(context: Context, uri: Uri): String {
@@ -105,92 +211,5 @@ class ConfirmationActivity : AppCompatActivity() {
             cursor?.close()
         }
         return ""
-    }
-
-    fun onModificationButtonTapped(v: View) {
-        startActivity(Intent(this, CreateUserActivity::class.java).putStringArrayListExtra("USERDATA", userData).putExtra("EditFlg", 100))
-        finish()
-    }
-
-    fun onDoneButtonTapped(v: View) {
-        //投稿
-        userData[0] = imageUri
-        userData[4] =
-                when {
-                    userData[4] == "10歳以下" -> "10"
-                    userData[4] == "100歳以上" -> "100"
-                    else -> userData[4].replace("代", "")
-                }
-        userData[5] = userData[5].replace("性", "")
-        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-        val sharedPrefEditor = sharedPreferences.edit()
-        sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ID, userData[1])
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[2])
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, userData[3])
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, userData[4])
-        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, userData[5])
-        sharedPrefEditor.apply()
-
-        if (userData[0] == "") {
-            userCreate()
-        } else {
-            val puiat = PostUserIconAsyncTask()
-            puiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
-                override fun callback(result: String, data: String) {
-                    super.callback(result, data)
-                    // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test UserImageCallback", "非同期処理$result　　URL $data")
-                    if (result == "RESULT-OK") {
-                        //完了した場合
-                        userData[0] = data
-                        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0]).apply()
-                        userCreate()
-                    } else {
-                        failedAsyncTask()
-                    }
-                }
-            })
-            puiat.execute(userData[0])
-        }
-    }
-
-    private fun failedAsyncTask() {
-        AlertDialog.Builder(this).apply {
-            setTitle("ユーザー登録に失敗しました")
-            setMessage("もう一度実行してください")
-            setPositiveButton("確認", null)
-            show()
-        }
-    }
-
-    private fun userCreate() {
-        val puat = PostUserAsyncTask()
-        puat.setOnCallback(object : PostUserAsyncTask.CallbackPostUserAsyncTask() {
-            override fun callback(result: String, token: String) {
-                super.callback(result, token)
-                // ここからAsyncTask処理後の処理を記述します。
-                Log.d("test UserCallback", "非同期処理$result")
-                if (result == "RESULT-OK") {
-                    //完了
-                    val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-                    val sharedPrefEditor = sharedPreferences.edit()
-                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
-                    sharedPrefEditor.apply()
-                    Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    AlertDialog.Builder(this@ConfirmationActivity).apply {
-                        setTitle("投稿に失敗しました")
-                        setMessage("もう一度実行してください")
-                        setPositiveButton("確認", null)
-                        show()
-                    }
-
-                }
-            }
-        })
-        puat.execute(userData)
     }
 }

@@ -45,7 +45,7 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
                 if (parameter[0] != "") {
                     file = File(parameter[0])
                     writeBytes(twoHyphens + boundary + lineEnd)
-                    writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"Icon.jpg\"$lineEnd")
+                    writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"${parameter[1]}Icon.jpg\"$lineEnd")
                     writeBytes("Content-Type: image/jpeg$lineEnd")
                     writeBytes("Content-Transfer-Encoding: binary$lineEnd")
                     writeBytes(lineEnd)
