@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
-import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -97,10 +95,9 @@ class EditUserActivity : AppCompatActivity() {
             }
 
             RESULT_CROP -> {
-                val base64String = sharedPreferences!!.getString("IMAGE_BASE64","")
-                sharedPreferences!!.edit().remove("IMAGE_BASE64").apply()
-                val decodedByte = Base64.decode(base64String, 0)
-                val bmp =  BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
+                val myApp: MyApplication = this.application as MyApplication
+                val bmp = myApp.getBmp()
+                myApp.clearBmp()
                 when(imageFlg){
                     1 -> editUserHeaderImageButton.setImageBitmap(bmp)
                     2 ->  editUserIconImageView.setImageBitmap(bmp)

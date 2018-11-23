@@ -10,6 +10,7 @@
     <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
 
     <application
+        android:name="com.example.g015c1140.journey.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

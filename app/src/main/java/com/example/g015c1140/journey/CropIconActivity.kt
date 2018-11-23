@@ -1,17 +1,15 @@
 package com.example.g015c1140.journey
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
-import android.util.Base64
 import android.view.View
 import android.widget.Button
 import com.isseiaoki.simplecropview.CropImageView
-import java.io.ByteArrayOutputStream
+
+
 
 
 class CropIconActivity : AppCompatActivity() {
@@ -37,7 +35,7 @@ class CropIconActivity : AppCompatActivity() {
                 cropImageView.setOutputMaxSize(410, 160)
                 cropImageView.setOutputWidth(410)
                 cropImageView.setOutputHeight(160)
-                cropImageView.setMinFrameSizeInDp(160)
+                cropImageView.setMinFrameSizeInDp(80)
                 cropImageView.setInitialFrameScale(0.70f)
 
             }
@@ -66,11 +64,8 @@ class CropIconActivity : AppCompatActivity() {
         cropButton.setOnClickListener {
             // フレームに合わせてトリミング
             val cropBmp = cropImageView.croppedBitmap
-            val baos = ByteArrayOutputStream()
-            cropBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val b = baos.toByteArray()
-            val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-            sharedPreferences.edit().putString("IMAGE_BASE64", Base64.encodeToString(b, Base64.NO_WRAP)).apply()
+            val myApp = this.application as MyApplication
+            myApp.setBmp(cropBmp)
             setResult(RESULT_OK, Intent())
             finish()
         }
