@@ -23,7 +23,7 @@ class PostImageAsyncTask : AsyncTask<MutableList<String>, Void, String>() {
         val boundary = "wwwwwwwboundarywwwwwww"
         var postResult = ""
         var httpResult = ""
-        val url = URL(Setting().SPOT_IMAGE_POST_URL)
+        val url = URL(Setting().IMAGE_POST_URL)
 
         for (_listCnt in 0 until imageList.size step 3) {
             try {

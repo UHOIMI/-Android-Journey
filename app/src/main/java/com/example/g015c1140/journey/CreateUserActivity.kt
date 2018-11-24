@@ -2,8 +2,7 @@ package com.example.g015c1140.journey
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -13,16 +12,16 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_create_user.*
-import java.io.IOException
 
 class CreateUserActivity : AppCompatActivity() {
 
-    var userIconUri = ""
+    var userIcon = ""
     var userData = arrayListOf<String>()
 
 
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
+        private const val RESULT_CROP = 2003
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +46,12 @@ class CreateUserActivity : AppCompatActivity() {
         if (editFlg == 100) {
             userData = intent.extras.getStringArrayList("USERDATA")
 
-            if (userData[0] != "") {
-                iconImageButton.setImageBitmap(getBitmapFromUri(Uri.parse(userData[0])))
-                userIconUri = userData[0]
+            if (userData[0] == "OK") {
+                val myApp: MyApplication = this.application as MyApplication
+                val bmp = myApp.getBmp_1()
+                myApp.clearBmp_1()
+                iconImageButton.setImageBitmap(bmp)
+                userIcon  = "OK"
             }
             createIdEditText.setText(userData[1])
             nameEditText.setText(userData[2])
@@ -75,22 +77,20 @@ class CreateUserActivity : AppCompatActivity() {
             var uri: Uri? = null
             if (resultData != null) {
                 uri = resultData.data
-                try {
-                    iconImageButton.setImageBitmap(getBitmapFromUri(uri))
-                    userIconUri = uri.toString()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+                val intent = Intent(this, CropIconActivity::class.java)
+                intent.putExtra("uri", uri)
+                intent.putExtra("imageFlg", 2)
+                startActivityForResult(intent, RESULT_CROP)
             }
         }
-    }
 
-    private fun getBitmapFromUri(uri: Uri): Bitmap {
-        val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
-        val fileDescriptor = parcelFileDescriptor!!.fileDescriptor
-        val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-        parcelFileDescriptor.close()
-        return image
+        if (requestCode == RESULT_CROP && resultCode == Activity.RESULT_OK) {
+            val myApp: MyApplication = this.application as MyApplication
+            val bmp = myApp.getBmp_1()
+            myApp.clearBmp_1()
+            iconImageButton.setImageBitmap(bmp)
+            userIcon  = "OK"
+        }
     }
 
     fun onDoneButtonTapped(v: View) {
@@ -153,27 +153,7 @@ class CreateUserActivity : AppCompatActivity() {
                         if (result == "") {
                             //成功
                             checkSuccess()
-/*
-                                val userData = arrayListOf(
-                                    userIconUri,
-                                    createIdEditText.text.toString().trim(),
-                                    nameEditText.text.toString().trim(),
-                                    passwordEditText.text.toString().trim(),
-                                    generationSpinner.selectedItem.toString(),
-                                    genderSpinner.selectedItem.toString()
-                                )
-                                startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
-                                finish()
-*/
                         } else {
-/*
-                                AlertDialog.Builder(this).apply {
-                                    setTitle("入力情報が間違っています")
-                                    setMessage(result)
-                                    setPositiveButton("確認", null)
-                                    show()
-                                }
-*/
                             checkFailure(result)
                         }
                         /******************/
@@ -185,71 +165,11 @@ class CreateUserActivity : AppCompatActivity() {
             })
             guiat.execute()
         }
-/*        if (!(nameEditText.text.toString().trim().isEmpty())) {
-            if (nameEditText.text.toString().trim().length < 8) {
-                //7文字以下
-                result += "ユーザー名は8文字以上で入力してください\n"
-            }
-        } else {
-            result += "ユーザー名を入力してください\n"
-        }
-
-        if (!(passwordEditText.text.toString().trim().isEmpty())) {
-            //文字ある
-            if (passwordEditText.text.toString().trim().length < 8) {
-                //7文字以下
-                result += "パスワードは8文字以上で入力してください\n"
-            } else {
-                //確認パスワード
-                if (!(confirmationPassEditText.text.toString().trim().isEmpty())) {
-                    //文字ある
-                    if (confirmationPassEditText.text.toString().trim().length < 8) {
-                        result += "確認用パスワードは8文字以上で入力してください\n"
-                    } else {
-                        if (passwordEditText.text.toString().trim() != confirmationPassEditText.text.toString().trim()) {
-                            result += "パスワードと確認用パスワードが一致しません\n"
-                        }
-                    }
-                } else {
-                    result += "確認用パスワードを入力してください\n"
-                }
-            }
-        } else {
-            result += "パスワードを入力してください\n"
-        }
-
-        if (generationSpinner.selectedItem.toString() == "あなたの年代を選択してください") {
-            result += "年代を選択してください\n"
-        }
-        if (genderSpinner.selectedItem.toString() == "あなたの性別を選択してください") {
-            result += "性別を選択してください\n"
-        }
-
-        if (result == "") {
-            //intent
-            val userData = arrayListOf(
-                userIconUri,
-                createIdEditText.text.toString().trim(),
-                nameEditText.text.toString().trim(),
-                passwordEditText.text.toString().trim(),
-                generationSpinner.selectedItem.toString(),
-                genderSpinner.selectedItem.toString()
-            )
-            startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
-            finish()
-        } else {
-            AlertDialog.Builder(this).apply {
-                setTitle("入力情報が間違っています")
-                setMessage(result)
-                setPositiveButton("確認", null)
-                show()
-            }
-        }*/
     }
 
     private fun checkSuccess() {
         userData = arrayListOf(
-                userIconUri,
+                userIcon,
                 createIdEditText.text.toString().trim(),
                 nameEditText.text.toString().trim(),
                 passwordEditText.text.toString(),
@@ -257,6 +177,10 @@ class CreateUserActivity : AppCompatActivity() {
                 genderSpinner.selectedItem.toString()
         )
         startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
+        if (userIcon == "OK"){
+            val myApp = this.application as MyApplication
+            myApp.setBmp_1((iconImageButton.drawable as BitmapDrawable).bitmap)
+        }
         finish()
     }
 

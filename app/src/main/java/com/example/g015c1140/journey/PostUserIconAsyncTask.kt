@@ -15,37 +15,36 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
 
     override fun doInBackground(vararg parameter: String): String {
 
-        var connection: HttpURLConnection? = null
-        val lineEnd = "\r\n"
-        val twoHyphens = "--"
-        val boundary = "wwwwwwwboundarywwwwwww"
-        var postResult = ""
-        var httpResult = ""
-        val url = URL(Setting().SPOT_IMAGE_POST_URL)
+        if (parameter[0] != "") {
+            var connection: HttpURLConnection? = null
+            val lineEnd = "\r\n"
+            val twoHyphens = "--"
+            val boundary = "wwwwwwwboundarywwwwwww"
+            var postResult = ""
+            var httpResult = ""
+            val url = URL(Setting().SERVER_IMAGE_POST_URL)
 
-        try {
-            connection = url.openConnection() as HttpURLConnection
-            connection.run {
-                requestMethod = "POST"//HTTPのメソッドをPOSTに設定する。
-                setRequestProperty("Connection", "Keep-Alive")
-                setRequestProperty("Content-Type", "multipart/form-data;boundary=$boundary")
-                setRequestProperty("Accept-Charset", "UTF-8")
-                doInput = true//リクエストのボディ送信を許可する
-                doOutput = true//レスポンスのボディ受信を許可する
-                useCaches = false//キャッシュを使用しない
-                connect()
-            }
+            try {
+                connection = url.openConnection() as HttpURLConnection
+                connection.run {
+                    requestMethod = "POST"//HTTPのメソッドをPOSTに設定する。
+                    setRequestProperty("Connection", "Keep-Alive")
+                    setRequestProperty("Content-Type", "multipart/form-data;boundary=$boundary")
+                    setRequestProperty("Accept-Charset", "UTF-8")
+                    doInput = true//リクエストのボディ送信を許可する
+                    doOutput = true//レスポンスのボディ受信を許可する
+                    useCaches = false//キャッシュを使用しない
+                    connect()
+                }
 
-            // データを投げる
-            val dos = DataOutputStream(connection.outputStream)
+                // データを投げる
+                val dos = DataOutputStream(connection.outputStream)
 
 
-            dos.run {
-                val file: File
-                if (parameter[0] != "") {
-                    file = File(parameter[0])
+                dos.run {
+                    val file = File(parameter[0])
                     writeBytes(twoHyphens + boundary + lineEnd)
-                    writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"Icon.jpg\"$lineEnd")
+                    writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"${parameter[1]}Icon.jpg\"$lineEnd")
                     writeBytes("Content-Type: image/jpeg$lineEnd")
                     writeBytes("Content-Transfer-Encoding: binary$lineEnd")
                     writeBytes(lineEnd)
@@ -69,42 +68,44 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
                     flush()
                     writeBytes(lineEnd)
                     flush()
+                    //終わるときに必要↓
+                    writeBytes(lineEnd)
+                    writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
+                    flush()
                 }
-                //終わるときに必要↓
-                writeBytes(lineEnd)
-                writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
-                flush()
-            }
-            dos.close()
+                dos.close()
 
-            // データを受け取る
-            val `is` = connection.inputStream
-            val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
-            val sb = StringBuilder()
+                // データを受け取る
+                val `is` = connection.inputStream
+                val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
+                val sb = StringBuilder()
 
-            for (line in bReader.readLines()) {
-                line.run { sb.append(line) }
-            }
-            bReader.close()
-            `is`.close()
-            postResult = "IMAGE送信OK"
-
-            imageUrl = JSONArray(sb.toString()).getString(0)
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-            postResult = "IMAGE送信エラー：　"
-        } finally {
-            if (connection != null) {
-                val status = connection.responseCode
-                when (status) {
-                    HttpURLConnection.HTTP_OK -> httpResult = "HTTP-OK"
-                    else -> httpResult = "status=$status"
+                for (line in bReader.readLines()) {
+                    line.run { sb.append(line) }
                 }
-                connection.disconnect()
+                bReader.close()
+                `is`.close()
+                postResult = "IMAGE送信OK"
+
+                imageUrl = JSONArray(sb.toString()).getString(0)
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                postResult = "IMAGE送信エラー：　"
+            } finally {
+                if (connection != null) {
+                    val status = connection.responseCode
+                    when (status) {
+                        HttpURLConnection.HTTP_OK -> httpResult = "HTTP-OK"
+                        else -> httpResult = "status=$status"
+                    }
+                    connection.disconnect()
+                }
             }
+            return "$httpResult:$postResult"
+        } else {
+            return "NO-IMAGE"
         }
-        return "$httpResult:$postResult"
     }
 
     public override fun onPostExecute(result: String) {
@@ -115,6 +116,12 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
             "HTTP-OK:IMAGE送信OK" -> {
                 Log.d("test PostImage", "HTTP-OK")
                 callbackPostUserIconAsyncTask!!.callback("RESULT-OK", imageUrl)
+                return
+            }
+
+            "NO-IMAGE" -> {
+                Log.d("test PostImage", "NO-IMAGE")
+                callbackPostUserIconAsyncTask!!.callback("NO-IMAGE", "")
                 return
             }
 

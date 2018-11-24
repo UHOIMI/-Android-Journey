@@ -73,7 +73,7 @@ class PutUserAsyncTask : AsyncTask<MutableList<MutableList<String>>, String, Str
             } catch (e: IOException) {
                 // POST送信エラー
                 e.printStackTrace()
-                postResult = "SPOT送信エラー：　"
+                postResult = "USER_PUT-error：　"
             } finally {
                 out?.close()
             }
