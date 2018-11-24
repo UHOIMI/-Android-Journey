@@ -48,8 +48,8 @@ class CreateUserActivity : AppCompatActivity() {
 
             if (userData[0] == "OK") {
                 val myApp: MyApplication = this.application as MyApplication
-                val bmp = myApp.getBmp()
-                myApp.clearBmp()
+                val bmp = myApp.getBmp_1()
+                myApp.clearBmp_1()
                 iconImageButton.setImageBitmap(bmp)
                 userIcon  = "OK"
             }
@@ -86,8 +86,8 @@ class CreateUserActivity : AppCompatActivity() {
 
         if (requestCode == RESULT_CROP && resultCode == Activity.RESULT_OK) {
             val myApp: MyApplication = this.application as MyApplication
-            val bmp = myApp.getBmp()
-            myApp.clearBmp()
+            val bmp = myApp.getBmp_1()
+            myApp.clearBmp_1()
             iconImageButton.setImageBitmap(bmp)
             userIcon  = "OK"
         }
@@ -179,7 +179,7 @@ class CreateUserActivity : AppCompatActivity() {
         startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
         if (userIcon == "OK"){
             val myApp = this.application as MyApplication
-            myApp.setBmp((iconImageButton.drawable as BitmapDrawable).bitmap)
+            myApp.setBmp_1((iconImageButton.drawable as BitmapDrawable).bitmap)
         }
         finish()
     }

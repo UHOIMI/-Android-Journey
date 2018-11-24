@@ -1,11 +1,16 @@
 package com.example.g015c1140.journey
 
 import android.app.Activity
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -15,13 +20,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_edit_user.*
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class EditUserActivity : AppCompatActivity() {
 
     var sharedPreferences: SharedPreferences? = null
     var imageFlg = 0
+    var headerFlg = 0
+    var iconFlg = 0
+
+    val IMAGE_EDIT = 200
 
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
@@ -48,6 +61,22 @@ class EditUserActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
         userEditNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
+        headerFlg = intent.getIntExtra("headerFlg", -1)
+        if (headerFlg == 100) {
+            val myApp: MyApplication = this.application as MyApplication
+            val bmp = myApp.getBmp_1()
+            myApp.clearBmp_1()
+            editUserHeaderImageButton.setImageBitmap(bmp)
+        }
+
+        iconFlg = intent.getIntExtra("iconFlg", -1)
+        if (iconFlg == 100) {
+            val myApp: MyApplication = this.application as MyApplication
+            val bmp = myApp.getBmp_2()
+            myApp.clearBmp_2()
+            editUserIconImageView.setImageBitmap(bmp)
+        }
+
         sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         editUserNameEditText.setText(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_NAME, ""))
 
@@ -56,16 +85,17 @@ class EditUserActivity : AppCompatActivity() {
         for (_passCnt in 0 until passLast.length - 4) {
             pass += "*"
         }
-
         //↓ここで落ちたのでコメントにしました
         pass += passLast.substring(passLast.length -4 , passLast.length)
         editUserPassTextView.text = pass
+
         val generation = when (sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")) {
             "10" -> "10歳以下"
             "100" -> "100歳以上"
             else -> "${sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")}代"
         }
         editUserGenerationoSpinner.setSelection((editUserGenerationoSpinner.adapter as ArrayAdapter<String>).getPosition(generation))
+
         editUserCommentEditText.setText( sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT,"") )
     }
 
@@ -96,11 +126,17 @@ class EditUserActivity : AppCompatActivity() {
 
             RESULT_CROP -> {
                 val myApp: MyApplication = this.application as MyApplication
-                val bmp = myApp.getBmp()
-                myApp.clearBmp()
+                val bmp = myApp.getBmp_1()
+                myApp.clearBmp_1()
                 when(imageFlg){
-                    1 -> editUserHeaderImageButton.setImageBitmap(bmp)
-                    2 ->  editUserIconImageView.setImageBitmap(bmp)
+                    1 -> {
+                        editUserHeaderImageButton.setImageBitmap(bmp)
+                        headerFlg = IMAGE_EDIT
+                    }
+                    2 ->  {
+                        editUserIconImageView.setImageBitmap(bmp)
+                        iconFlg = IMAGE_EDIT
+                    }
                 }
             }
         }
@@ -229,49 +265,85 @@ class EditUserActivity : AppCompatActivity() {
                 userDataList.add(mutableListOf("&comment", editUserCommentEditText.text.toString()))
             }
 
-//            "&user_icon"
-//            "&user_header"
+            var headeUri = ""
+            if(headerFlg == IMAGE_EDIT){
+                headeUri = seveAndLoadImage("header")
+            }
+            var iconUrl = ""
+            if (iconFlg == IMAGE_EDIT){
+                iconUrl = seveAndLoadImage("icon")
+            }
 
-            if (userDataList.isNotEmpty()) {
-                userDataList.add(mutableListOf("&token", sharedPreferences!!.getString(Setting().USER_SHARED_PREF_TOKEN, "none")))
-
-                val puat = PutUserAsyncTask()
-                puat.setOnCallback(object : PutUserAsyncTask.CallbackPutUserAsyncTask() {
-                    override fun callback(result: String) {
-                        super.callback(result)
-                        // ここからAsyncTask処理後の処理を記述します。
-                        Log.d("test UserCallback", "非同期処理$result")
-                        if (result == "RESULT-OK") {
-                            //完了
-                            val sharedPrefEditor = sharedPreferences!!.edit()
-
-                            for (userData in userDataList) {
-                                when (userData[0]) {
-                                    "&user_header" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, "")
-                                    "&user_icon" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
-                                    "&user_name" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[1])
-                                    "&generation" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, generation)
-                                    "&comment" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, userData[1])
-                                }
-                            }
-                            sharedPrefEditor.apply()
-                            startActivity(Intent(this@EditUserActivity, DetailUserActivity::class.java))
-                            finish()
-                        } else {
-                            AlertDialog.Builder(this@EditUserActivity).apply {
-                                setTitle("保存に失敗しました")
-                                setMessage("もう一度実行してください")
-                                setPositiveButton("確認", null)
-                                show()
-                            }
+            val hPuiat = PostUserIconAsyncTask()
+            hPuiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
+                override fun callback(result: String, data: String) {
+                    super.callback(result, data)
+                    // ここからAsyncTask処理後の処理を記述します。
+                    when (result) {
+                        "RESULT-OK" -> //完了した場合
+                            userDataList.add(mutableListOf("&user_header", "${Setting().USER_GET_IMAGE_URL}$data"))
+                        "NO-IMAGE" -> {}
+                        else -> {
+                            failedAsyncTask()
+                            return
                         }
                     }
-                })
-                puat.execute(userDataList)
-            } else {
-                startActivity(Intent(this@EditUserActivity, DetailUserActivity::class.java))
-                finish()
-            }
+
+                    val iPuiat = PostUserIconAsyncTask()
+                    iPuiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
+                        override fun callback(result: String, data: String) {
+                            super.callback(result, data)
+                            // ここからAsyncTask処理後の処理を記述します。
+                            when (result) {
+                                "RESULT-OK" -> //完了した場合
+                                    userDataList.add(mutableListOf("&user_icon", "${Setting().USER_GET_IMAGE_URL}$data"))
+                                "NO-IMAGE" -> {}
+                                else -> {
+                                    failedAsyncTask()
+                                    return
+                                }
+                            }
+
+                            if (userDataList.isNotEmpty()) {
+                                userDataList.add(mutableListOf("&token", sharedPreferences!!.getString(Setting().USER_SHARED_PREF_TOKEN, "none")))
+
+                                val puat = PutUserAsyncTask()
+                                puat.setOnCallback(object : PutUserAsyncTask.CallbackPutUserAsyncTask() {
+                                    override fun callback(result: String) {
+                                        super.callback(result)
+                                        // ここからAsyncTask処理後の処理を記述します。
+                                        Log.d("test UserCallback", "非同期処理$result")
+                                        if (result == "RESULT-OK") {
+                                            //完了
+                                            val sharedPrefEditor = sharedPreferences!!.edit()
+
+                                            for (userData in userDataList) {
+                                                when (userData[0]) {
+                                                    "&user_header" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, userData[1])
+                                                    "&user_icon" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[1])
+                                                    "&user_name" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, userData[1])
+                                                    "&generation" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, generation)
+                                                    "&comment" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, userData[1])
+                                                }
+                                            }
+                                            sharedPrefEditor.apply()
+                                            Toast.makeText(this@EditUserActivity, "変更が完了しました", Toast.LENGTH_SHORT).show()
+                                            finish()
+                                        } else {
+                                            failedAsyncTask()
+                                        }
+                                    }
+                                })
+                                puat.execute(userDataList)
+                            } else {
+                                finish()
+                            }
+                        }
+                    })
+                    iPuiat.execute(iconUrl,sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
+                }
+            })
+            hPuiat.execute(headeUri,sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
 
         } else {
             AlertDialog.Builder(this).apply {
@@ -280,6 +352,104 @@ class EditUserActivity : AppCompatActivity() {
                 setPositiveButton("確認", null)
                 show()
             }
+        }
+    }
+
+    private fun seveAndLoadImage(viewName: String): String{
+        var fileOut: FileOutputStream? = null
+        var uri :Uri? = null
+        var imageName = ""
+        var imageView:ImageView? = null
+
+        when(viewName){
+            "header" -> {
+                imageName = "Header.jpg"
+                imageView = editUserHeaderImageButton
+            }
+            "icon" -> {
+                imageName = "Icon.jpg"
+                imageView = editUserIconImageView
+            }
+        }
+
+        try {
+            // openFileOutputはContextのメソッドなのでActivity内ならばthisでOK
+            fileOut = this.openFileOutput(imageName, Context.MODE_PRIVATE)
+            (imageView!!.drawable as BitmapDrawable).bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOut)
+            uri = Uri.fromFile(getFileStreamPath(imageName))
+        } catch (e: IOException) {
+            failedAsyncTask()
+        } finally {
+            fileOut?.close()
+            return getPathFromUri(this, uri!!)
+        }
+    }
+
+    private fun getPathFromUri(context: Context, uri: Uri): String {
+        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        // DocumentProvider
+        Log.e("TAG", "uri:" + uri.authority);
+        if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            if ("com.android.externalstorage.documents" == uri.authority) {// ExternalStorageProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
+                var split = docId.split(":")
+                var type: String = split[0]
+                //if ("primary".equalsIgnoreCase(type)) {
+                return if ("primary" == type) {
+                    Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                } else {
+                    "/stroage/" + type + "/" + split[1]
+                }
+            } else if ("com.android.providers.downloads.documents" == uri.authority) {// DownloadsProvider
+                var id: String = DocumentsContract.getDocumentId(uri)
+                var contentUri: Uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), id.toLong()
+                )
+                return getDataColumn(context, contentUri, null, null)
+            } else if ("com.android.providers.media.documents" == uri.authority) {// MediaProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
+                var split = docId.split(":")
+                var type: String = split[0]
+                var contentUri: Uri? = null
+                contentUri = MediaStore.Files.getContentUri("external")
+                var selection = "_id=?"
+                /*var selectionArgs = {
+                        split[1]
+                }*/
+                var selectionArgs = arrayOf(split[1])
+                return getDataColumn(context, contentUri, selection, *selectionArgs)
+            }
+        } else if ("content" == uri.scheme) {//MediaStore
+            return getDataColumn(context, uri, null, null)
+        } else if ("file" == uri.scheme) {// File
+            return uri.path
+        }
+        return ""
+    }
+
+    private fun getDataColumn(context: Context, uri: Uri, selection: String?, vararg selectionArgs: String?/*[]*/): String {
+        var cursor: Cursor? = null
+        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        try {
+            cursor = context.contentResolver.query(
+                    uri, projection, selection, selectionArgs, null
+            )
+            if (cursor != null && cursor.moveToFirst()) {
+                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex);
+            }
+        } finally {
+            cursor?.close()
+        }
+        return ""
+    }
+
+    private fun failedAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("保存に失敗しました")
+            setMessage("もう一度実行してください")
+            setPositiveButton("確認", null)
+            show()
         }
     }
 }

@@ -5,17 +5,31 @@ import android.graphics.Bitmap
 
 class MyApplication : Application() {
 
-    private var bmp: Bitmap? = null
+    private var bmp_1: Bitmap? = null
+    private var bmp_2: Bitmap? = null
 
-    fun setBmp(bmp: Bitmap) {
-        this.bmp = bmp
+
+    fun setBmp_1(bmp: Bitmap) {
+        this.bmp_1 = bmp
     }
 
-    fun getBmp(): Bitmap? {
-        return bmp
+    fun setBmp_2(bmp: Bitmap) {
+        this.bmp_2 = bmp
     }
 
-    fun clearBmp() {
-        bmp = null
+    fun getBmp_1(): Bitmap? {
+        return bmp_1
+    }
+
+    fun getBmp_2(): Bitmap? {
+        return bmp_2
+    }
+
+    fun clearBmp_1() {
+        bmp_1 = null
+    }
+
+    fun clearBmp_2() {
+        bmp_2 = null
     }
 }

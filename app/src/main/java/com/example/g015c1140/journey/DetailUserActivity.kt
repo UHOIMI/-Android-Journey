@@ -3,6 +3,7 @@ package com.example.g015c1140.journey
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -13,11 +14,10 @@ import kotlinx.android.synthetic.main.activity_detail_user.*
 
 class DetailUserActivity : AppCompatActivity() {
 
-    //private lateinit var spot: SpotData
+    var headerFlg = 0
+    var iconFlg = 0
 
-    companion object {
-        private const val RESULT_PICK_IMAGEFILE = 1001
-    }
+    val IMAGE_OK = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,15 +41,42 @@ class DetailUserActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
+        detailUserShowAllPlanButton.setOnClickListener {
+            //perform your action here
+            Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
+            //finish()
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
-        val iconString = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "none")
-        if (iconString != "none"){
+        val headerString = sharedPreferences.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "")
+        if (headerString != ""){
+            val giat = GetImageAsyncTask()
+            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                override fun callback(result: String, bmp: Bitmap?) {
+                    if (result == "RESULT-OK") {
+                        detailUserHeaderImageView.setImageBitmap(bmp)
+                        headerFlg = IMAGE_OK
+                    }else{
+                        Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            giat.execute(headerString)
+        }
+
+        val iconString = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
+        if (iconString != ""){
             val giat = GetImageAsyncTask()
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                 override fun callback(result: String, bmp: Bitmap?) {
                     if (result == "RESULT-OK") {
                         detailUserIconCircleView.setImageBitmap(bmp)
+                        iconFlg = IMAGE_OK
                     }else{
                         Toast.makeText(this@DetailUserActivity, "アイコン取得失敗",Toast.LENGTH_SHORT).show()
                     }
@@ -67,14 +94,6 @@ class DetailUserActivity : AppCompatActivity() {
             else -> "$generation 代"
         }
         detailUserCommentTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_COMMENT,"コメントが存在しません")
-
-
-        detailUserShowAllPlanButton.setOnClickListener {
-            //perform your action here
-            Toast.makeText(this,"すべて表示タップ",Toast.LENGTH_SHORT).show()
-            //finish()
-        }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,9 +104,17 @@ class DetailUserActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         R.id.saveButton -> {
-            startActivity(Intent(this, EditUserActivity::class.java))
             Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
-            finish()
+
+            val myApp = this.application as MyApplication
+            if (headerFlg == IMAGE_OK){
+                myApp.setBmp_1((detailUserHeaderImageView.drawable as BitmapDrawable).bitmap)
+            }
+            if (iconFlg == IMAGE_OK){
+                myApp.setBmp_2((detailUserIconCircleView.drawable as BitmapDrawable).bitmap)
+            }
+
+            startActivity(Intent(this, EditUserActivity::class.java).putExtra("headerFlg",headerFlg).putExtra("iconFlg",iconFlg))
             true
         }
         //戻るボタンタップ時

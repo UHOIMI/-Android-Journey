@@ -31,8 +31,8 @@ class ConfirmationActivity : AppCompatActivity() {
 
         if (userData[0] == "OK") {
             val myApp: MyApplication = this.application as MyApplication
-            val bmp = myApp.getBmp()
-            myApp.clearBmp()
+            val bmp = myApp.getBmp_1()
+            myApp.clearBmp_1()
             confirmUserIconImageView.setImageBitmap(bmp)
         }
 
@@ -46,7 +46,7 @@ class ConfirmationActivity : AppCompatActivity() {
         startActivity(Intent(this, CreateUserActivity::class.java).putStringArrayListExtra("USERDATA", userData).putExtra("EditFlg", 100))
         if (userData[0] == "OK") {
             val myApp = this.application as MyApplication
-            myApp.setBmp((confirmUserIconImageView.drawable as BitmapDrawable).bitmap)
+            myApp.setBmp_1((confirmUserIconImageView.drawable as BitmapDrawable).bitmap)
         }
         finish()
     }

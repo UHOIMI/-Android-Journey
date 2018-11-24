@@ -40,7 +40,7 @@ class GetImageAsyncTask : AsyncTask<String, Void, Bitmap>() {
         var urlConnection: HttpURLConnection? = null
 
         try {
-            val url = URL("${Setting().USER_GET_IMAGE_URL}$iconName")
+            val url = URL(iconName)
 
             // HttpURLConnection インスタンス生成
             urlConnection = url.openConnection() as HttpURLConnection

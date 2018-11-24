@@ -65,7 +65,7 @@ class CropIconActivity : AppCompatActivity() {
             // フレームに合わせてトリミング
             val cropBmp = cropImageView.croppedBitmap
             val myApp = this.application as MyApplication
-            myApp.setBmp(cropBmp)
+            myApp.setBmp_1(cropBmp)
             setResult(RESULT_OK, Intent())
             finish()
         }
