@@ -44,7 +44,8 @@ class PostUserAsyncTask : AsyncTask<ArrayList<String>, String, String>() {
                                 "&user_name=${userData[2]}" +
                                 "&user_pass=${userData[3]}" +
                                 "&generation=${userData[4]}" +
-                                "&gender=${userData[5]}"
+                                "&gender=${userData[5]}" +
+                                "&comment=こんにちは"
                                 ).toByteArray()
                 )
                 out.flush()

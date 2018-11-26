@@ -93,7 +93,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     }
                 }
             })
-            puiat.execute(userData[0],userData[2])
+            puiat.execute(userData[0],userData[1])
         }
     }
 
