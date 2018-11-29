@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.view.View
 import android.widget.ImageButton
+
 import kotlinx.android.synthetic.main.activity_search_plan.*
 
 class SearchPlanActivity : AppCompatActivity() {
@@ -139,6 +140,7 @@ class SearchPlanActivity : AppCompatActivity() {
             }
         }
     }
+
 
 
 }
