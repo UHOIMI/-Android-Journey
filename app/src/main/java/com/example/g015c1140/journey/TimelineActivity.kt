@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AbsListView
@@ -24,6 +25,7 @@ class TimelineActivity : AppCompatActivity() {
     private var timelineCnt: Int = 0
     private val TIMELINE_LIST = arrayListOf<TimelinePlan>()
     private lateinit var timellineListAdapter: TimelinePlanListAdapter
+    private var scrollFlg = false
 
     private var addTimelineList = mutableListOf<TimelinePlan>()
     @SuppressLint("SimpleDateFormat")
@@ -102,9 +104,20 @@ class TimelineActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
+                //テスト用
+                /**************************/
+                setTimelineListener()
+                /**************************/
+
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
+                //テスト用
+                /**************************/
+                firstApi = true
+                setTimeline(0, true)
+                /**************************/
+
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -239,7 +252,9 @@ class TimelineActivity : AppCompatActivity() {
                                                                         timelineSwipeRefresh.isRefreshing = false
 
                                                                     if (firstApi) {
+                                                                        /**************************/
 //                                                                        setTimelineListener()
+                                                                        /**************************/
                                                                         firstApi = false
                                                                     }
 
@@ -286,6 +301,10 @@ class TimelineActivity : AppCompatActivity() {
             // スクロール中の処理
             override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
 
+                Log.d("xxx", String.format("onScroll firstVisibleItem=%d  visibleItemCount=%d  TIMELINE_LIST.size=%d", firstVisibleItem, visibleItemCount, TIMELINE_LIST.size))
+                scrollFlg = TIMELINE_LIST.size + 1 == firstVisibleItem + visibleItemCount
+
+/*
                 // 最初とスクロール完了したとき
                 if (totalItemCount - visibleItemCount == firstVisibleItem) {
 
@@ -293,12 +312,22 @@ class TimelineActivity : AppCompatActivity() {
                     val ItemCount = totalItemCount - 1
 
                     // アダプターにアイテムを追加します
-                    setTimeline(timelineCnt, false)
+//                    setTimeline(timelineCnt, false)
                 }
+*/
             }
 
             // ListViewがスクロール中かどうか状態を返すメソッドです
-            override fun onScrollStateChanged(arg0: AbsListView, arg1: Int) {}
+            override fun onScrollStateChanged(list: AbsListView, state: Int) {
+                Log.d("xxx", String.format("onScrollStateChanged scrollState=%d firstVisiblePos=%d", state, list.firstVisiblePosition))
+                if (scrollFlg && state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // do something
+
+                    Log.d("xxx", "あああああああああああああああああああああああああああああああああああああ")
+                    setTimeline(timelineCnt, false)
+
+                }
+            }
         })
     }
 
