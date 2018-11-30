@@ -72,6 +72,7 @@ class ConfirmationActivity : AppCompatActivity() {
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, userData[3])
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, userData[4])
         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, userData[5])
+        sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, "こんにちは")
         sharedPrefEditor.apply()
 
         if (userData[0] == "") {
