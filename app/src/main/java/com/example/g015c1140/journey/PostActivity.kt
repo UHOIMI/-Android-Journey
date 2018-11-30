@@ -352,9 +352,23 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         var _imageCnt = 0
                         for (_spotCnt in 0 until spotList.size) {
-                            spotList[_spotCnt].image_A = imageJson.getString(_imageCnt++)
-                            spotList[_spotCnt].image_B = imageJson.getString(_imageCnt++)
-                            spotList[_spotCnt].image_C = imageJson.getString(_imageCnt++)
+                            if(imageJson.getString(_imageCnt) == "") {
+                                spotList[_spotCnt].image_A = imageJson.getString(_imageCnt++)
+                            }else{
+                                spotList[_spotCnt].image_A = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
+                            }
+
+                            if(imageJson.getString(_imageCnt) == "") {
+                                spotList[_spotCnt].image_B = imageJson.getString(_imageCnt++)
+                            }else{
+                                spotList[_spotCnt].image_B = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
+                            }
+
+                            if(imageJson.getString(_imageCnt) == "") {
+                                spotList[_spotCnt].image_C = imageJson.getString(_imageCnt++)
+                            }else{
+                                spotList[_spotCnt].image_C = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
+                            }
                         }
                         /********************/
                         //spotを投稿
