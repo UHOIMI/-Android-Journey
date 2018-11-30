@@ -11,29 +11,29 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, String, String>() {
-    private val USER_ID_LIST = idList
-    private val ACCOUNT_LIST = arrayListOf<JSONObject>()
+class GetPlanFavoriteAsyncTask(pIdList : ArrayList<String>) : AsyncTask<Void, String, String>() {
 
     //callBack用
-    private var callbackGetUserAccountAsyncTask: CallbackGetUserAccountAsyncTask? = null
+    private var callbackGetPlanFavoriteAsyncTask: CallbackGetPlanFavoriteAsyncTask? = null
     private var result: String? = null
+    private val PLAN_ID_LIST = pIdList
+    private val FAVORITE_CNT_LIST = arrayListOf<String>()
 
     override fun doInBackground(vararg void: Void): String? {
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
 
-        for (id in USER_ID_LIST) {
+        for (id in PLAN_ID_LIST) {
             if (id == "") {
-                Log.d("test", "USERID-Error")
+                Log.d("test", "PLAN_ID-Error")
                 return result
             }
         }
 
-        USER_ID_LIST.forEach {
+        PLAN_ID_LIST.forEach {
             try {
-                val url = URL("${Setting().USER_ACCOUNT_GET_URL}$it")
+                val url = URL("${Setting().FAVORITE_GET_URL}$it")
                 connection = url.openConnection() as HttpURLConnection
                 connection!!.connect()  //ここで指定したAPIを叩いてみてます。
 
@@ -53,10 +53,10 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
                         return result
                     }
 
-                    ACCOUNT_LIST.add( jsonObject.getJSONArray("record").getJSONObject(0) )
+                    FAVORITE_CNT_LIST.add( jsonObject.getJSONObject("record").getString("count") )
 
-                    Log.d("test GUDAT", "${ACCOUNT_LIST[ACCOUNT_LIST.size -1 ]}             ${sb.length}")
                     result = it
+
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -74,6 +74,7 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
             }
             //失敗した時はnullやエラーコードなどを返しましょう。
         }
+
         return result
     }
 
@@ -83,20 +84,20 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
 
         if (result == null) {
             Log.d("test GetUserIdTask", "return null")
-            callbackGetUserAccountAsyncTask!!.callback(arrayListOf( JSONObject().put("result", "RESULT-NG") ))
+            callbackGetPlanFavoriteAsyncTask!!.callback(arrayListOf("RESULT-NG"))
             return
         }
 
-        ACCOUNT_LIST.add( JSONObject().put("result", "RESULT-OK") )
         Log.d("test GetUserIdTask", "result：$result")
-        callbackGetUserAccountAsyncTask!!.callback(ACCOUNT_LIST)
+        FAVORITE_CNT_LIST.add("RESULT-OK")
+        callbackGetPlanFavoriteAsyncTask!!.callback(FAVORITE_CNT_LIST)
     }
 
-    fun setOnCallback(cb: CallbackGetUserAccountAsyncTask) {
-        callbackGetUserAccountAsyncTask = cb
+    fun setOnCallback(cb: CallbackGetPlanFavoriteAsyncTask) {
+        callbackGetPlanFavoriteAsyncTask = cb
     }
 
-    open class CallbackGetUserAccountAsyncTask {
-        open fun callback(resultUserAccountList: ArrayList<JSONObject>) {}
+    open class CallbackGetPlanFavoriteAsyncTask {
+        open fun callback(resultFavoriteArrayList: ArrayList<String>) {}
     }
 }

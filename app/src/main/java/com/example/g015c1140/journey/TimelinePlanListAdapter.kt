@@ -1,5 +1,6 @@
 package layout
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,6 +42,7 @@ class TimelinePlanListAdapter(internal var context: Context) : BaseAdapter() {
     }
 
 
+    @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
         var view: View? = convertView
@@ -52,9 +54,9 @@ class TimelinePlanListAdapter(internal var context: Context) : BaseAdapter() {
         (view.findViewById(R.id.planUserNameTextView) as TextView).text = timelinePlanList[position].planUserName
         (view.findViewById(R.id.planTitleTextView) as TextView).text = timelinePlanList[position].planTitle
         (view.findViewById(R.id.planSpotImageView) as ImageView).setImageBitmap(timelinePlanList[position].planSpotImage)
-        (view.findViewById(R.id.planSpotName1TextView) as TextView).text = timelinePlanList[position].planSpotNameList[0]
-        (view.findViewById(R.id.planSpotName2TextView) as TextView).text = timelinePlanList[position].planSpotNameList[1]
-        (view.findViewById(R.id.planSpotName3TextView) as TextView).text = timelinePlanList[position].planSpotNameList[2]
+        (view.findViewById(R.id.planSpotName1TextView) as TextView).text = timelinePlanList[position].planSpotTitleList[0]
+        (view.findViewById(R.id.planSpotName2TextView) as TextView).text = timelinePlanList[position].planSpotTitleList[1]
+        (view.findViewById(R.id.planSpotName3TextView) as TextView).text = timelinePlanList[position].planSpotTitleList[2]
         (view.findViewById(R.id.planTimeTextView) as TextView).text = timelinePlanList[position].planTime
         (view.findViewById(R.id.planFavoriteTextView) as TextView).text = timelinePlanList[position].planFavorite
 

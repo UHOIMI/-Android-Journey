@@ -8,7 +8,7 @@ class TimelinePlan {
     var planUserName: String = ""
     var planTitle: String = ""
     var planSpotImage: Bitmap? = null
-    var planSpotNameList: ArrayList<String> = arrayListOf()
+    var planSpotTitleList: ArrayList<String> = arrayListOf()
     var planTime: String = ""
     var planFavorite: String = ""
 }

@@ -67,20 +67,21 @@ class LoginActivity : AppCompatActivity() {
                         sharedPrefEditor.apply()
 
                         /**************************/
-                        val guaat = GetUserAccountAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"))
+                        val guaat = GetUserAccountAsyncTask(arrayListOf( sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "") ))
                         guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
-                            override fun callback(resultJSONObject: JSONObject) {
-                                super.callback(resultJSONObject)
+                            override fun callback(resultList: ArrayList<JSONObject>) {
+                                super.callback(resultList)
                                 // ここからAsyncTask処理後の処理を記述します。
-                                Log.d("test GetUserAccCallback", "非同期処理$resultJSONObject")
-                                if (resultJSONObject.getString("result") == "RESULT-OK") {
+                                Log.d("test GetUserAccCallback", "非同期処理${resultList[resultList.size - 1]}")
+
+                                if (resultList[resultList.size - 1].getString("result") == "RESULT-OK") {
                                     //完了した関数呼び出し
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, resultJSONObject.getString("user_name"))
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, resultJSONObject.getString("generation"))
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, resultJSONObject.getString("gender"))
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, resultJSONObject.getString("comment"))
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, resultJSONObject.getString("user_icon"))
-                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, resultJSONObject.getString("user_header"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_NAME, resultList[0].getString("user_name"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENERATION, resultList[0].getString("generation"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_GENDER, resultList[0].getString("gender"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_COMMENT, resultList[0].getString("comment"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, resultList[0].getString("user_icon"))
+                                    sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, resultList[0].getString("user_header"))
                                     sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
                                     sharedPrefEditor.apply()
                                     Toast.makeText(this@LoginActivity, "引継ぎが完了しました", Toast.LENGTH_SHORT).show()

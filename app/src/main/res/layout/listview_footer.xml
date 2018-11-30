@@ -7,9 +7,10 @@
     android:gravity="center">
 
     <ProgressBar
-        android:id="@+id/listVviewProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/circle_progress"/>
 
 </LinearLayout>

@@ -281,7 +281,7 @@ class EditUserActivity : AppCompatActivity() {
                     // ここからAsyncTask処理後の処理を記述します。
                     when (result) {
                         "RESULT-OK" -> //完了した場合
-                            userDataList.add(mutableListOf("&user_header", "${Setting().USER_GET_IMAGE_URL}$data"))
+                            userDataList.add(mutableListOf("&user_header", "${Setting().USER_IMAGE_GET_URL}$data"))
                         "NO-IMAGE" -> {}
                         else -> {
                             failedAsyncTask()
@@ -296,7 +296,7 @@ class EditUserActivity : AppCompatActivity() {
                             // ここからAsyncTask処理後の処理を記述します。
                             when (result) {
                                 "RESULT-OK" -> //完了した場合
-                                    userDataList.add(mutableListOf("&user_icon", "${Setting().USER_GET_IMAGE_URL}$data"))
+                                    userDataList.add(mutableListOf("&user_icon", "${Setting().USER_IMAGE_GET_URL}$data"))
                                 "NO-IMAGE" -> {}
                                 else -> {
                                     failedAsyncTask()

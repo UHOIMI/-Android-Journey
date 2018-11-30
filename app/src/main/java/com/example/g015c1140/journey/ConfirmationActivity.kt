@@ -85,7 +85,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     Log.d("test UserImageCallback", "非同期処理$result　　URL $data")
                     if (result == "RESULT-OK") {
                         //完了した場合
-                        userData[0] = "${Setting().USER_GET_IMAGE_URL}$data"
+                        userData[0] = "${Setting().USER_IMAGE_GET_URL}$data"
                         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_ICONIMAGE, userData[0]).apply()
                         userCreate()
                     } else {

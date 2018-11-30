@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_post.*
 import org.json.JSONArray
+import org.json.JSONObject
 
 class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -369,19 +370,19 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
                                     //spot取得
                                     //スポットリストがある
-                                    val gsat = GetSpotAsyncTask(spotList.size,sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"))
+                                    val gsat = GetSpotAsyncTask(spotList.size, arrayListOf( arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,""))),false)
                                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
-                                        override fun callback(result: ArrayList<String>) {
-                                            super.callback(result)
+                                        override fun callback(resultJsonList: ArrayList<ArrayList<JSONObject>>?, resultArrayList: ArrayList<String>?, resultIdFlg: Boolean) {
+                                            super.callback(resultJsonList, resultArrayList, resultIdFlg)
                                             // ここからAsyncTask処理後の処理を記述します。
                                             Log.d("test GetSpotCallback", "非同期処理$result")
 
-                                            if (result[0] == "RESULT-OK") {
-                                                result.removeAt(0)
+                                            if (resultArrayList!![0] == "RESULT-OK" && !resultIdFlg) {
+                                                resultArrayList.removeAt(0)
 
                                                 /********************/
                                                 //Planを投稿
-                                                val ppat = PostPlanAsyncTask(result,sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
+                                                val ppat = PostPlanAsyncTask(resultArrayList,sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
                                                 ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
                                                     override fun callback(result: String) {
                                                         super.callback(result)

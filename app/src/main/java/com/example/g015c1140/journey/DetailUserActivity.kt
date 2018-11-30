@@ -57,32 +57,32 @@ class DetailUserActivity : AppCompatActivity() {
         if (headerString != ""){
             val giat = GetImageAsyncTask()
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                override fun callback(result: String, bmp: Bitmap?) {
-                    if (result == "RESULT-OK") {
-                        detailUserHeaderImageView.setImageBitmap(bmp)
+                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                    if (resultBmpString == "RESULT-OK") {
+                        detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
                         headerFlg = IMAGE_OK
                     }else{
                         Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗",Toast.LENGTH_SHORT).show()
                     }
                 }
             })
-            giat.execute(headerString)
+            giat.execute(arrayListOf( arrayListOf( headerString ) ))
         }
 
         val iconString = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
         if (iconString != ""){
             val giat = GetImageAsyncTask()
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                override fun callback(result: String, bmp: Bitmap?) {
-                    if (result == "RESULT-OK") {
-                        detailUserIconCircleView.setImageBitmap(bmp)
+                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                    if (resultBmpString == "RESULT-OK") {
+                        detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
                         iconFlg = IMAGE_OK
                     }else{
                         Toast.makeText(this@DetailUserActivity, "アイコン取得失敗",Toast.LENGTH_SHORT).show()
                     }
                 }
             })
-            giat.execute(iconString)
+            giat.execute(arrayListOf( arrayListOf( iconString ) ))
         }
 
         detailUserNameTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME,"名前が存在しません")

@@ -9,86 +9,98 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class GetImageAsyncTask : AsyncTask<String, Void, Bitmap>() {
+class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayList<ArrayList<Bitmap?>>?>() {
 
     private var callbackGetImageAsyncTask: CallbackGetImageAsyncTask? = null
 
     // 非同期処理
-    override fun doInBackground(vararg params: String): Bitmap? {
+    override fun doInBackground(vararg params: ArrayList<ArrayList<String>>): ArrayList<ArrayList<Bitmap?>>? {
         return downloadImage(params[0])
     }
 
     // 非同期処理が終了後、結果をメインスレッドに返す
-    override fun onPostExecute(bmp: Bitmap?) {
-        super.onPostExecute(bmp)
+    override fun onPostExecute(resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+        super.onPostExecute(resultBmpList)
 
-        if (bmp == null) {
+        if (resultBmpList == null) {
             Log.d("test GetUserIdTask", "return null")
-            callbackGetImageAsyncTask!!.callback("RESULT-NG",bmp)
+            callbackGetImageAsyncTask!!.callback("RESULT-NG",null)
             return
         }
 
-        Log.d("test GetImage", "onPostEx: $bmp")
-        callbackGetImageAsyncTask!!.callback("RESULT-OK",bmp)
+        Log.d("test GetImage", "onPostEx: $resultBmpList")
+        callbackGetImageAsyncTask!!.callback("RESULT-OK",resultBmpList)
         return
     }
 
 
-    private fun downloadImage(iconName: String): Bitmap? {
-        var bmp: Bitmap? = null
-
+    private fun downloadImage(imageNameList: ArrayList<ArrayList<String>>): ArrayList<ArrayList<Bitmap?>> {
+        val bmpList = arrayListOf<ArrayList<Bitmap?>>()
+        var nameList:ArrayList<Bitmap?>
+        var bmp:Bitmap? = null
         var urlConnection: HttpURLConnection? = null
 
-        try {
-            val url = URL(iconName)
-
-            // HttpURLConnection インスタンス生成
-            urlConnection = url.openConnection() as HttpURLConnection
-
-            // タイムアウト設定
-//            urlConnection.readTimeout = 10000
-//            urlConnection.connectTimeout = 20000
-
-            // リクエストメソッド
-            urlConnection.requestMethod = "GET"
-
-            // リダイレクトを自動で許可しない設定
-            urlConnection.instanceFollowRedirects = false
-
-            // ヘッダーの設定(複数設定可能)
-            urlConnection.setRequestProperty("Accept-Language", "jp")
-
-            // 接続
-            urlConnection.connect()
-
-            val resp = urlConnection.responseCode
-
-            when (resp) {
-                HttpURLConnection.HTTP_OK -> {
-                    var `is`: InputStream? = null
+        imageNameList.forEach { name ->
+            nameList = arrayListOf()
+            name.forEach {
+                if (it != "") {
                     try {
-                        `is` = urlConnection.inputStream
-                        bmp = BitmapFactory.decodeStream(`is`)
-                        `is`!!.close()
-                    } catch (e: IOException) {
+                        val url = URL(it)
+
+                        // HttpURLConnection インスタンス生成
+                        urlConnection = url.openConnection() as HttpURLConnection
+
+                        // タイムアウト設定
+//                        urlConnection.readTimeout = 10000
+//                        urlConnection.connectTimeout = 20000
+
+                        // リクエストメソッド
+                        urlConnection!!.requestMethod = "GET"
+
+                        // リダイレクトを自動で許可しない設定
+                        urlConnection!!.instanceFollowRedirects = false
+
+                        // ヘッダーの設定(複数設定可能)
+                        urlConnection!!.setRequestProperty("Accept-Language", "jp")
+
+                        // 接続
+                        urlConnection!!.connect()
+
+                        val respCode = urlConnection!!.responseCode
+
+                        when (respCode) {
+                            HttpURLConnection.HTTP_OK -> {
+                                var `is`: InputStream? = null
+                                try {
+                                    `is` = urlConnection!!.inputStream
+                                    bmp = BitmapFactory.decodeStream(`is`)
+                                    `is`!!.close()
+                                    nameList.add(bmp!!)
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+                                } finally {
+                                    `is`?.close()
+                                }
+                            }
+                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                            }
+                            else -> {
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.d("test", "GetImage error")
                         e.printStackTrace()
                     } finally {
-                        `is`?.close()
+                        urlConnection?.disconnect()
                     }
-                }
-                HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                }
-                else -> {
+
+                }else{
+                    nameList.add(null)
                 }
             }
-        } catch (e: Exception) {
-            Log.d("test", "GetImage error")
-            e.printStackTrace()
-        } finally {
-            urlConnection?.disconnect()
+            bmpList.add(nameList)
         }
-
-        return bmp
+        return bmpList
     }
 
     fun setOnCallback(cb: CallbackGetImageAsyncTask) {
@@ -96,6 +108,6 @@ class GetImageAsyncTask : AsyncTask<String, Void, Bitmap>() {
     }
 
     open class CallbackGetImageAsyncTask {
-        open fun callback(result: String,bmp: Bitmap?) {}
+        open fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {}
     }
 }
