@@ -35,7 +35,8 @@ class TimelineActivity : AppCompatActivity() {
     private var firstApi = true
 
     // フッターのプログレスバー（クルクル）
-    var progressFooter: View? = null
+    private var progressFooter: View? = null
+    private var bottomRefreshFlg = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,20 +105,9 @@ class TimelineActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //テスト用
-                /**************************/
-                setTimelineListener()
-                /**************************/
-
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //テスト用
-                /**************************/
-                firstApi = true
-                setTimeline(0, true)
-                /**************************/
-
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -251,9 +241,11 @@ class TimelineActivity : AppCompatActivity() {
                                                                     if(timelineSwipeRefresh.isRefreshing)
                                                                         timelineSwipeRefresh.isRefreshing = false
 
+                                                                    bottomRefreshFlg = true
+
                                                                     if (firstApi) {
                                                                         /**************************/
-//                                                                        setTimelineListener()
+                                                                        setTimelineListener()
                                                                         /**************************/
                                                                         firstApi = false
                                                                     }
@@ -303,29 +295,18 @@ class TimelineActivity : AppCompatActivity() {
 
                 Log.d("xxx", String.format("onScroll firstVisibleItem=%d  visibleItemCount=%d  TIMELINE_LIST.size=%d", firstVisibleItem, visibleItemCount, TIMELINE_LIST.size))
                 scrollFlg = TIMELINE_LIST.size + 1 == firstVisibleItem + visibleItemCount
-
-/*
-                // 最初とスクロール完了したとき
-                if (totalItemCount - visibleItemCount == firstVisibleItem) {
-
-                    // アイテムの数 フッター分の1を引く
-                    val ItemCount = totalItemCount - 1
-
-                    // アダプターにアイテムを追加します
-//                    setTimeline(timelineCnt, false)
-                }
-*/
             }
 
             // ListViewがスクロール中かどうか状態を返すメソッドです
             override fun onScrollStateChanged(list: AbsListView, state: Int) {
                 Log.d("xxx", String.format("onScrollStateChanged scrollState=%d firstVisiblePos=%d", state, list.firstVisiblePosition))
                 if (scrollFlg && state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    // do something
 
-                    Log.d("xxx", "あああああああああああああああああああああああああああああああああああああ")
-                    setTimeline(timelineCnt, false)
-
+                    if(bottomRefreshFlg) {
+                        bottomRefreshFlg = false
+                        Log.d("xxx", "あああああああああああああああああああああああああああああああああああああ")
+                        setTimeline(timelineCnt, false)
+                    }
                 }
             }
         })
