@@ -51,7 +51,9 @@
             android:name=".EditUserActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name=".DetailUserActivity" />
-        <activity android:name=".SearchPlanActivity"></activity>
+        <activity
+            android:name=".SearchPlanActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
     </application>
 
 </manifest>

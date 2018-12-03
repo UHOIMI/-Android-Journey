@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchPlanActivity">
-
+    tools:context=".SearchPlanActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -22,6 +23,258 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.example.g015c1140.journey.SearchEditText
+                    android:id="@+id/searchTextEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="プランを検索"
+                    android:inputType="text|textPersonName"
+                    android:textSize="18sp"
+                    tools:layout_editor_absoluteX="74dp"
+                    tools:layout_editor_absoluteY="88dp" />
+
+                <Button
+                    android:id="@+id/searchButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="検索"
+                    android:textColor="@color/colorPrimary"
+                    tools:layout_editor_absoluteX="251dp"
+                    tools:layout_editor_absoluteY="79dp" />
+            </LinearLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/searchDetailLinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="いいね"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp" />
+
+                        <Spinner
+                            android:id="@+id/favriteSinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:spinnerMode="dialog" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="金額"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp" />
+
+                        <Spinner
+                            android:id="@+id/moneySpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/moneyList"
+                            android:spinnerMode="dialog" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="年代"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp" />
+
+                        <Spinner
+                            android:id="@+id/generationSpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/generationList"
+                            android:spinnerMode="dialog" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="交通手段"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/walkImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="TODO"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_walk_off" />
+
+                        <ImageButton
+                            android:id="@+id/bicycleImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_bicycle_off" />
+
+                        <ImageButton
+                            android:id="@+id/carImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_car_off" />
+
+                        <ImageButton
+                            android:id="@+id/busImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_bus_off" />
+
+                        <ImageButton
+                            android:id="@+id/trainImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_train_off" />
+
+                        <ImageButton
+                            android:id="@+id/airplaneImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_airplane_off" />
+
+                        <ImageButton
+                            android:id="@+id/boatImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:onClick="onTransportationButtonTapped"
+                            app:srcCompat="@drawable/s_boat_off" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="地方"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp" />
+
+                        <Spinner
+                            android:id="@+id/prefecturesSpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/prefecturesList"
+                            android:spinnerMode="dialog" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/searchListLinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <ListView
+                        android:id="@+id/searchTextList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/spaceTextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/searchNavigation"
@@ -29,223 +282,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="0dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="プランを検索"
-        android:inputType="text|textPersonName"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/button7"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="0dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
-        android:text="検索"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="0dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView26"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-    <TextView
-        android:id="@+id/textView26"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="36dp"
-        android:text="いいね"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-    <TextView
-        android:id="@+id/textView27"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:text="交通手段"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView26" />
-
-
-    <TextView
-        android:id="@+id/textView28"
-        android:layout_width="50dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
-        android:text="金額"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <Spinner
-        android:id="@+id/spinner3"
-        android:layout_width="0dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView28"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <TextView
-        android:id="@+id/textView29"
-        android:layout_width="50dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
-        android:text="地方"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView28" />
-
-    <Spinner
-        android:id="@+id/spinner4"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView29"
-        app:layout_constraintTop_toBottomOf="@+id/spinner3" />
-
-    <TextView
-        android:id="@+id/textView30"
-        android:layout_width="51dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
-        android:text="年代"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView29" />
-
-    <Spinner
-        android:id="@+id/spinner5"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView30"
-        app:layout_constraintTop_toBottomOf="@+id/spinner4"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="28dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner2">
-
-
-        <ImageButton
-            android:id="@+id/walkImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_walk_off"
-            android:contentDescription="TODO" />
-
-        <ImageButton
-            android:id="@+id/bicycleImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_bicycle_off" />
-
-        <ImageButton
-            android:id="@+id/carImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_car_off" />
-
-        <ImageButton
-            android:id="@+id/busImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_bus_off" />
-
-        <ImageButton
-            android:id="@+id/trainImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_train_off" />
-
-        <ImageButton
-            android:id="@+id/airplaneImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_airplane_off" />
-
-        <ImageButton
-            android:id="@+id/boatImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="onTransportationButtonTapped"
-            app:srcCompat="@drawable/s_boat_off" />
-
-
-    </LinearLayout>
-
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

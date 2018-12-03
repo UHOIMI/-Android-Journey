@@ -1,13 +1,18 @@
 package com.example.g015c1140.journey
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
-
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_search_plan.*
+
+
 
 class SearchPlanActivity : AppCompatActivity() {
 
@@ -39,8 +44,29 @@ class SearchPlanActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomnavigation)
         searchNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-    }
+        //交通手段ボタン設定
+        transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
 
+
+        //値セット
+        val searchTextValue = Array(5) { i -> "searchValue-$i" }
+        val searchTextListAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, searchTextValue)
+        searchTextList.adapter = searchTextListAdapter
+
+
+        searchTextEditText.onFocusChangeListener = OnFocusChangeListener { view, focus ->
+            if (focus) {
+                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+                searchDetailLinear.visibility = View.INVISIBLE
+                searchListLinear.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+                searchDetailLinear.visibility = View.VISIBLE
+                searchListLinear.visibility = View.INVISIBLE
+            }
+        }
+
+    }
 
     //BottomBarのボタン処理
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -55,12 +81,13 @@ class SearchPlanActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
+                startActivity(Intent(this,DetailUserActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
-
 
     @SuppressLint("PrivateResource")
     fun onTransportationButtonTapped(view: View) {
@@ -140,7 +167,4 @@ class SearchPlanActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
 }
