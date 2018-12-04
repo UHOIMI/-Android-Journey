@@ -34,6 +34,7 @@ class StartActivity : AppCompatActivity() {
     fun userDetailButtonTapped(v:View){
         startActivity(Intent(this,DetailUserActivity::class.java))
     }
+
     fun timelineButtonTapped(v:View){
         startActivity(Intent(this,TimelineActivity::class.java))
     }
