@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
-
     <application
         android:name="com.example.g015c1140.journey.MyApplication"
         android:allowBackup="true"
@@ -55,6 +54,9 @@
         <activity android:name=".DetailUserActivity" />
         <activity android:name=".CropIconActivity" />
         <activity android:name=".TimelineActivity"></activity>
+        <activity
+            android:name=".SearchPlanActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
     </application>
 
 </manifest>

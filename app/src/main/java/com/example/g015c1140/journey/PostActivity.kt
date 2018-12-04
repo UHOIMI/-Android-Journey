@@ -32,13 +32,13 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var spotListAdapter: ArrayAdapter<String>
 
     //スポット名リスト用データ
-    private lateinit var spotNameList: MutableList<String>
-
-    //交通手段ボタン用
+    private lateinit var spotNameList: MutableList<String>//交通手段ボタン用
     private lateinit var transportationImageButton: MutableList<ImageButton>
 
     //交通手段ボタンフラグ用
     private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0, 0, 0, 0, 0, 0, 0)
+
+
 
     //受け渡しスポットリスト用
     var spotList = mutableListOf<SpotData>()
