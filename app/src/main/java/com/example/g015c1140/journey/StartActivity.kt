@@ -49,5 +49,4 @@ class StartActivity : AppCompatActivity() {
         sharedPrefEditor.clear().apply()
         Toast.makeText(this, "sharedPreferences削除", Toast.LENGTH_SHORT).show()
     }
-
 }
