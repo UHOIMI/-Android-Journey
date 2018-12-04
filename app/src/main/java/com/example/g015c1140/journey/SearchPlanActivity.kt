@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.widget.ArrayAdapter
@@ -67,6 +68,19 @@ class SearchPlanActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
+        //戻るボタンタップ時
+        android.R.id.home -> {
+            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
+            finish()
+            true
+        }
+        else -> {
+            false
+        }
+    }
+
 
     //BottomBarのボタン処理
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
