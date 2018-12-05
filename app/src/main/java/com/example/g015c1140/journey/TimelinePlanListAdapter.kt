@@ -1,7 +1,9 @@
 package layout
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +11,16 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.g015c1140.journey.DetailUserActivity
 import com.example.g015c1140.journey.R
 import com.example.g015c1140.journey.TimelinePlan
 
-class TimelinePlanListAdapter(internal var context: Context) : BaseAdapter() {
+
+class TimelinePlanListAdapter(internal var context: Context,internal val activity: Activity) : BaseAdapter() {
 
     internal var layoutInflater: LayoutInflater? = null
     internal lateinit var timelinePlanList: ArrayList<TimelinePlan>
+    val ACTIVITY  = activity
 
     init {
         this.layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -59,6 +64,12 @@ class TimelinePlanListAdapter(internal var context: Context) : BaseAdapter() {
         (view.findViewById(R.id.planSpotName3TextView) as TextView).text = timelinePlanList[position].planSpotTitleList[2]
         (view.findViewById(R.id.planTimeTextView) as TextView).text = timelinePlanList[position].planTime
         (view.findViewById(R.id.planFavoriteTextView) as TextView).text = timelinePlanList[position].planFavorite
+
+
+        (view.findViewById(R.id.planUserIconCircleImage) as ImageView).setOnClickListener {
+            // イメージ画像がクリックされたときに実行される処理
+            ACTIVITY.startActivity(Intent(context,DetailUserActivity::class.java))
+        }
 
         return view!!
     }

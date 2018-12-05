@@ -57,7 +57,7 @@ class TimelineActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
         bottomavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-        timellineListAdapter = TimelinePlanListAdapter(this)
+        timellineListAdapter = TimelinePlanListAdapter(this, this)
 
         //引っ張って更新用
         timelineSwipeRefresh.setColorSchemeResources(R.color.colorPrimary)
@@ -77,6 +77,12 @@ class TimelineActivity : AppCompatActivity() {
 
         //下のクルクル
         timelineListView.addFooterView(getProgFooter())
+
+        timelineListView.setOnItemClickListener { _, _, position, _ ->
+            // 項目をタップしたら
+            Toast.makeText(this,"list tapped",Toast.LENGTH_SHORT).show()
+            //startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
+        }
     }
 
     private fun getProgFooter(): View? {
@@ -302,7 +308,7 @@ class TimelineActivity : AppCompatActivity() {
                             }
                         })
                         guaat.execute()
-                    }else{
+                    } else {
                         if (timelineSwipeRefresh.isRefreshing)
                             timelineSwipeRefresh.isRefreshing = false
                     }
