@@ -86,7 +86,7 @@
                             android:text="いいね"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryText"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <Spinner
                             android:id="@+id/favriteSinner"
@@ -109,7 +109,7 @@
                             android:text="金額"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryText"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <Spinner
                             android:id="@+id/moneySpinner"
@@ -133,7 +133,7 @@
                             android:text="年代"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryText"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <Spinner
                             android:id="@+id/generationSpinner"
@@ -151,7 +151,7 @@
                         android:layout_marginTop="16dp"
                         android:text="交通手段"
                         android:textColor="@color/colorPrimaryText"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -236,7 +236,7 @@
                             android:text="地方"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryText"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <Spinner
                             android:id="@+id/prefecturesSpinner"
