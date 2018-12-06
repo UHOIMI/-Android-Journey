@@ -59,7 +59,15 @@ class DetailUserActivity : AppCompatActivity() {
         if (!anotherUserFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
-            val headerString = sharedPreferences.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "")
+            setUser(
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME, "名前が存在しません"),
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "年代が存在しません"),
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_GENDER, "性別が存在しません"),
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_COMMENT, "コメントが存在しません"),
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, ""),
+                    sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
+                    )
+            /*            val headerString =
             if (headerString != "") {
                 val giat = GetImageAsyncTask()
                 giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
@@ -75,7 +83,7 @@ class DetailUserActivity : AppCompatActivity() {
                 giat.execute(arrayListOf(arrayListOf(headerString)))
             }
 
-            val iconString = sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
+            val iconString =
             if (iconString != "") {
                 val giat = GetImageAsyncTask()
                 giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
@@ -91,15 +99,15 @@ class DetailUserActivity : AppCompatActivity() {
                 giat.execute(arrayListOf(arrayListOf(iconString)))
             }
 
-            detailUserNameTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME, "名前が存在しません")
-            detailUserGenderTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENDER, "性別が存在しません")
-            val generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "年代が存在しません")
+            detailUserNameTextView.text =
+            detailUserGenderTextView.text =
+            val generation =
             detailUserGenerationTextView.text = when (generation) {
                 "10" -> "10歳以下"
                 "100" -> "100歳以上"
                 else -> "$generation 代"
             }
-            detailUserCommentTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_COMMENT, "コメントが存在しません")
+            detailUserCommentTextView.text = */
         } else {
             //他のユーザー情報
             val guaat = GetUserAccountAsyncTask(arrayListOf(intent.getStringExtra("USER_ID")))
@@ -110,45 +118,14 @@ class DetailUserActivity : AppCompatActivity() {
                         resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                         //完了
                         /****************/
-                        detailUserNameTextView.text = resultUserAccountList[0].getString("user_name")
-                        val generation = resultUserAccountList[0].getString("generation")
-                        detailUserGenerationTextView.text = when (generation) {
-                            "10" -> "10歳以下"
-                            "100" -> "100歳以上"
-                            else -> "$generation 代"
-                        }
-                        detailUserGenderTextView.text = resultUserAccountList[0].getString("gender")
-                        detailUserCommentTextView.text = resultUserAccountList[0].getString("comment")
-
-                        val headerString = resultUserAccountList[0].getString("user_header")
-                        if (headerString.contains("http")) {
-                            val giat = GetImageAsyncTask()
-                            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
-                                    if (resultBmpString == "RESULT-OK") {
-                                        detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
-                                    } else {
-                                        Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            })
-                            giat.execute(arrayListOf(arrayListOf(headerString)))
-                        }
-
-                        val iconString  = resultUserAccountList[0].getString("user_icon")
-                        if (iconString.contains("http")) {
-                            val giat = GetImageAsyncTask()
-                            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
-                                    if (resultBmpString == "RESULT-OK") {
-                                        detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
-                                    } else {
-                                        Toast.makeText(this@DetailUserActivity, "アイコン取得失敗", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            })
-                            giat.execute(arrayListOf(arrayListOf(iconString)))
-                        }
+                        setUser(
+                                resultUserAccountList[0].getString("user_name"),
+                                resultUserAccountList[0].getString("generation"),
+                                resultUserAccountList[0].getString("gender"),
+                                resultUserAccountList[0].getString("comment"),
+                                resultUserAccountList[0].getString("user_header"),
+                                resultUserAccountList[0].getString("user_icon")
+                        )
 
                         /****************/
                     } else {
@@ -197,6 +174,46 @@ class DetailUserActivity : AppCompatActivity() {
         else -> {
             false
         }
+    }
+
+    private fun setUser(userName: String, generation: String, gender: String, comment: String, header: String, icon: String){
+        if (header.contains("http")) {
+            val giat = GetImageAsyncTask()
+            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                    if (resultBmpString == "RESULT-OK") {
+                        detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
+                    } else {
+                        Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            giat.execute(arrayListOf(arrayListOf(header)))
+        }
+
+        if (icon.contains("http")) {
+            val giat = GetImageAsyncTask()
+            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                    if (resultBmpString == "RESULT-OK") {
+                        detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
+                    } else {
+                        Toast.makeText(this@DetailUserActivity, "アイコン取得失敗", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            giat.execute(arrayListOf(arrayListOf(icon)))
+        }
+
+        detailUserNameTextView.text = userName
+        val generation = generation
+        detailUserGenerationTextView.text = when (generation) {
+            "10" -> "10歳以下"
+            "100" -> "100歳以上"
+            else -> "$generation 代"
+        }
+        detailUserGenderTextView.text = gender
+        detailUserCommentTextView.text = comment
     }
 
     //ボトムバータップ時
