@@ -56,6 +56,7 @@ class TimelinePlanListAdapter(internal var context: Context,internal val activit
 
         view = layoutInflater!!.inflate(R.layout.timeline_row, parent, false)
         (view.findViewById(R.id.planUserIconCircleImage) as ImageView).setImageBitmap(timelinePlanList[position].planUserIconImage)
+        (view.findViewById(R.id.planUserIconCircleImage) as ImageView).tag = timelinePlanList[position].userId
         (view.findViewById(R.id.planUserNameTextView) as TextView).text = timelinePlanList[position].planUserName
         (view.findViewById(R.id.planTitleTextView) as TextView).text = timelinePlanList[position].planTitle
         (view.findViewById(R.id.planSpotImageView) as ImageView).setImageBitmap(timelinePlanList[position].planSpotImage)
@@ -68,7 +69,9 @@ class TimelinePlanListAdapter(internal var context: Context,internal val activit
 
         (view.findViewById(R.id.planUserIconCircleImage) as ImageView).setOnClickListener {
             // イメージ画像がクリックされたときに実行される処理
-            ACTIVITY.startActivity(Intent(context,DetailUserActivity::class.java))
+
+            Log.d("test", "tag ${it.tag}")
+            ACTIVITY.startActivity(Intent(context,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
         }
 
         return view!!

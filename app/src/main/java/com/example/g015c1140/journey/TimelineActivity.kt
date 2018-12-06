@@ -238,6 +238,7 @@ class TimelineActivity : AppCompatActivity() {
                                                                             val dateIndex = timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("date").indexOf("T")
                                                                             timelinePlan.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("date").substring(0, dateIndex)))
                                                                             timelinePlan.planFavorite = resultFavoriteArrayList[_timalineCnt]
+                                                                            timelinePlan.userId = resultPlanUserIdList[_timalineCnt]
                                                                             addTimelineList.add(timelinePlan)
                                                                         }
                                                                         /****************/

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 
 class TimelinePlan {
     var planId: Long = 0
+    var userId: String = ""
     var planUserIconImage: Bitmap? = null
     var planUserName: String = ""
     var planTitle: String = ""
