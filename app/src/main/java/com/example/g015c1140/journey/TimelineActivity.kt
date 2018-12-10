@@ -23,11 +23,11 @@ class TimelineActivity : AppCompatActivity() {
 
     // 1ページ辺りの項目数
     private var timelineCnt: Int = 0
-    private val TIMELINE_LIST = arrayListOf<TimelinePlan>()
+    private val TIMELINE_LIST = arrayListOf<TimelinePlanData>()
     private lateinit var timellineListAdapter: TimelinePlanListAdapter
     private var scrollFlg = false
 
-    private var addTimelineList = mutableListOf<TimelinePlan>()
+    private var addTimelineList = mutableListOf<TimelinePlanData>()
     @SuppressLint("SimpleDateFormat")
     private val DATE_FORMAT_IN = SimpleDateFormat("yyyy-MM-dd")
     @SuppressLint("SimpleDateFormat")
@@ -81,6 +81,7 @@ class TimelineActivity : AppCompatActivity() {
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
             Toast.makeText(this,"list tapped",Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, DetailPlanActivity::class.java))
             //startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
         }
     }
@@ -207,39 +208,39 @@ class TimelineActivity : AppCompatActivity() {
                                                                     if (resultBmpString == "RESULT-OK") {
                                                                         /****************/
 
-                                                                        var timelinePlan: TimelinePlan
+                                                                        var timelinePlanData: TimelinePlanData
                                                                         for (_timalineCnt in 0 until timelineRecordJsonArray!!.length()) {
-                                                                            timelinePlan = TimelinePlan()
-                                                                            timelinePlan.planId = resultPlanIdList[_timalineCnt].toLong()
+                                                                            timelinePlanData = TimelinePlanData()
+                                                                            timelinePlanData.planId = resultPlanIdList[_timalineCnt].toLong()
                                                                             if (resultBmpList!![_timalineCnt][0] != null) {
-                                                                                timelinePlan.planUserIconImage = resultBmpList[_timalineCnt][0]
+                                                                                timelinePlanData.planUserIconImage = resultBmpList[_timalineCnt][0]
                                                                             } else {
-                                                                                timelinePlan.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
+                                                                                timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                                                             }
-                                                                            timelinePlan.planUserName = resultUserAccountList[_timalineCnt].getString("user_name")
-                                                                            timelinePlan.planTitle = timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("plan_title")
+                                                                            timelinePlanData.planUserName = resultUserAccountList[_timalineCnt].getString("user_name")
+                                                                            timelinePlanData.planTitle = timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("plan_title")
                                                                             if (resultBmpList[_timalineCnt][1] != null) {
-                                                                                timelinePlan.planSpotImage = resultBmpList[_timalineCnt][1]
+                                                                                timelinePlanData.planSpotImage = resultBmpList[_timalineCnt][1]
                                                                             } else {
-                                                                                timelinePlan.planSpotImage = null
+                                                                                timelinePlanData.planSpotImage = null
                                                                             }
-                                                                            timelinePlan.planSpotTitleList.add(resultSpotJsonList[_timalineCnt][0].getString("spot_title"))
+                                                                            timelinePlanData.planSpotTitleList.add(resultSpotJsonList[_timalineCnt][0].getString("spot_title"))
                                                                             if (resultPlanSpotCntList!![_timalineCnt] >= 2) {
-                                                                                timelinePlan.planSpotTitleList.add(resultSpotJsonList[_timalineCnt][1].getString("spot_title"))
+                                                                                timelinePlanData.planSpotTitleList.add(resultSpotJsonList[_timalineCnt][1].getString("spot_title"))
                                                                                 if (resultPlanSpotCntList[_timalineCnt] >= 3) {
-                                                                                    timelinePlan.planSpotTitleList.add("他 ${resultPlanSpotCntList[_timalineCnt] - 2}件")
+                                                                                    timelinePlanData.planSpotTitleList.add("他 ${resultPlanSpotCntList[_timalineCnt] - 2}件")
                                                                                 } else {
-                                                                                    timelinePlan.planSpotTitleList.add("")
+                                                                                    timelinePlanData.planSpotTitleList.add("")
                                                                                 }
                                                                             } else {
-                                                                                timelinePlan.planSpotTitleList.add("")
-                                                                                timelinePlan.planSpotTitleList.add("")
+                                                                                timelinePlanData.planSpotTitleList.add("")
+                                                                                timelinePlanData.planSpotTitleList.add("")
                                                                             }
                                                                             val dateIndex = timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("date").indexOf("T")
-                                                                            timelinePlan.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("date").substring(0, dateIndex)))
-                                                                            timelinePlan.planFavorite = resultFavoriteArrayList[_timalineCnt]
-                                                                            timelinePlan.userId = resultPlanUserIdList[_timalineCnt]
-                                                                            addTimelineList.add(timelinePlan)
+                                                                            timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(timelineRecordJsonArray.getJSONObject(_timalineCnt).getString("date").substring(0, dateIndex)))
+                                                                            timelinePlanData.planFavorite = resultFavoriteArrayList[_timalineCnt]
+                                                                            timelinePlanData.userId = resultPlanUserIdList[_timalineCnt]
+                                                                            addTimelineList.add(timelinePlanData)
                                                                         }
                                                                         /****************/
 
