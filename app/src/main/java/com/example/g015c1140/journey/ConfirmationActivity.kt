@@ -63,7 +63,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     userData[4] == "100歳以上" -> "100"
                     else -> userData[4].replace("代", "")
                 }
-        userData[5] = userData[5].replace("性", "")
+        userData[5] = userData[5]
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val sharedPrefEditor = sharedPreferences.edit()
         sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)

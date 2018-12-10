@@ -24,7 +24,7 @@ class TimelineActivity : AppCompatActivity() {
     // 1ページ辺りの項目数
     private var timelineCnt: Int = 0
     private val TIMELINE_LIST = arrayListOf<TimelinePlanData>()
-    private lateinit var timellineListAdapter: TimelinePlanListAdapter
+    private lateinit var timelineListAdapter: TimelinePlanListAdapter
     private var scrollFlg = false
 
     private var addTimelineList = mutableListOf<TimelinePlanData>()
@@ -57,7 +57,7 @@ class TimelineActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
         bottomavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-        timellineListAdapter = TimelinePlanListAdapter(this, this)
+        timelineListAdapter = TimelinePlanListAdapter(this, this)
 
         //引っ張って更新用
         timelineSwipeRefresh.setColorSchemeResources(R.color.colorPrimary)
@@ -70,8 +70,8 @@ class TimelineActivity : AppCompatActivity() {
             }
         }
 
-        timellineListAdapter.setTimelinePlanList(TIMELINE_LIST)
-        timelineListView.adapter = timellineListAdapter
+        timelineListAdapter.setTimelinePlanList(TIMELINE_LIST)
+        timelineListView.adapter = timelineListAdapter
 
         setTimeline(0, true)
 
@@ -265,7 +265,7 @@ class TimelineActivity : AppCompatActivity() {
                                                                         }
 
                                                                         addTimelineList.clear()
-                                                                        timellineListAdapter.notifyDataSetChanged()
+                                                                        timelineListAdapter.notifyDataSetChanged()
                                                                         timelineCnt += timelineRecordJsonArray.length()
 
                                                                         if (timelineSwipeRefresh.isRefreshing)
