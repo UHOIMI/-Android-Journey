@@ -270,7 +270,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         //camera移動
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 14f))
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 13f))
     }
 
 
