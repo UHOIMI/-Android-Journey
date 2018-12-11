@@ -1,5 +1,6 @@
 package com.example.g015c1140.journey
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,6 +9,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -51,22 +53,44 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
         mapFragment.getMapAsync(this)
 
+        //intent
+        val intentString = intent.getStringArrayListExtra("PLAN_ID__USER_NAME")
+        val planId = intentString[0]
+
+        detailPlanUserNameTextView.text = intentString[1]
+        val myApp: MyApplication = this.application as MyApplication
+        detailPlanUserIconCircleView.setImageBitmap(myApp.getBmp_1())
+        myApp.clearBmp_1()
+
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
         fab.setOnClickListener {
-            Toast.makeText(this, "ふぁぼありがとう", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "お気に入り登録", Toast.LENGTH_SHORT).show()
+            val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+            val pfat = PostFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
+            pfat.setOnCallback(object : PostFavoriteAsyncTask.CallbackPostFavoriteAsyncTask() {
+                override fun callback(result: String) {
+                    super.callback(result)
+                    // ここからAsyncTask処理後の処理を記述します。
+                    Log.d("test favoriteCallback", "非同期処理$result")
+                    if (result == "RESULT-OK") {
+                        //完了
+                        detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
+                    } else {
+                        AlertDialog.Builder(this@DetailPlanActivity).apply {
+                            setTitle("お気に入り追加に失敗しました")
+                            setMessage("もう一度実行してください")
+                            setPositiveButton("確認", null)
+                            show()
+                        }
+                    }
+                }
+            })
+            pfat.execute()
         }
 
         detailPlanSpotListAdapter = DetailPlanSpotListAdapter(this)
         detailPlanSpotListAdapter.setDetailPlanSpotList(SPOT_LIST)
         detailPlanSpotListView.adapter = detailPlanSpotListAdapter
-
-        //intent
-        val intentString = intent.getStringArrayListExtra("PLAN_ID__USER_NAME")
-        val planId = intentString[0]
-        detailPlanUserNameTextView.text = intentString[1]
-        val myApp: MyApplication = this.application as MyApplication
-        detailPlanUserIconCircleView.setImageBitmap(myApp.getBmp_1())
-        myApp.clearBmp_1()
 
         //planApi
         val gpat = GetPlanAsyncTask(planId)

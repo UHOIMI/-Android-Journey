@@ -21,6 +21,7 @@ class Setting {
     val PLAN_GET_URL = "http://$IP_ADDRESS/api/v1/plan/find?plan_id="
     val TIMELINE_GET_URL = "http://$IP_ADDRESS/api/v1/timeline/find?offset="
     val FAVORITE_GET_URL = "http://$IP_ADDRESS/api/v1/favorite/count?plan_id="
+    val FAVORITE_POST_URL = " http://$IP_ADDRESS/api/v1/favorite/register"
 
     val USER_SHARED_PREF = "UserData"
     val USER_SHARED_PREF_FLG = "userFlg"
