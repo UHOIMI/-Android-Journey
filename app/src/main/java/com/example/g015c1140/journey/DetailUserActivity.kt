@@ -67,6 +67,7 @@ class DetailUserActivity : AppCompatActivity() {
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, ""),
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
                     )
+
             /*            val headerString =
             if (headerString != "") {
                 val giat = GetImageAsyncTask()
@@ -108,6 +109,7 @@ class DetailUserActivity : AppCompatActivity() {
                 else -> "$generation 代"
             }
             detailUserCommentTextView.text = */
+
         } else {
             //他のユーザー情報
             val guaat = GetUserAccountAsyncTask(arrayListOf(intent.getStringExtra("USER_ID")))
