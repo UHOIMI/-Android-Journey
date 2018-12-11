@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detail_user.*
 import org.json.JSONObject
@@ -176,6 +177,10 @@ class DetailUserActivity : AppCompatActivity() {
         else -> {
             false
         }
+    }
+
+    fun spotListButtonTapped(view: View){
+        startActivity(Intent(this,SpotListActivity::class.java))
     }
 
     private fun setUser(userName: String, generation: String, gender: String, comment: String, header: String, icon: String){

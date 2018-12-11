@@ -24,7 +24,6 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -36,7 +35,7 @@
                 android:id="@+id/detailUserHeaderImageView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="50dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/guideline5"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,14 +50,14 @@
                 android:src="@drawable/no_image"
                 app:layout_constraintBottom_toTopOf="@+id/guideline5"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.179"
+                app:layout_constraintHorizontal_bias="0.105"
                 app:layout_constraintStart_toStartOf="parent" />
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_margin="8dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +148,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="190dp" />
+                app:layout_constraintGuide_begin="210dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="#00000000"
+                android:onClick="spotListButtonTapped"
+                android:text="スポット一覧"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailUserHeaderImageView" />
 
         </android.support.constraint.ConstraintLayout>
 
