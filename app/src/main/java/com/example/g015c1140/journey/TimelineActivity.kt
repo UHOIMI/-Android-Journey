@@ -81,7 +81,14 @@ class TimelineActivity : AppCompatActivity() {
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
             Toast.makeText(this,"list tapped",Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, DetailPlanActivity::class.java))
+
+            val myApp = this.application as MyApplication
+            myApp.setBmp_1((TIMELINE_LIST[position].planUserIconImage!!))
+
+            startActivity(
+                    Intent(this, DetailPlanActivity::class.java)
+                            .putStringArrayListExtra("PLAN_ID__USER_NAME", arrayListOf(TIMELINE_LIST[position].planId.toString(),TIMELINE_LIST[position].planUserName))
+            )
             //startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
         }
     }
