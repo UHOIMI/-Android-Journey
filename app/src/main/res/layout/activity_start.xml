@@ -22,7 +22,7 @@
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="spotListButtonTapped"
+        android:onClick="sSpotListButtonTapped"
         android:text="スポット一覧"
         app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintEnd_toEndOf="parent"

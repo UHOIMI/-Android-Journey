@@ -22,7 +22,7 @@ class StartActivity : AppCompatActivity() {
         startActivity(Intent(this, PutSpotActivity::class.java))
     }
 
-    fun spotListButtonTapped(v:View){
+    fun sSpotListButtonTapped(v:View){
        startActivity(Intent(this, SpotListActivity::class.java))
     }
 
