@@ -30,22 +30,22 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/editUserHeaderImageButton"
-                android:layout_width="410dp"
-                android:layout_height="160dp"
-                android:layout_marginBottom="30dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="50dp"
+                android:clickable="true"
                 android:onClick="onClickImage"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/guideline7"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/header_default" />
+                app:srcCompat="@drawable/header_default"
+                android:focusable="true" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/editUserIconImageView"
@@ -55,7 +55,7 @@
                 android:src="@drawable/no_image"
                 app:layout_constraintBottom_toTopOf="@+id/guideline7"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.179"
+                app:layout_constraintHorizontal_bias="0.105"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <LinearLayout
@@ -114,12 +114,12 @@
 
                     <Spinner
                         android:id="@+id/editUserGenerationoSpinner"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="0.77"
                         android:entries="@array/generationList"
-                        android:spinnerMode="dialog"
-                        android:layout_width="0dp" />
+                        android:spinnerMode="dialog" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,7 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="190dp" />
+                app:layout_constraintGuide_begin="210dp" />
 
         </android.support.constraint.ConstraintLayout>
 

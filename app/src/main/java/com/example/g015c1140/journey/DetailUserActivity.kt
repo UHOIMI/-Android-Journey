@@ -190,6 +190,7 @@ class DetailUserActivity : AppCompatActivity() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
                         detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
+                        headerFlg = IMAGE_OK
                     } else {
                         Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
                     }
@@ -204,6 +205,7 @@ class DetailUserActivity : AppCompatActivity() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
                         detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
+                        iconFlg = IMAGE_OK
                     } else {
                         Toast.makeText(this@DetailUserActivity, "アイコン取得失敗", Toast.LENGTH_SHORT).show()
                     }
@@ -213,7 +215,6 @@ class DetailUserActivity : AppCompatActivity() {
         }
 
         detailUserNameTextView.text = userName
-        val generation = generation
         detailUserGenerationTextView.text = when (generation) {
             "10" -> "10歳以下"
             "100" -> "100歳以上"
