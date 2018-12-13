@@ -14,7 +14,6 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
         startActivity(Intent(this,IndexActivity::class.java))
-
     }
 
     fun spotAddButtonTapped(v:View){
