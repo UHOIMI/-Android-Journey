@@ -18,7 +18,35 @@
             android:background="@drawable/gradient"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/homeUserIconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_image"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_gravity="left"
+                android:onClick="userIconButtonTapped"/>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/journey"
+                android:layout_gravity="center" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="#00000000"
+                android:onClick="planSpotButtonTapped"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
         </android.support.v7.widget.Toolbar>
+
+
 
     </android.support.design.widget.AppBarLayout>
 
@@ -28,26 +56,42 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/aiueoreview"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp" />
+            android:orientation="vertical">
 
-        <com.example.g015c1140.journey.PageControlView
-            android:id="@+id/pageControlView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/aiueoreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <com.example.g015c1140.journey.PageControlView
+                android:id="@+id/pageControlView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/homeBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_navigation" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -53,7 +53,7 @@ class PageControlView : LinearLayout {
 
             val dotSize = resources.getDimensionPixelSize(R.dimen.page_control_dot_size)
             val params = LinearLayout.LayoutParams(dotSize, dotSize)
-            params.setMargins(dotSize / 2, 0, dotSize / 2, 0)
+            params.setMargins(dotSize, 0, dotSize / 2, 0)
             imageViews[i].layoutParams = params
             addView(imageViews[i])
         }
