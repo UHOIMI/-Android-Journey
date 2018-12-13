@@ -21,10 +21,14 @@ import java.text.SimpleDateFormat
 
 class TimelineActivity : AppCompatActivity() {
 
+    //searchから遷移したか確認する用
+    var searchFlg = false
+
     // 1ページ辺りの項目数
     private var timelineCnt: Int = 0
     private val TIMELINE_LIST = arrayListOf<TimelinePlanData>()
     private lateinit var timelineListAdapter: TimelinePlanListAdapter
+    //下のクルクル用
     private var scrollFlg = false
 
     private var addTimelineList = mutableListOf<TimelinePlanData>()
@@ -42,8 +46,17 @@ class TimelineActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timeline)
 
-        //タイトル名セット
-        title = "タイムライン"
+        /*******************/
+        searchFlg = intent.getBooleanExtra("SEARCH_FLG", false)
+
+        title = if (scrollFlg) {
+            //タイトル名セット
+            "検索結果"
+        } else {
+            //タイトル名セット
+            "タイムライン"
+        }
+        /*******************/
 
         val toolbar = toolbar
         setSupportActionBar(toolbar)
@@ -81,7 +94,7 @@ class TimelineActivity : AppCompatActivity() {
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
 
-            if ( !(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position)) ) {
+            if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
                 Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 
                 val myApp = this.application as MyApplication
@@ -91,7 +104,6 @@ class TimelineActivity : AppCompatActivity() {
                         Intent(this, DetailPlanActivity::class.java)
                                 .putStringArrayListExtra("PLAN_ID__USER_NAME", arrayListOf(TIMELINE_LIST[position].planId.toString(), TIMELINE_LIST[position].planUserName))
                 )
-                //startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
             }
         }
     }
