@@ -77,7 +77,6 @@ class PageControlRecyclerViewAdapter(context: Context, activity: Activity, timel
 
         (holder.planUserIconCircleImage.findViewById(R.id.planUserIconCircleImage) as ImageView).setOnClickListener {
             // イメージ画像がクリックされたときに実行される処理
-
             Log.d("test", "tag ${it.tag}")
 //            ACTIVITY.startActivity(Intent(CONTEXT,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
             Toast.makeText(CONTEXT,"いめーじたっぷ${it.tag}",Toast.LENGTH_SHORT).show()

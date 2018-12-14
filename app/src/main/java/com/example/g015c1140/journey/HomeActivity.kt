@@ -24,17 +24,40 @@ class HomeActivity : AppCompatActivity() {
         homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
 
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        aiueoreview.layoutManager = layoutManager
+        val layoutManager =  arrayListOf<LinearLayoutManager>()
+        for(_layoutCnt in 0 until 4){
+            layoutManager.add(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
+        }
 
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(aiueoreview)
+        areaRecyclerView.layoutManager = layoutManager[0]
+        newPlanRecyclerView.layoutManager = layoutManager[1]
+        favoritePlanRecyclerView.layoutManager = layoutManager[2]
+        userGenerationPlanRecyclerView.layoutManager = layoutManager[3]
 
-        val pageControlRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, getListData())
-        aiueoreview.adapter = pageControlRecyclerViewAdapter
+        val snapHelper =  arrayListOf<PagerSnapHelper>()
+        for(_layoutCnt in 0 until 4){
+            snapHelper.add(PagerSnapHelper())
+        }
 
-        val pageControlView = findViewById<PageControlView>(R.id.pageControlView)
-        pageControlView.setRecyclerView(aiueoreview, layoutManager)
+        snapHelper[0].attachToRecyclerView(areaRecyclerView)
+        snapHelper[1].attachToRecyclerView(newPlanRecyclerView)
+        snapHelper[2].attachToRecyclerView(favoritePlanRecyclerView)
+        snapHelper[3].attachToRecyclerView(userGenerationPlanRecyclerView)
+
+        val listData = getListData()
+
+        val newPlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
+        val favoritePlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
+        val userGenerationPlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
+
+        newPlanRecyclerView.adapter = newPlanRecyclerViewAdapter
+        favoritePlanRecyclerView.adapter = favoritePlanRecyclerViewAdapter
+        userGenerationPlanRecyclerView.adapter = userGenerationPlanRecyclerViewAdapter
+
+        areaPageControlView.setRecyclerView(areaRecyclerView, layoutManager[0])
+        newPlanPageControlView.setRecyclerView(newPlanRecyclerView, layoutManager[1])
+        favoritePlanPageControlView.setRecyclerView(favoritePlanRecyclerView, layoutManager[2])
+        userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, layoutManager[3])
     }
 
     fun userIconButtonTapped(view: View){
