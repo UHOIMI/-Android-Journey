@@ -44,12 +44,15 @@ class HomeActivity : AppCompatActivity() {
         snapHelper[2].attachToRecyclerView(favoritePlanRecyclerView)
         snapHelper[3].attachToRecyclerView(userGenerationPlanRecyclerView)
 
-        val listData = getListData()
+        val planListData = getPlanListData()
+        val areaListData = getAreaListData()
 
-        val newPlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
-        val favoritePlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
-        val userGenerationPlanRecyclerViewAdapter = PageControlRecyclerViewAdapter(this,this, listData)
+        val areaRecyclerViewAdapter = AreaPageControlRecyclerViewAdapter(this,this,areaListData)
+        val newPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this,this, planListData)
+        val favoritePlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this,this, planListData)
+        val userGenerationPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this,this, planListData)
 
+        areaRecyclerView.adapter = areaRecyclerViewAdapter
         newPlanRecyclerView.adapter = newPlanRecyclerViewAdapter
         favoritePlanRecyclerView.adapter = favoritePlanRecyclerViewAdapter
         userGenerationPlanRecyclerView.adapter = userGenerationPlanRecyclerViewAdapter
@@ -90,7 +93,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     //テスト用データ作成
-    private fun getListData(): ArrayList<TimelinePlanData>{
+    private fun getPlanListData(): ArrayList<TimelinePlanData>{
         val list = arrayListOf<TimelinePlanData>()
 
         var timelinePlanData:TimelinePlanData
@@ -110,4 +113,20 @@ class HomeActivity : AppCompatActivity() {
         }
         return list
     }
+
+    private fun getAreaListData(): ArrayList<HomeAreaData>{
+        val areaList = arrayListOf<HomeAreaData>()
+
+        var homeAreaData:HomeAreaData
+        for (i in 0 until 8){
+            homeAreaData = HomeAreaData(
+                    "エリア $i",
+                    BitmapFactory.decodeResource(resources, R.drawable.no_image),
+                    "エリアAPI $i"
+            )
+            areaList.add(homeAreaData)
+        }
+        return areaList
+    }
+
 }
