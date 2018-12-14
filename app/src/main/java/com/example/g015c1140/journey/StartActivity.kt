@@ -45,6 +45,10 @@ class StartActivity : AppCompatActivity() {
         startActivity(Intent(this,SearchPlanActivity::class.java))
     }
 
+    fun homeButtonTapped(view: View){
+        startActivity(Intent(this,HomeActivity::class.java))
+    }
+
     fun userDataDeleteButtonTapped(v:View){
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         val sharedPrefEditor = sharedPreferences.edit()
