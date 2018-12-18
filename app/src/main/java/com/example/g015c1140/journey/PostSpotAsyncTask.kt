@@ -1,5 +1,6 @@
 package com.example.g015c1140.journey
 
+import android.annotation.SuppressLint
 import android.os.AsyncTask
 import android.util.Log
 import org.json.JSONObject
@@ -9,12 +10,17 @@ import java.io.InputStreamReader
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
 
-class PostSpotAsyncTask(t: String) : AsyncTask<MutableList<SpotData>, String, String>() {
+class PostSpotAsyncTask(ui:String, t: String, pi: String) : AsyncTask<MutableList<SpotData>, String, String>() {
 
     //callBack用
     private var callbackPostSpotAsyncTask: CallbackPostSpotAsyncTask? = null
     private val TOKEN = t
+    private val PLAN_ID = pi
+    private val USER_ID = ui
+    @SuppressLint("SimpleDateFormat")
+    private val sdf = SimpleDateFormat("yyyy-MM-dd")
 
     //insert
     override fun doInBackground(vararg params: MutableList<SpotData>?): String? {
@@ -45,21 +51,17 @@ class PostSpotAsyncTask(t: String) : AsyncTask<MutableList<SpotData>, String, St
                 var out: OutputStream? = null
                 try {
                     out = connection!!.outputStream
-/*
-                    val spotList = params[0]
-                    if (spotList == null) {
-                        println("PostSpot 引数異常URL：$params[0]")
-                        return "引数異常　params"
-                    }
-*/
 
                     out.write((
-                            "&spot_title=${it.title}" +
+                            "plan_id=$PLAN_ID" +
+                                    "&user_id=$USER_ID" +
+                                    "&spot_title=${it.title}" +
                                     "&spot_address=${it.latitude},${it.longitude}" +
                                     "&spot_comment=${it.comment}" +
                                     "&spot_image_a=${it.image_A}" +
                                     "&spot_image_b=${it.image_B}" +
                                     "&spot_image_c=${it.image_C}" +
+                                    "&spot_date=${sdf.format(it.dateTime)}" +
                                     "&token=$TOKEN"
                             ).toByteArray()
                     )
@@ -75,8 +77,6 @@ class PostSpotAsyncTask(t: String) : AsyncTask<MutableList<SpotData>, String, St
                     bReader.close()
                     `is`.close()
                     postResult = JSONObject(sb.toString()).getString("status")
-
-//                    postResult = "SPOT送信OK"
 
                 } catch (e: IOException) {
                     // POST送信エラー

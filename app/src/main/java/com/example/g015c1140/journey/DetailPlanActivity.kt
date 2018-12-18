@@ -93,7 +93,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         detailPlanSpotListView.adapter = detailPlanSpotListAdapter
 
         //planApi
-        val gpat = GetPlanAsyncTask(planId)
+        val gpat = GetPlanAsyncTask(planId,true)
         gpat.setOnCallback(object : GetPlanAsyncTask.CallbackGetPlanAsyncTask() {
             override fun callback(resultPlanJson: JSONObject) {
                 super.callback(resultPlanJson)

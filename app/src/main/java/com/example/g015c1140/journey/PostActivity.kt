@@ -140,9 +140,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     /************************************************/
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
-
-        Log.d("test", "onResult   resultCode$resultCode        requestCode$requestCode   Intent$intent")
-
         if (resultCode == RESULT_OK && requestCode == RESULT_CODE && intent != null) {
 
             val selectSpotList = intent.getSerializableExtra("SPOTDATA") as MutableList<SpotData>
@@ -317,7 +314,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this,DetailUserActivity::class.java))
+                startActivity(Intent(this, DetailUserActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
@@ -335,6 +332,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 imageList.add(it.image_B)
                 imageList.add(it.image_C)
             }
+
             /********************/
             //imageを投稿
             val piat = PostImageAsyncTask()
@@ -352,85 +350,82 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         var _imageCnt = 0
                         for (_spotCnt in 0 until spotList.size) {
-                            if(imageJson.getString(_imageCnt) == "") {
+                            if (imageJson.getString(_imageCnt) == "") {
                                 spotList[_spotCnt].image_A = imageJson.getString(_imageCnt++)
-                            }else{
+                            } else {
                                 spotList[_spotCnt].image_A = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
                             }
 
-                            if(imageJson.getString(_imageCnt) == "") {
+                            if (imageJson.getString(_imageCnt) == "") {
                                 spotList[_spotCnt].image_B = imageJson.getString(_imageCnt++)
-                            }else{
+                            } else {
                                 spotList[_spotCnt].image_B = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
                             }
 
-                            if(imageJson.getString(_imageCnt) == "") {
+                            if (imageJson.getString(_imageCnt) == "") {
                                 spotList[_spotCnt].image_C = imageJson.getString(_imageCnt++)
-                            }else{
+                            } else {
                                 spotList[_spotCnt].image_C = "${Setting().USER_IMAGE_GET_URL}${imageJson.getString(_imageCnt++)}"
                             }
                         }
+
                         /********************/
-                        //spotを投稿
-                        val psat = PostSpotAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
-                        psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
+                        //Planを投稿
+                        val ppat = PostPlanAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                        ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
                             override fun callback(result: String) {
                                 super.callback(result)
                                 // ここからAsyncTask処理後の処理を記述します。
-                                Log.d("test SpotCallback", "非同期処理結果：$result")
-
+                                Log.d("test PlanCallback", "非同期処理$result")
                                 if (result == "RESULT-OK") {
                                     /********************/
 
-                                    //spot取得
-                                    //スポットリストがある
-                                    val gsat = GetSpotAsyncTask(spotList.size, arrayListOf( arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,""))),false)
-                                    gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
-                                        override fun callback(resultJsonList: ArrayList<ArrayList<JSONObject>>?, resultArrayList: ArrayList<String>?, resultIdFlg: Boolean) {
-                                            super.callback(resultJsonList, resultArrayList, resultIdFlg)
+                                    //plan取得
+                                    val gpat = GetPlanAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), false)
+                                    gpat.setOnCallback(object : GetPlanAsyncTask.CallbackGetPlanAsyncTask() {
+                                        override fun callback(resultPlanJson: JSONObject) {
+                                            super.callback(resultPlanJson)
                                             // ここからAsyncTask処理後の処理を記述します。
                                             Log.d("test GetSpotCallback", "非同期処理$result")
-
-                                            if (resultArrayList!![0] == "RESULT-OK" && !resultIdFlg) {
-                                                resultArrayList.removeAt(0)
+                                            if (resultPlanJson.getString("result") == "RESULT-OK") {
 
                                                 /********************/
-                                                //Planを投稿
-                                                val ppat = PostPlanAsyncTask(resultArrayList,sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
-                                                ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
+                                                //spotを投稿
+                                                val psat = PostSpotAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"), resultPlanJson.getString("plan_id"))
+                                                psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
                                                     override fun callback(result: String) {
                                                         super.callback(result)
                                                         // ここからAsyncTask処理後の処理を記述します。
-                                                        Log.d("test PlanCallback", "非同期処理$result")
+                                                        Log.d("test SpotCallback", "非同期処理結果：$result")
                                                         if (result == "RESULT-OK") {
-                                                            //完了した関数呼び出し
                                                             completePostAsyncTask()
                                                         } else {
                                                             failedAsyncTask()
                                                         }
                                                     }
                                                 })
-                                                ppat.execute(
-                                                        planTitleEditText.text.toString(),
-                                                        planDetailEditText.text.toString(),
-                                                        TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14),
-                                                        planMoneySpinner.selectedItem.toString(),
-                                                        planPrefecturesSpinner.selectedItem.toString()
-                                                )
+                                                psat.execute(spotList)
                                                 /********************/
+
                                             } else {
                                                 failedAsyncTask()
                                             }
                                         }
                                     })
-                                    gsat.execute()
+                                    gpat.execute()
                                     /********************/
                                 } else {
                                     failedAsyncTask()
                                 }
                             }
                         })
-                        psat.execute(spotList)
+                        ppat.execute(
+                                planTitleEditText.text.toString(),
+                                planDetailEditText.text.toString(),
+                                TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14),
+                                planMoneySpinner.selectedItem.toString(),
+                                planPrefecturesSpinner.selectedItem.toString()
+                        )
                         /********************/
                     } else {
                         failedAsyncTask()
@@ -442,38 +437,29 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun checkData(): Boolean {
-        Toast.makeText(this, "投稿", Toast.LENGTH_SHORT).show()
-        //spotList.forEach { Log.d("test", "    spotList:${it.title}") }
-        //Log.d("test", "spotNameList:$spotNameList")
         var checkResult = ""
 
         if (planTitleEditText.text.toString().replace(" ", "").replace("　", "") == "") {
-            Log.d("test CHECK", "title NG")
             checkResult += "プラン名が入力されていません\n"
         }
 
         if (planPrefecturesSpinner.selectedItem.toString() == "投稿する場所の都道府県別を選択してください") {
-            Log.d("test CHECK", "prefectures NG")
             checkResult += "都道府県が選択されていません\n"
         }
 
         if (spotList.size == 0) {
-            Log.d("test CHECK", "spotList NG")
             checkResult += "スポットが登録されていません\n"
         }
 
         if (TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14) == "0,0,0,0,0,0,0") {
-            Log.d("test CHECK", "transportation NG")
             checkResult += "交通手段が選択されていません\n"
         }
 
         if (planMoneySpinner.selectedItem.toString() == "プランに掛かる金額を選択してください") {
-            Log.d("test CHECK", "money NG")
             checkResult += "金額が選択されていません\n"
         }
 
         if (planDetailEditText.text.toString().replace(" ", "").replace("　", "") == "") {
-            Log.d("test CHECK", "comment NG")
             checkResult += "プラン詳細が入力されていません\n"
         }
 
@@ -491,7 +477,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun completePostAsyncTask() {
-        Log.d("test", "complatePostAsyncTask")
         Toast.makeText(this, "投稿が完了しました", Toast.LENGTH_SHORT).show()
 
         println("プラン名：${planTitleEditText.text}")

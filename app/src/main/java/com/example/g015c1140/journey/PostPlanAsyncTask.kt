@@ -10,11 +10,11 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<String, String, String>() {
+class PostPlanAsyncTask(ui:String, t: String) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackPostPlanAsyncTask: CallbackPostPlanAsyncTask? = null
-    private val SPOT_ID_LIST = arrayList
+    private val USER_ID = ui
 
     private val TOKEN = t
 
@@ -28,6 +28,8 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<Str
 
         if (TOKEN == "none")
             return "TOKEN-Error"
+        if (USER_ID == "none")
+            return "USER_ID-Error"
 
         try {
             val url = URL(Setting().PLAN_POST_URL)
@@ -51,7 +53,8 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<Str
 
                 out = connection.outputStream
                 out.write((
-                        "&plan_title=${params[0]}" +
+                        "user_id=$USER_ID" +
+                                "&plan_title=${params[0]}" +
                                 "&plan_comment=${params[1]}" +
                                 "&transportation=${params[2]}" +
                                 "&price=${params[3]}" +
@@ -59,40 +62,6 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<Str
                                 "&token=$TOKEN"
                         ).toByteArray()
                 )
-
-/*                for (_cnt in 0 until SPOT_ID_LIST.size) {
-                    val _cntAlpha = when (_cnt) {
-                        0 -> "a"
-                        1 -> "b"
-                        2 -> "c"
-                        3 -> "d"
-                        4 -> "e"
-                        5 -> "f"
-                        6 -> "g"
-                        7 -> "h"
-                        8 -> "i"
-                        9 -> "j"
-                        10 -> "k"
-                        11 -> "l"
-                        12 -> "m"
-                        13 -> "n"
-                        14 -> "o"
-                        15 -> "p"
-                        16 -> "q"
-                        17 -> "r"
-                        18 -> "s"
-                        19 -> "t"
-                        else -> "X"
-                    }
-                    out.write(("&spot_id_$_cntAlpha=${SPOT_ID_LIST[_cnt]}").toByteArray())
-                }*/
-                var charArray: CharArray
-                val startValue = 97
-                for (_cnt in startValue until (startValue + SPOT_ID_LIST.size)) {
-                    charArray = Character.toChars(_cnt)
-                    out.write(("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt - startValue]}").toByteArray())
-                    println("&spot_id_${charArray[0]}=${SPOT_ID_LIST[_cnt - startValue]}")
-                }
 
                 out.flush()
                 Log.d("debug", "flush")
@@ -107,8 +76,6 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<Str
                 `is`.close()
                 postResult = JSONObject(sb.toString()).getString("status")
 
-//                postResult = "PLAN送信OK"
-
             } catch (e: IOException) {
                 // POST送信エラー
                 e.printStackTrace()
@@ -118,18 +85,17 @@ class PostPlanAsyncTask(arrayList: ArrayList<String>, t: String) : AsyncTask<Str
             }
 
             val status = connection.responseCode
-            when (status) {
-                HttpURLConnection.HTTP_OK -> httpResult = "HTTP-OK"
-                else -> httpResult = "status=$status"
+            httpResult = when (status) {
+                HttpURLConnection.HTTP_OK -> "HTTP-OK"
+                else -> "status=$status"
             }
 
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
-            if (connection != null) {
-                connection.disconnect()
-            }
+            connection?.disconnect()
         }
+
         return "$httpResult:$postResult"
         //finallyで接続を切断してあげましょう。
         //失敗した時はnullやエラーコードなどを返しましょう。

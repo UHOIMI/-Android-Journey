@@ -11,8 +11,10 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetPlanAsyncTask(id: String) : AsyncTask<String, String, String>() {
+//flg = tureならplan_id falseならuser_id
+class GetPlanAsyncTask(id: String, flg: Boolean) : AsyncTask<String, String, String>() {
     private val ID = id
+    private val FLG = flg
 
     //callBack用
     private var callbackGetPlanAsyncTask: CallbackGetPlanAsyncTask? = null
@@ -30,7 +32,11 @@ class GetPlanAsyncTask(id: String) : AsyncTask<String, String, String>() {
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("${Setting().PLAN_GET_URL}$ID")
+            val url = if (FLG) {
+                URL("${Setting().PLAN_GET_PID_URL}$ID")
+            } else {
+                URL("${Setting().PLAN_GET_UID_URL}$ID")
+            }
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。
@@ -56,7 +62,12 @@ class GetPlanAsyncTask(id: String) : AsyncTask<String, String, String>() {
                 Log.d("test GSAT", "${jsonArray.length()}             ${sb.length}")
                 Log.d("test", "array.getJSONObject(0): ${jsonArray.getJSONObject(0)}")
                 result = "OK"
-                resultJson = jsonArray.getJSONObject(0)
+
+                resultJson = if (FLG) {
+                    jsonArray.getJSONObject(0)
+                } else {
+                    jsonArray.getJSONObject( jsonArray.length() - 1 )
+                }
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -98,7 +109,7 @@ class GetPlanAsyncTask(id: String) : AsyncTask<String, String, String>() {
     }
 
     open class CallbackGetPlanAsyncTask {
-        open fun callback(resultPlanJson:JSONObject) {}
+        open fun callback(resultPlanJson: JSONObject) {}
     }
 
 }
