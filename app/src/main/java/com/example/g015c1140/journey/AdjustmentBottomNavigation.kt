@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.View
 
 class AdjustmentBottomNavigation {
-
     @SuppressLint("RestrictedApi")
             /**
              * BottomNavigationViewのアイテムのサイズの調整、アイコンサイズ調整、タイトルの削除
