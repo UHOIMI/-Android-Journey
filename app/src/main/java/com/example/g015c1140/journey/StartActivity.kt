@@ -14,7 +14,6 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
         startActivity(Intent(this,IndexActivity::class.java))
-
     }
 
     fun spotAddButtonTapped(v:View){
@@ -44,6 +43,10 @@ class StartActivity : AppCompatActivity() {
 
     fun searchPlanButtonTapped(v:View){
         startActivity(Intent(this,SearchPlanActivity::class.java))
+    }
+
+    fun homeButtonTapped(view: View){
+        startActivity(Intent(this,HomeActivity::class.java))
     }
 
     fun userDataDeleteButtonTapped(v:View){
