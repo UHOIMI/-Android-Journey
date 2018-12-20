@@ -35,7 +35,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //ツールバーセット
         title = "プラン詳細"
-
         val toolbar = detailPlanToolbar
         setSupportActionBar(toolbar)
 
