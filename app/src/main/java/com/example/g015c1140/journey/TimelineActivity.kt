@@ -386,7 +386,7 @@ class TimelineActivity : AppCompatActivity() {
                         var bmpValueList: ArrayList<String>
 
                         //spotTitle
-                        val spotTitleList =arrayListOf<ArrayList<String>>()
+                        val spotTitleList = arrayListOf<ArrayList<String>>()
                         var spotTitleValue: ArrayList<String>
 
                         for (_jsonCnt in 0 until timelineRecordJsonArray.length()) {
@@ -423,12 +423,12 @@ class TimelineActivity : AppCompatActivity() {
                             for (_spotTitleCnt in 0 until spotJsonList.length()) {
                                 if (spotTitleValue.size < 2) {
                                     spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
-                                } else if(spotTitleValue.size == 2){
+                                } else if (spotTitleValue.size == 2) {
                                     spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
                                     break
                                 }
                             }
-                            if (spotTitleValue.size != 3){
+                            if (spotTitleValue.size != 3) {
                                 for (_addCnt in spotTitleValue.size..3)
                                     spotTitleValue.add("")
                             }
@@ -458,7 +458,7 @@ class TimelineActivity : AppCompatActivity() {
                                                     timelinePlanData = TimelinePlanData()
 
                                                     timelinePlanData.planId = timelineData.getLong("plan_id")
-                                                    if(resultBmpList!![_timelineCnt].isNotEmpty()) {
+                                                    if (resultBmpList!![_timelineCnt].isNotEmpty()) {
                                                         if (resultBmpList[_timelineCnt][0] != null) {
                                                             timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
                                                         } else {
@@ -469,7 +469,7 @@ class TimelineActivity : AppCompatActivity() {
                                                         } else {
                                                             timelinePlanData.planSpotImage = null
                                                         }
-                                                    }else{
+                                                    } else {
                                                         timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                                         timelinePlanData.planSpotImage = null
                                                     }
