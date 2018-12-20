@@ -7,7 +7,6 @@ import android.support.design.widget.BottomNavigationView
 import android.util.TypedValue
 import android.view.View
 
-
 class AdjustmentBottomNavigation {
 
     @SuppressLint("RestrictedApi")
