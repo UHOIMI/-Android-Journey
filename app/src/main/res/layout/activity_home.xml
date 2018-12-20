@@ -52,30 +52,29 @@
     <android.support.v4.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="70dp">
+            android:paddingBottom="75dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="地方" />
+                android:text="地方"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="18sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/areaRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.example.g015c1140.journey.PageControlView
-                android:id="@+id/areaPageControlView"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp" />
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,7 +85,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="新着3件" />
+                    android:text="新着3件"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/newPlanButton"
@@ -101,7 +102,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/newPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/newPlanPageControlView"
@@ -119,7 +121,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="お気に入りTop3件" />
+                    android:text="お気に入りTop3件"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/favoritePlanButton"
@@ -134,7 +138,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/favoritePlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/favoritePlanPageControlView"
@@ -149,15 +154,19 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/userGenerationTextView"
+                    android:id="@+id/homeUserGenerationTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="の新着3件" />
+                    android:text="の新着3件"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/userGenerationPlanButton"
@@ -172,7 +181,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/userGenerationPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/userGenerationPlanPageControlView"
@@ -184,6 +194,19 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/homeFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="70dp"
+        android:src="@drawable/plusicon"
+        app:backgroundTint="@android:color/transparent"
+        app:fabSize="normal"
+        app:layout_anchor="@id/homeBottomNavigation"
+        app:layout_anchorGravity="top|right" />
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/homeBottomNavigation"
