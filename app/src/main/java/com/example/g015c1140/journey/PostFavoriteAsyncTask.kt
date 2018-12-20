@@ -48,7 +48,7 @@ class PostFavoriteAsyncTask(i: String, t: String) : AsyncTask<String, String, St
 
                 out = connection.outputStream
                 out.write((
-                        "&plan_id=$PLAN_ID" +
+                        "plan_id=$PLAN_ID" +
                                 "&token=$TOKEN"
                         ).toByteArray()
                 )

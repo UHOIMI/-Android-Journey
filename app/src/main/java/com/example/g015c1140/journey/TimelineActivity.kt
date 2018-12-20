@@ -16,13 +16,17 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_timeline.*
 import layout.TimelinePlanListAdapter
 import org.json.JSONArray
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 class TimelineActivity : AppCompatActivity() {
 
+    /*********/
     //searchから遷移したか確認する用
     var searchFlg = false
+
+    //地方などにつかう用
+    private var areaApiString = ""
+    /*********/
 
     // 1ページ辺りの項目数
     private var timelineCnt: Int = 0
@@ -149,6 +153,7 @@ class TimelineActivity : AppCompatActivity() {
     }
 
     //refreshFlgが true:新しく投稿されたプラン取得 　false:昔のプラン取得
+/*
     private fun setTimeline(ofset: Int, refreshFlg: Boolean) {
         val gtat = GetTimelineAsyncTask(ofset)
         gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
@@ -181,7 +186,9 @@ class TimelineActivity : AppCompatActivity() {
                                 if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
                                     resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                                     //完了
-                                    /****************/
+                                    */
+    /****************//*
+
                                     val gsat = GetSpotAsyncTask(0, resultPlanSpotIdList!!, true)
                                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                                         override fun callback(resultSpotJsonList: ArrayList<ArrayList<JSONObject>>?, resultArrayList: ArrayList<String>?, resultIdFlg: Boolean) {
@@ -189,7 +196,9 @@ class TimelineActivity : AppCompatActivity() {
                                             if (resultSpotJsonList!![resultSpotJsonList.size - 1][0].getString("result") == "RESULT-OK" && resultIdFlg) {
                                                 resultSpotJsonList.removeAt(resultSpotJsonList.size - 1)
                                                 //完了
-                                                /****************/
+                                                */
+    /****************//*
+
                                                 val gpfat = GetPlanFavoriteAsyncTask(resultPlanIdList)
                                                 gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
                                                     override fun callback(resultFavoriteArrayList: ArrayList<String>) {
@@ -223,12 +232,16 @@ class TimelineActivity : AppCompatActivity() {
                                                                 }
                                                                 bmpList.add(bmpValueList)
                                                             }
-                                                            /****************/
+                                                            */
+    /****************//*
+
                                                             val giat = GetImageAsyncTask()
                                                             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                                                                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                                                     if (resultBmpString == "RESULT-OK") {
-                                                                        /****************/
+                                                                        */
+    /****************//*
+
 
                                                                         var timelinePlanData: TimelinePlanData
                                                                         for (_timalineCnt in 0 until timelineRecordJsonArray!!.length()) {
@@ -264,23 +277,11 @@ class TimelineActivity : AppCompatActivity() {
                                                                             timelinePlanData.userId = resultPlanUserIdList[_timalineCnt]
                                                                             addTimelineList.add(timelinePlanData)
                                                                         }
-                                                                        /****************/
+                                                                        */
+    /****************//*
+
 
                                                                         if (refreshFlg) {
-/*
-                                                                        if (!firstApi) {
-                                                                            refreshLoop@ for (_atlCnt in 0 until addTimelineList.size) {
-                                                                                if (TIMELINE_LIST[0].planId == addTimelineList[_atlCnt].planId) {
-                                                                                    if (_atlCnt == 0) {
-                                                                                        addTimelineList.clear()
-                                                                                        break@refreshLoop
-                                                                                    }
-                                                                                    addTimelineList = addTimelineList.subList(0, _atlCnt)
-                                                                                    break@refreshLoop
-                                                                                }
-                                                                            }
-                                                                        }
-*/
                                                                             TIMELINE_LIST.addAll(0, addTimelineList)
                                                                         } else {
                                                                             TIMELINE_LIST.addAll(addTimelineList)
@@ -296,9 +297,13 @@ class TimelineActivity : AppCompatActivity() {
                                                                         bottomRefreshFlg = true
 
                                                                         if (firstApi) {
-                                                                            /**************************/
+                                                                            */
+    /**************************//*
+
                                                                             setTimelineListener()
-                                                                            /**************************/
+                                                                            */
+    /**************************//*
+
                                                                             firstApi = false
                                                                         }
 
@@ -316,7 +321,9 @@ class TimelineActivity : AppCompatActivity() {
                                                     }
                                                 })
                                                 gpfat.execute()
-                                                /****************/
+                                                */
+    /****************//*
+
                                             } else {
                                                 failedAsyncTask()
                                                 return
@@ -324,7 +331,9 @@ class TimelineActivity : AppCompatActivity() {
                                         }
                                     })
                                     gsat.execute()
-                                    /****************/
+                                    */
+    /****************//*
+
                                 } else {
                                     failedAsyncTask()
                                     return
@@ -332,6 +341,187 @@ class TimelineActivity : AppCompatActivity() {
                             }
                         })
                         guaat.execute()
+                    } else {
+                        if (timelineSwipeRefresh.isRefreshing)
+                            timelineSwipeRefresh.isRefreshing = false
+                    }
+                } else {
+                    Toast.makeText(this@TimelineActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+        gtat.execute()
+    }
+*/
+
+
+//refreshFlgが true:新しく投稿されたプラン取得 　false:昔のプラン取得
+    private fun setTimeline(ofset: Int, refreshFlg: Boolean) {
+        val gtat = GetTimelineAsyncTask(areaApiString, ofset)
+        gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
+            override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
+                super.callback(result, timelineRecordJsonArray)
+                if (result == "RESULT-OK") {
+
+                    if (refreshFlg) {
+                        if (!firstApi) {
+                            refreshLoop@ for (_jsonCnt in 0 until timelineRecordJsonArray!!.length()) {
+                                if (TIMELINE_LIST[0].planId == timelineRecordJsonArray.getJSONObject(_jsonCnt).getLong("plan_id")) {
+                                    //削除
+                                    for (_removeCnt in _jsonCnt until timelineRecordJsonArray.length()) {
+                                        timelineRecordJsonArray.remove(_jsonCnt)
+                                    }
+                                    break@refreshLoop
+                                }
+                            }
+                        }
+                    }
+
+                    if (timelineRecordJsonArray!!.length() != 0) {
+                        //favorite用
+                        val planIdList = arrayListOf<String>()
+
+                        //画像取得用
+                        val bmpList = arrayListOf<ArrayList<String>>()
+                        var bmpValueList: ArrayList<String>
+
+                        //spotTitle
+                        val spotTitleList =arrayListOf<ArrayList<String>>()
+                        var spotTitleValue: ArrayList<String>
+
+                        for (_jsonCnt in 0 until timelineRecordJsonArray.length()) {
+                            //favorite用
+                            planIdList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getString("plan_id"))
+
+                            //画像取得用
+                            bmpValueList = arrayListOf()
+                            bmpValueList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("user").getString("user_icon"))
+                            val spotJsonList = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONArray("spots")
+
+                            loop@ for (_spotCnt in 0 until spotJsonList.length()) {
+                                when {
+                                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
+                                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
+                                        break@loop
+                                    }
+                                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
+                                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
+                                        break@loop
+                                    }
+                                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
+                                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
+                                        break@loop
+                                    }
+                                }
+                                if (spotJsonList.length() - 1 == _spotCnt) {
+                                    bmpValueList.add("")
+                                }
+                            }
+                            bmpList.add(bmpValueList)
+
+                            spotTitleValue = arrayListOf()
+                            for (_spotTitleCnt in 0 until spotJsonList.length()) {
+                                if (spotTitleValue.size < 2) {
+                                    spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
+                                } else if(spotTitleValue.size == 2){
+                                    spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
+                                    break
+                                }
+                            }
+                            if (spotTitleValue.size != 3){
+                                for (_addCnt in spotTitleValue.size..3)
+                                    spotTitleValue.add("")
+                            }
+                            spotTitleList.add(spotTitleValue)
+                        }
+
+                        //favorite
+                        val gpfat = GetPlanFavoriteAsyncTask(planIdList)
+                        gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+                            override fun callback(resultFavoriteArrayList: ArrayList<String>) {
+                                super.callback(resultFavoriteArrayList)
+                                if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
+                                    resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
+                                    //完了
+
+                                    /****************/
+                                    //画像
+                                    val giat = GetImageAsyncTask()
+                                    giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                                        override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                                            if (resultBmpString == "RESULT-OK") {
+                                                /****************/
+
+                                                var timelinePlanData: TimelinePlanData
+                                                for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
+                                                    val timelineData = timelineRecordJsonArray.getJSONObject(_timelineCnt)
+                                                    timelinePlanData = TimelinePlanData()
+
+                                                    timelinePlanData.planId = timelineData.getLong("plan_id")
+                                                    if(resultBmpList!![_timelineCnt].isNotEmpty()) {
+                                                        if (resultBmpList[_timelineCnt][0] != null) {
+                                                            timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
+                                                        } else {
+                                                            timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
+                                                        }
+                                                        if (resultBmpList[_timelineCnt][1] != null) {
+                                                            timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
+                                                        } else {
+                                                            timelinePlanData.planSpotImage = null
+                                                        }
+                                                    }else{
+                                                        timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
+                                                        timelinePlanData.planSpotImage = null
+                                                    }
+                                                    timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
+                                                    timelinePlanData.planTitle = timelineData.getString("plan_title")
+                                                    timelinePlanData.planSpotTitleList.addAll(spotTitleList[_timelineCnt])
+                                                    val planDate = timelineData.getString("plan_date")
+                                                    val dateIndex = planDate.indexOf(" ")
+                                                    timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
+                                                    timelinePlanData.planFavorite = resultFavoriteArrayList[_timelineCnt]
+                                                    timelinePlanData.userId = timelineData.getString("user_id")
+                                                    addTimelineList.add(timelinePlanData)
+                                                }
+                                                /****************/
+
+                                                if (refreshFlg) {
+                                                    TIMELINE_LIST.addAll(0, addTimelineList)
+                                                } else {
+                                                    TIMELINE_LIST.addAll(addTimelineList)
+                                                }
+
+                                                addTimelineList.clear()
+                                                timelineListAdapter.notifyDataSetChanged()
+                                                timelineCnt += timelineRecordJsonArray.length()
+
+                                                if (timelineSwipeRefresh.isRefreshing)
+                                                    timelineSwipeRefresh.isRefreshing = false
+
+                                                bottomRefreshFlg = true
+
+                                                if (firstApi) {
+                                                    /**************************/
+//                                                    setTimelineListener()
+                                                    /**************************/
+                                                    firstApi = false
+                                                }
+
+                                            } else {
+                                                failedAsyncTask()
+                                                return
+                                            }
+                                        }
+                                    })
+                                    giat.execute(bmpList)
+                                } else {
+                                    failedAsyncTask()
+                                    return
+                                }
+                            }
+                        })
+                        gpfat.execute()
+
                     } else {
                         if (timelineSwipeRefresh.isRefreshing)
                             timelineSwipeRefresh.isRefreshing = false

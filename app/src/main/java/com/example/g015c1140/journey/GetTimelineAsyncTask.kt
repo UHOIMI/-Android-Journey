@@ -12,13 +12,14 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
+class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackGetTimelineAsyncTask: CallbackGetTimelineAsyncTask? = null
-    private var allResult: String? = null
+    private var result: String? = null
 
     private val OFSET = ofset
+    private val AREA = area
     private var timelineRecord: JSONArray? = null
     private val PLAN_ID_LIST = arrayListOf<String>()
     private val PLAN_USER_ID_LIST = arrayListOf<String>()
@@ -32,7 +33,13 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
         var connection: HttpURLConnection? = null
 
         try {
-            val url = URL("${Setting().TIMELINE_GET_URL}$OFSET")
+
+            val url = if(AREA == ""){
+                URL("${Setting().TIMELINE_GET_URL}$OFSET")
+            }else{
+                URL("${Setting().TIMELINE_GET_URL}$OFSET?area=$AREA")
+            }
+
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。
 
@@ -50,15 +57,17 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
                 val jsonObject = JSONObject(sb.toString())
                 if (jsonObject.getString("status").toString() != "200") {
                     Log.d("test", "Timeline error")
-                    allResult = null
-                    return allResult
+                    result = null
+                    return result
                 }
 
                 timelineRecord = jsonObject.getJSONArray("record")
+                result = "OK"
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
 
+/*
             for (_timelineCnt in 0 until timelineRecord!!.length()) {
                 val timelineValue = JSONObject(timelineRecord!![_timelineCnt].toString())
                 //spot cnt
@@ -176,7 +185,7 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
                 //user name icon
                 PLAN_USER_ID_LIST.add(timelineValue.getString("user_id"))
             }
-            allResult = "OK"
+*/
 
             //ここから下は、接続エラーとかJSONのエラーとかで失敗した時にエラーを処理する為のものです。
         } catch (e: MalformedURLException) {
@@ -191,7 +200,7 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
             connection?.disconnect()
         }
         //失敗した時はnullやエラーコードなどを返しましょう。
-        return allResult
+        return result
     }
 
     //返ってきたデータをビューに反映させる処理はonPostExecuteに書きます。これはメインスレッドです。
@@ -200,13 +209,13 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
 
         if (result == null) {
             Log.d("test GetUserIdTask", "return null")
-            callbackGetTimelineAsyncTask!!.callback("RESULT-NG",null,null,null, null,null)
+            callbackGetTimelineAsyncTask!!.callback("RESULT-NG",null)
             return
         }
 
 
-        Log.d("test GetUserIdTask", "result：$result")
-        callbackGetTimelineAsyncTask!!.callback("RESULT-OK",timelineRecord,PLAN_ID_LIST,PLAN_USER_ID_LIST,PLAN_SPOT_ID_LIST,PLAN_SPOT_CNT_LIST)
+        Log.d("test GettimelineTask", "result：$result")
+        callbackGetTimelineAsyncTask!!.callback("RESULT-OK",timelineRecord)
     }
 
     fun setOnCallback(cb: CallbackGetTimelineAsyncTask) {
@@ -214,6 +223,6 @@ class GetTimelineAsyncTask(ofset:Int) : AsyncTask<String, String, String>() {
     }
 
     open class CallbackGetTimelineAsyncTask {
-        open fun callback(result: String, timelineRecordJsonArray: JSONArray?, resultPlanIdList: ArrayList<String>?, resultPlanUserIdList: ArrayList<String>?, resultPlanSpotIdList: ArrayList<ArrayList<String>>?, resultPlanSpotCntList: ArrayList<Int>?) {}
+        open fun callback(result: String, timelineRecordJsonArray: JSONArray?) {}
     }
 }
