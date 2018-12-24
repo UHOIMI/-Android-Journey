@@ -112,6 +112,7 @@ class DetailUserActivity : AppCompatActivity() {
             detailUserCommentTextView.text = */
 
         } else {
+            detailUserSpotListButton.visibility = View.GONE
             //他のユーザー情報
             val guaat = GetUserAccountAsyncTask(arrayListOf(intent.getStringExtra("USER_ID")))
             guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {

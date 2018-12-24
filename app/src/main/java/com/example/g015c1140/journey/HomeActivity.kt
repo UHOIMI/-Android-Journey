@@ -45,6 +45,10 @@ class HomeActivity : AppCompatActivity() {
         snapHelper[1].attachToRecyclerView(favoritePlanRecyclerView)
         snapHelper[2].attachToRecyclerView(userGenerationPlanRecyclerView)
 
+        homeFab.setOnClickListener {
+            Toast.makeText(this,"homeFab", Toast.LENGTH_SHORT).show()
+        }
+
         val planListData = getPlanListData()
         val areaListData = getAreaListData()
 

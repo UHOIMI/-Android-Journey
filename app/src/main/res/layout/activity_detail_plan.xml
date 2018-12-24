@@ -26,16 +26,17 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="55dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -96,6 +97,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:text="交通手段"
                 android:textSize="18sp" />
@@ -176,6 +178,7 @@
                 android:id="@+id/textView21"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:text="コメント"
                 android:textSize="18sp" />
