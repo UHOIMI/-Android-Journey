@@ -8,5 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- タイトルバー文字色 -->
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+
     </style>
 </resources>

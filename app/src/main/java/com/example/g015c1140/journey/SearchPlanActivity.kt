@@ -9,14 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.ImageButton
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_search_plan.*
 
-
-
 class SearchPlanActivity : AppCompatActivity() {
-
 
     //交通手段ボタン用
     private lateinit var transportationImageButton: MutableList<ImageButton>
@@ -24,11 +22,9 @@ class SearchPlanActivity : AppCompatActivity() {
     //交通手段ボタンフラグ用
     private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0, 0, 0, 0, 0, 0, 0)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_plan)
-
 
         //タイトル名セット
         title = "検索"
@@ -48,6 +44,16 @@ class SearchPlanActivity : AppCompatActivity() {
         //交通手段ボタン設定
         transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
 
+        showSwitch.setOnCheckedChangeListener(
+                fun(_: CompoundButton?, isChecked: Boolean) {
+                    // 表示する文字列をスイッチのオンオフで変える
+                    showSwitch.text = if (isChecked) {
+                        showSwitch.textOn
+                    } else {
+                        showSwitch.textOff
+                    }
+                }
+        )
 
         //値セット
         val searchTextValue = Array(5) { i -> "searchValue-$i" }
