@@ -137,16 +137,15 @@
                 android:layout_marginLeft="8dp"/>
 
             <Button
-                android:text="次へ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/doneButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteY="470dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button"
                 android:onClick="onDoneButtonTapped"
-                android:layout_marginBottom="16dp"/>
+                android:text="次へ"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </LinearLayout>
 
