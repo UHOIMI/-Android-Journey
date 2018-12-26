@@ -11,13 +11,14 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetPlanFavoriteAsyncTask(pIdList : ArrayList<String>) : AsyncTask<Void, String, String>() {
+class GetPlanFavoriteAsyncTask(pIdList: ArrayList<String>, uId: String) : AsyncTask<Void, String, String>() {
 
     //callBack用
     private var callbackGetPlanFavoriteAsyncTask: CallbackGetPlanFavoriteAsyncTask? = null
     private var result: String? = null
     private val PLAN_ID_LIST = pIdList
-    private val FAVORITE_CNT_LIST = arrayListOf<String>()
+    private val USER_ID = uId
+    private val FAVORITE_LIST = arrayListOf<String>()
 
     override fun doInBackground(vararg void: Void): String? {
 
@@ -33,7 +34,12 @@ class GetPlanFavoriteAsyncTask(pIdList : ArrayList<String>) : AsyncTask<Void, St
 
         PLAN_ID_LIST.forEach {
             try {
-                val url = URL("${Setting().FAVORITE_GET_URL}$it")
+                val url = if (USER_ID != "") {
+                    URL(Setting().FAVORITE_GET_PUID_URL.format(it, USER_ID))
+                } else {
+                    URL("${Setting().FAVORITE_GET_COUNT_URL}$it")
+                }
+
                 connection = url.openConnection() as HttpURLConnection
                 connection!!.connect()  //ここで指定したAPIを叩いてみてます。
 
@@ -48,14 +54,24 @@ class GetPlanFavoriteAsyncTask(pIdList : ArrayList<String>) : AsyncTask<Void, St
 
                 try {
                     val jsonObject = JSONObject(sb.toString())
+
                     if (jsonObject.getString("status") != "200") {
-                        result = null
-                        return result
+                        jsonObject.getString("status")
+                        if ((USER_ID != "") && (jsonObject.getString("status") == "404")) {
+                            FAVORITE_LIST.add("favorite-no")
+                            result = "favorite-no"
+                        } else {
+                            result = null
+                            return result
+                        }
+                    } else if (USER_ID != "") {
+                        FAVORITE_LIST.add("favorite-yes")
+                        result = "favorite-yes"
+                    }else{
+                        FAVORITE_LIST.add(jsonObject.getJSONObject("record").getString("count"))
+                        result = it
                     }
 
-                    FAVORITE_CNT_LIST.add( jsonObject.getJSONObject("record").getString("count") )
-
-                    result = it
 
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -89,8 +105,8 @@ class GetPlanFavoriteAsyncTask(pIdList : ArrayList<String>) : AsyncTask<Void, St
         }
 
         Log.d("test GetUserIdTask", "result：$result")
-        FAVORITE_CNT_LIST.add("RESULT-OK")
-        callbackGetPlanFavoriteAsyncTask!!.callback(FAVORITE_CNT_LIST)
+        FAVORITE_LIST.add("RESULT-OK")
+        callbackGetPlanFavoriteAsyncTask!!.callback(FAVORITE_LIST)
     }
 
     fun setOnCallback(cb: CallbackGetPlanFavoriteAsyncTask) {

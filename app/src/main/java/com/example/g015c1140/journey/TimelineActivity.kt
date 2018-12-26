@@ -436,7 +436,7 @@ class TimelineActivity : AppCompatActivity() {
                         }
 
                         //favorite
-                        val gpfat = GetPlanFavoriteAsyncTask(planIdList)
+                        val gpfat = GetPlanFavoriteAsyncTask(planIdList,"")
                         gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
                             override fun callback(resultFavoriteArrayList: ArrayList<String>) {
                                 super.callback(resultFavoriteArrayList)

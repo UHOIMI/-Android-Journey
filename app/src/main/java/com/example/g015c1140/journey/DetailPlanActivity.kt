@@ -25,6 +25,7 @@ import org.json.JSONObject
 class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var gMap : GoogleMap
+    private var favoriteFlg = false
     private val SPOT_LIST = arrayListOf<DetailPlanSpotData>()
     private val SPOT_ADDRESS = arrayListOf<ArrayList<Double>>()
     private lateinit var detailPlanSpotListAdapter: DetailPlanSpotListAdapter
@@ -61,31 +62,81 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         detailPlanUserIconCircleView.setImageBitmap(myApp.getBmp_1())
         myApp.clearBmp_1()
 
+        /************************************/
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
-        fab.setOnClickListener {
-            Toast.makeText(this, "お気に入り登録", Toast.LENGTH_SHORT).show()
-            val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-            val pfat = PostFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN,"none"))
-            pfat.setOnCallback(object : PostFavoriteAsyncTask.CallbackPostFavoriteAsyncTask() {
-                override fun callback(result: String) {
-                    super.callback(result)
-                    // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test favoriteCallback", "非同期処理$result")
-                    if (result == "RESULT-OK") {
-                        //完了
+        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+        //favorite
+        val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(planId),sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"))
+        gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+            override fun callback(resultFavoriteArrayList: ArrayList<String>) {
+                super.callback(resultFavoriteArrayList)
+                if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
+                    resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
+                    //完了
+                    if ( resultFavoriteArrayList[0] == "favorite-yes"){
+                        favoriteFlg = true
                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
-                    } else {
-                        AlertDialog.Builder(this@DetailPlanActivity).apply {
-                            setTitle("お気に入り追加に失敗しました")
-                            setMessage("もう一度実行してください")
-                            setPositiveButton("確認", null)
-                            show()
+                    }
+
+                    fab.setOnClickListener {
+                        if (favoriteFlg){
+                            Toast.makeText(this@DetailPlanActivity, "お気に入り削除", Toast.LENGTH_SHORT).show()
+                            val dfat = DeletePlanFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                            dfat.setOnCallback(object : DeletePlanFavoriteAsyncTask.CallbackDeletePlanFavoriteAsyncTask() {
+                                override fun callback(resultFavoriteString: String) {
+                                    super.callback(resultFavoriteString)
+                                    // ここからAsyncTask処理後の処理を記述します。
+                                    Log.d("test favoriteCallback", "非同期処理$resultFavoriteString")
+                                    if (resultFavoriteString == "RESULT-OK") {
+                                        //完了
+                                        detailPlanFab.setImageResource(android.R.drawable.btn_star_big_off)
+                                        favoriteFlg = false
+                                    } else {
+                                        AlertDialog.Builder(this@DetailPlanActivity).apply {
+                                            setTitle("お気に入り削除に失敗しました")
+                                            setMessage("もう一度実行してください")
+                                            setPositiveButton("確認", null)
+                                            show()
+                                        }
+                                    }
+                                }
+                            })
+                            dfat.execute()
+
+                        } else {
+                            Toast.makeText(this@DetailPlanActivity, "お気に入り登録", Toast.LENGTH_SHORT).show()
+                            val pfat = PostFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                            pfat.setOnCallback(object : PostFavoriteAsyncTask.CallbackPostFavoriteAsyncTask() {
+                                override fun callback(result: String) {
+                                    super.callback(result)
+                                    // ここからAsyncTask処理後の処理を記述します。
+                                    Log.d("test favoriteCallback", "非同期処理$result")
+                                    if (result == "RESULT-OK") {
+                                        //完了
+                                        detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
+                                        favoriteFlg = true
+                                    } else {
+                                        AlertDialog.Builder(this@DetailPlanActivity).apply {
+                                            setTitle("お気に入り追加に失敗しました")
+                                            setMessage("もう一度実行してください")
+                                            setPositiveButton("確認", null)
+                                            show()
+                                        }
+                                    }
+                                }
+                            })
+                            pfat.execute()
                         }
                     }
+
+                } else {
+                    failedAsyncTask()
+                    return
                 }
-            })
-            pfat.execute()
-        }
+            }
+        })
+        gpfat.execute()
+        /************************************/
 
         detailPlanSpotListAdapter = DetailPlanSpotListAdapter(this)
         detailPlanSpotListAdapter.setDetailPlanSpotList(SPOT_LIST)
@@ -127,7 +178,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                         detailPlanBoatImageButton.setImageResource(R.drawable.s_boat_on)
                     }
 
-                    val spotIdList = arrayListOf<String>()
+/*                    val spotIdList = arrayListOf<String>()
                     if (resultPlanJson.getString("spot_id_a") != "null") {
                         spotIdList.add(resultPlanJson.getString("spot_id_a"))
 
@@ -206,30 +257,30 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                 }
                             }
                         }
-                    }
+                    }*/
 
-                    val gsat = GetSpotAsyncTask(0, arrayListOf(spotIdList), true)
+                    val gsat = GetSpotAsyncTask( planId, true)
                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
-                        override fun callback(resultSpotJsonList: ArrayList<ArrayList<JSONObject>>?, resultArrayList: ArrayList<String>?, resultIdFlg: Boolean) {
-                            super.callback(resultSpotJsonList, resultArrayList, resultIdFlg)
-                            if (resultSpotJsonList!![resultSpotJsonList.size - 1][0].getString("result") == "RESULT-OK" && resultIdFlg) {
+                        override fun callback(resultSpotJsonList: ArrayList<JSONObject>?, resultIdFlg: Boolean) {
+                            super.callback(resultSpotJsonList, resultIdFlg)
+                            if (resultSpotJsonList!![resultSpotJsonList.size - 1].getString("result") == "RESULT-OK" && resultIdFlg) {
                                 resultSpotJsonList.removeAt(resultSpotJsonList.size - 1)
 
                                 //完了
                                 val bmp = arrayListOf<String>()
-                                var arJson = JSONObject()
+                                var arJson: JSONObject
                                 var address: ArrayList<Double>
-                                for (_listCnt in 0 until resultSpotJsonList[0].size) {
+                                for (_listCnt in 0 until resultSpotJsonList.size) {
                                     when {
-                                        resultSpotJsonList[0][_listCnt].getString("spot_image_a").contains("http") -> bmp.add(resultSpotJsonList[0][_listCnt].getString("spot_image_a"))
-                                        resultSpotJsonList[0][_listCnt].getString("spot_image_b").contains("http") -> bmp.add(resultSpotJsonList[0][_listCnt].getString("spot_image_b"))
-                                        resultSpotJsonList[0][_listCnt].getString("spot_image_c").contains("http") -> bmp.add(resultSpotJsonList[0][_listCnt].getString("spot_image_c"))
+                                        resultSpotJsonList[_listCnt].getString("spot_image_a").contains("http") -> bmp.add(resultSpotJsonList[_listCnt].getString("spot_image_a"))
+                                        resultSpotJsonList[_listCnt].getString("spot_image_b").contains("http") -> bmp.add(resultSpotJsonList[_listCnt].getString("spot_image_b"))
+                                        resultSpotJsonList[_listCnt].getString("spot_image_c").contains("http") -> bmp.add(resultSpotJsonList[_listCnt].getString("spot_image_c"))
                                         else -> bmp.add("")
                                     }
 
                                     //ピン用
                                     address = arrayListOf()
-                                    arJson = resultSpotJsonList[0][_listCnt].getJSONObject("spot_address")
+                                    arJson = resultSpotJsonList[_listCnt].getJSONObject("spot_address")
                                     address.add(arJson.getString("lat").toDouble())
                                     address.add(arJson.getString("lng").toDouble())
                                     SPOT_ADDRESS.add(address)
@@ -243,16 +294,16 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                         if (resultBmpString == "RESULT-OK") {
                                             /****************/
                                             var detailPlanSpotData: DetailPlanSpotData
-                                            for (_SpotCnt in 0 until spotIdList.size) {
+                                            for (_SpotCnt in 0 until resultSpotJsonList.size) {
                                                 detailPlanSpotData = DetailPlanSpotData()
-                                                detailPlanSpotData.spotId = spotIdList[_SpotCnt].toLong()
-                                                detailPlanSpotData.spotTitle = resultSpotJsonList[0][_SpotCnt].getString("spot_title")
+                                                detailPlanSpotData.spotId = resultSpotJsonList[_SpotCnt].getLong("spot_id")
+                                                detailPlanSpotData.spotTitle = resultSpotJsonList[_SpotCnt].getString("spot_title")
                                                 if (resultBmpList!![0][_SpotCnt] != null) {
                                                     detailPlanSpotData.spotImage = resultBmpList[0][_SpotCnt]
                                                 } else {
                                                     detailPlanSpotData.spotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                                 }
-                                                detailPlanSpotData.spotComment = resultSpotJsonList[0][_SpotCnt].getString("spot_comment")
+                                                detailPlanSpotData.spotComment = resultSpotJsonList[_SpotCnt].getString("spot_comment")
                                                 SPOT_LIST.add(detailPlanSpotData)
                                             }
                                             detailPlanSpotListAdapter.notifyDataSetChanged()
@@ -293,7 +344,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         //camera移動
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 13f))
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 12.5f))
     }
 
 
