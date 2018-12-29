@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,6 +28,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var gMap : GoogleMap
     private var favoriteFlg = false
     private val SPOT_LIST = arrayListOf<DetailPlanSpotData>()
+    private var userId = ""
     private val SPOT_ADDRESS = arrayListOf<ArrayList<Double>>()
     private lateinit var detailPlanSpotListAdapter: DetailPlanSpotListAdapter
 
@@ -54,10 +56,11 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         //intent
-        val intentString = intent.getStringArrayListExtra("PLAN_ID__USER_NAME")
+        val intentString = intent.getStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME")
         val planId = intentString[0]
+        userId = intentString[1]
 
-        detailPlanUserNameTextView.text = intentString[1]
+        detailPlanUserNameTextView.text = intentString[2]
         val myApp: MyApplication = this.application as MyApplication
         detailPlanUserIconCircleView.setImageBitmap(myApp.getBmp_1())
         myApp.clearBmp_1()
@@ -142,6 +145,10 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         detailPlanSpotListAdapter = DetailPlanSpotListAdapter(this)
         detailPlanSpotListAdapter.setDetailPlanSpotList(SPOT_LIST)
         detailPlanSpotListView.adapter = detailPlanSpotListAdapter
+
+        detailPlanSpotListView.setOnItemClickListener{ _, _, position, _ ->
+             startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("ANOTHER-SPOT-FLG",true).putExtra("ANOTHER-SPOT-ID", SPOT_LIST[position].spotId.toString()))
+        }
 
         //planApi
         val gpat = GetPlanAsyncTask(planId,true)
@@ -338,7 +345,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun mapPinEdit() {
-
         for (_sCnt in 0 until SPOT_LIST.size) {
             //Pin追加
             gMap.addMarker(MarkerOptions().position(LatLng(SPOT_ADDRESS[_sCnt][0], SPOT_ADDRESS[_sCnt][1])).title(SPOT_LIST[_sCnt].spotTitle)).showInfoWindow()
@@ -348,6 +354,9 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 12.5f))
     }
 
+    fun detailPlanUserIconTapped(view: View){
+        startActivity(Intent(this,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", userId))
+    }
 
     private fun failedAsyncTask() {
         AlertDialog.Builder(this).apply {

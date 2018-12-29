@@ -48,6 +48,9 @@
                     android:id="@+id/detailPlanUserIconCircleView"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="detailPlanUserIconTapped"
                     android:src="@drawable/no_image" />
 
                 <LinearLayout

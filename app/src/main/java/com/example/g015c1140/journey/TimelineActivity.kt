@@ -112,7 +112,7 @@ class TimelineActivity : AppCompatActivity() {
 
                 startActivity(
                         Intent(this, DetailPlanActivity::class.java)
-                                .putStringArrayListExtra("PLAN_ID__USER_NAME", arrayListOf(TIMELINE_LIST[position].planId.toString(), TIMELINE_LIST[position].planUserName))
+                                .putStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME", arrayListOf(TIMELINE_LIST[position].planId.toString(), TIMELINE_LIST[position].userId, TIMELINE_LIST[position].planUserName))
                 )
             }
         }
