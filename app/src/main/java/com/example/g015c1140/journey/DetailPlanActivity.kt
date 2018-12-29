@@ -186,7 +186,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                         detailPlanBoatImageButton.setImageResource(R.drawable.s_boat_on)
                     }
 
-/*                    val spotIdList = arrayListOf<String>()
+/*                  val spotIdList = arrayListOf<String>()
                     if (resultPlanJson.getString("spot_id_a") != "null") {
                         spotIdList.add(resultPlanJson.getString("spot_id_a"))
 
