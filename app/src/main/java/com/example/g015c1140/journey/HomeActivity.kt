@@ -2,6 +2,7 @@ package com.example.g015c1140.journey
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -26,6 +27,21 @@ class HomeActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         homeUserGenerationTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
+
+        if (sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").contains("http")) {
+            val giat = GetImageAsyncTask()
+            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                    if (resultBmpString == "RESULT-OK") {
+                        homeUserIconButton.setImageBitmap(resultBmpList!![0][0])
+                    } else {
+                        Toast.makeText(this@HomeActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            giat.execute(arrayListOf(arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, ""))))
+        }
+
 
         val layoutManager = arrayListOf<LinearLayoutManager>()
         for (_layoutCnt in 0 until 4) {
