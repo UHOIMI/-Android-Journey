@@ -130,7 +130,6 @@ class ConfirmationActivity : AppCompatActivity() {
                         setPositiveButton("確認", null)
                         show()
                     }
-
                 }
             }
         })
