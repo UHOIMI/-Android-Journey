@@ -37,7 +37,7 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
             val url = if(AREA == ""){
                 URL("${Setting().TIMELINE_GET_URL}$OFSET")
             }else{
-                URL("${Setting().TIMELINE_GET_URL}$OFSET?$AREA")
+                URL("${Setting().TIMELINE_GET_URL}$OFSET&$AREA")
             }
 
             connection = url.openConnection() as HttpURLConnection

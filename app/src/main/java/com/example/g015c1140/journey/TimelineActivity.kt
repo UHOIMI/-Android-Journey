@@ -22,8 +22,10 @@ class TimelineActivity : AppCompatActivity() {
 
     /*********/
     //searchから遷移したか確認する用
-    var searchFlg = false
+    private var searchFlg = false
 
+    //searchから遷移したか確認する用
+    private var areaFlg = false
     //地方などにつかう用
     private var areaApiString = ""
     /*********/
@@ -53,11 +55,15 @@ class TimelineActivity : AppCompatActivity() {
         /*******************/
         searchFlg = intent.getBooleanExtra("SEARCH_FLG", false)
 
-        title = if (scrollFlg) {
+        areaFlg = intent.getBooleanExtra("AREA_FLG", false)
+
+        title = if (searchFlg) {
             //タイトル名セット
             "検索結果"
-        } else {
-            //タイトル名セット
+        } else if (areaFlg){
+            areaApiString = intent.getStringExtra("AREA_STRING")
+            intent.getStringExtra("AREA_NAME")
+        } else{
             "タイムライン"
         }
         /*******************/
@@ -422,7 +428,11 @@ class TimelineActivity : AppCompatActivity() {
                             spotTitleValue = arrayListOf()
                             for (_spotTitleCnt in 0 until spotJsonList.length()) {
                                 if (spotTitleValue.size < 2) {
+                                    /************/
+                                    //タイムラインエリアにはspotTitleがない
                                     spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
+                                    /************/
+
                                 } else if (spotTitleValue.size == 2) {
                                     spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
                                     break

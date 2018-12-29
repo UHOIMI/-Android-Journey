@@ -69,10 +69,13 @@ class HomeActivity : AppCompatActivity() {
 
     fun userIconButtonTapped(view: View) {
         Toast.makeText(this, "あいこんたっぷど", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this,DetailUserActivity::class.java))
+
     }
 
     fun planSpotButtonTapped(view: View) {
         Toast.makeText(this, "ぷらんすぽっとたっぷど", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this,PostActivity::class.java))
     }
 
     //BottomBarのボタン処理
@@ -120,14 +123,14 @@ class HomeActivity : AppCompatActivity() {
 
     private fun getAreaListData(): ArrayList<HomeAreaData> {
         return arrayListOf(
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.hokkaidou), "area=北海道"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.touhoku), "area=青森県&area=岩手県&area=秋田県&area=宮城県&area=山形県&area=福島県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.kantou), "area=茨城県&area=栃木県&area=群馬県&area=埼玉県&area=千葉県&area=東京都&area=神奈川県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.chuubu), "area=山梨県&area=長野県&area=新潟県&area=富山県&area=石川県&area=福井県&area=静岡県&area=愛知県&area=岐阜県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.kinki), "area=三重県&area=滋賀県&area=京都府&area=大阪府&area=兵庫県&area=奈良県&area=和歌山県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.chuugoku), "area=鳥取県&area=島根県&area=岡山県&area=広島県&area=山口県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.shikoku), "area=香川県&area=愛媛県&area=徳島県&area=高知県"),
-                HomeAreaData(BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu), "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
+                HomeAreaData("北海道地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.hokkaidou), "area=北海道"),
+                HomeAreaData("東北地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.touhoku), "area=青森県&area=岩手県&area=秋田県&area=宮城県&area=山形県&area=福島県"),
+                HomeAreaData("関東地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kantou), "area=茨城県&area=栃木県&area=群馬県&area=埼玉県&area=千葉県&area=東京都&area=神奈川県"),
+                HomeAreaData("中部地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.chuubu), "area=山梨県&area=長野県&area=新潟県&area=富山県&area=石川県&area=福井県&area=静岡県&area=愛知県&area=岐阜県"),
+                HomeAreaData("近畿地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kinki), "area=三重県&area=滋賀県&area=京都府&area=大阪府&area=兵庫県&area=奈良県&area=和歌山県"),
+                HomeAreaData("中国地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.chuugoku), "area=鳥取県&area=島根県&area=岡山県&area=広島県&area=山口県"),
+                HomeAreaData("四国地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.shikoku), "area=香川県&area=愛媛県&area=徳島県&area=高知県"),
+                HomeAreaData("九州地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu), "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
         )
     }
 

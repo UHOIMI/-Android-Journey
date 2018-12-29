@@ -2,6 +2,7 @@ package com.example.g015c1140.journey
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -30,18 +31,20 @@ class AreaPageControlRecyclerViewAdapter(context: Context, activity: Activity, a
         view.setOnClickListener {
             val position = holder.adapterPosition // positionを取得
             // 何かの処理をします
-//            ACTIVITY.startActivity(Intent(CONTEXT,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
+            ACTIVITY.startActivity(Intent(CONTEXT,TimelineActivity::class.java).putExtra("AREA_FLG",true).putExtra("AREA_NAME",areaDataList[position].areaName).putExtra("AREA_STRING",areaDataList[position].areaApiString))
             Toast.makeText(CONTEXT, "areaたっぷ ${areaDataList[position].areaApiString}", Toast.LENGTH_SHORT).show()
         }
         return holder
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var areaName = ""
         val areaImageView = (view.findViewById(R.id.areaImageView) as ImageView)
         var areaApiString = ""
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.areaName = areaDataList[position].areaName
         holder.areaImageView.setImageBitmap(areaDataList[position].areaImage)
         holder.areaApiString = areaDataList[position].areaApiString
     }
