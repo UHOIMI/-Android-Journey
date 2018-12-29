@@ -65,6 +65,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         /************************************/
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+
         //favorite
         val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(planId),sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"))
         gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
