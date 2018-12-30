@@ -64,8 +64,6 @@ class TimelinePlanListAdapter(internal var context: Context,internal val activit
 
         (view.findViewById(R.id.planUserIconCircleImage) as ImageView).setOnClickListener {
             // イメージ画像がクリックされたときに実行される処理
-
-            Log.d("test", "tag ${it.tag}")
             ACTIVITY.startActivity(Intent(context,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
         }
 

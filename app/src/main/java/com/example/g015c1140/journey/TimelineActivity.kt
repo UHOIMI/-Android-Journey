@@ -192,9 +192,6 @@ class TimelineActivity : AppCompatActivity() {
                                 if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
                                     resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                                     //完了
-                                    */
-    /****************//*
-
                                     val gsat = GetSpotAsyncTask(0, resultPlanSpotIdList!!, true)
                                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                                         override fun callback(resultSpotJsonList: ArrayList<ArrayList<JSONObject>>?, resultArrayList: ArrayList<String>?, resultIdFlg: Boolean) {
@@ -202,9 +199,6 @@ class TimelineActivity : AppCompatActivity() {
                                             if (resultSpotJsonList!![resultSpotJsonList.size - 1][0].getString("result") == "RESULT-OK" && resultIdFlg) {
                                                 resultSpotJsonList.removeAt(resultSpotJsonList.size - 1)
                                                 //完了
-                                                */
-    /****************//*
-
                                                 val gpfat = GetPlanFavoriteAsyncTask(resultPlanIdList)
                                                 gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
                                                     override fun callback(resultFavoriteArrayList: ArrayList<String>) {
@@ -238,17 +232,10 @@ class TimelineActivity : AppCompatActivity() {
                                                                 }
                                                                 bmpList.add(bmpValueList)
                                                             }
-                                                            */
-    /****************//*
-
                                                             val giat = GetImageAsyncTask()
                                                             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                                                                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                                                     if (resultBmpString == "RESULT-OK") {
-                                                                        */
-    /****************//*
-
-
                                                                         var timelinePlanData: TimelinePlanData
                                                                         for (_timalineCnt in 0 until timelineRecordJsonArray!!.length()) {
                                                                             timelinePlanData = TimelinePlanData()
@@ -283,10 +270,6 @@ class TimelineActivity : AppCompatActivity() {
                                                                             timelinePlanData.userId = resultPlanUserIdList[_timalineCnt]
                                                                             addTimelineList.add(timelinePlanData)
                                                                         }
-                                                                        */
-    /****************//*
-
-
                                                                         if (refreshFlg) {
                                                                             TIMELINE_LIST.addAll(0, addTimelineList)
                                                                         } else {
@@ -303,13 +286,7 @@ class TimelineActivity : AppCompatActivity() {
                                                                         bottomRefreshFlg = true
 
                                                                         if (firstApi) {
-                                                                            */
-    /**************************//*
-
                                                                             setTimelineListener()
-                                                                            */
-    /**************************//*
-
                                                                             firstApi = false
                                                                         }
 
@@ -327,9 +304,6 @@ class TimelineActivity : AppCompatActivity() {
                                                     }
                                                 })
                                                 gpfat.execute()
-                                                */
-    /****************//*
-
                                             } else {
                                                 failedAsyncTask()
                                                 return
@@ -337,9 +311,6 @@ class TimelineActivity : AppCompatActivity() {
                                         }
                                     })
                                     gsat.execute()
-                                    */
-    /****************//*
-
                                 } else {
                                     failedAsyncTask()
                                     return

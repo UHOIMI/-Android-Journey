@@ -21,11 +21,6 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
     private val OFSET = ofset
     private val AREA = area
     private var timelineRecord: JSONArray? = null
-    private val PLAN_ID_LIST = arrayListOf<String>()
-    private val PLAN_USER_ID_LIST = arrayListOf<String>()
-    private val PLAN_SPOT_ID_LIST = arrayListOf<ArrayList<String>>()
-    private val PLAN_SPOT_CNT_LIST = arrayListOf<Int>()
-
 
     override fun doInBackground(vararg params: String?): String? {
 

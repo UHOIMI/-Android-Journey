@@ -2,14 +2,13 @@ package com.example.g015c1140.journey
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, timelineList: ArrayList<TimelinePlanData>) : RecyclerView.Adapter<PlanPageControlRecyclerViewAdapter.ViewHolder>() {
 
@@ -41,8 +40,12 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         val holder = ViewHolder(view)
         view.setOnClickListener {
             val position = holder.adapterPosition // positionを取得
-            // 何かの処理をします
-            Toast.makeText(CONTEXT, "アイテムたっぷ $position", Toast.LENGTH_SHORT).show()
+            val myApp = ACTIVITY.application as MyApplication
+            myApp.setBmp_1((timelinePlanDataList[position].planUserIconImage!!))
+           ACTIVITY.startActivity(
+                    Intent(CONTEXT, DetailPlanActivity::class.java)
+                            .putStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME", arrayListOf(timelinePlanDataList[position].planId.toString(), timelinePlanDataList[position].userId, timelinePlanDataList[position].planUserName))
+            )
         }
         return holder
     }
@@ -77,9 +80,7 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
 
         (holder.planUserIconCircleImage.findViewById(R.id.planUserIconCircleImage) as ImageView).setOnClickListener {
             // イメージ画像がクリックされたときに実行される処理
-            Log.d("test", "tag ${it.tag}")
-//            ACTIVITY.startActivity(Intent(CONTEXT,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
-            Toast.makeText(CONTEXT, "いめーじたっぷ${it.tag}", Toast.LENGTH_SHORT).show()
+            ACTIVITY.startActivity(Intent(CONTEXT,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", (it.tag) as String))
         }
     }
 }

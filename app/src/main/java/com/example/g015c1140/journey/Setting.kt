@@ -25,6 +25,7 @@ class Setting {
     val FAVORITE_GET_PUID_URL = "http://$IP_ADDRESS/api/v1/favorite/find?plan_id=%s&user_id=%s"
     val FAVORITE_POST_URL = " http://$IP_ADDRESS/api/v1/favorite/register"
     val FAVORITE_DELETE_URL = "http://$IP_ADDRESS/api/v1/favorite/delete"
+    val SEARCH_GET_URL = "http://$IP_ADDRESS/api/v1/search/find?"
 
     val USER_SHARED_PREF = "UserData"
     val USER_SHARED_PREF_FLG = "userFlg"

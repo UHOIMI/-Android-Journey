@@ -1,20 +1,38 @@
 package com.example.g015c1140.journey
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_home.*
+import org.json.JSONArray
+import java.text.SimpleDateFormat
 
 
 class HomeActivity : AppCompatActivity() {
+
+    private val LAYOUT_MANAGER = arrayListOf<LinearLayoutManager>()
+
+    private val NEW_PLAN_LIST = arrayListOf<TimelinePlanData>()
+    private lateinit var newPlanRecyclerViewAdapter: PlanPageControlRecyclerViewAdapter
+
+    private val GENERATION_PLAN_LIST = arrayListOf<TimelinePlanData>()
+    private lateinit var generationPlanRecyclerViewAdapter: PlanPageControlRecyclerViewAdapter
+
+
+    @SuppressLint("SimpleDateFormat")
+    private val DATE_FORMAT_IN = SimpleDateFormat("yyyy-MM-dd")
+    @SuppressLint("SimpleDateFormat")
+    private val DATE_FORMAT_OUT = SimpleDateFormat("MM月dd日")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +44,12 @@ class HomeActivity : AppCompatActivity() {
         homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-        homeUserGenerationTextView.text = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
+        val generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
+        homeUserGenerationTextView.text  = when(generation) {
+            "10" -> "10歳以下"
+            "100" -> "100歳以上"
+            else -> "${generation}代"
+        }
 
         if (sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").contains("http")) {
             val giat = GetImageAsyncTask()
@@ -42,16 +65,17 @@ class HomeActivity : AppCompatActivity() {
             giat.execute(arrayListOf(arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, ""))))
         }
 
-
-        val layoutManager = arrayListOf<LinearLayoutManager>()
-        for (_layoutCnt in 0 until 4) {
-            layoutManager.add(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
+        homeFab.setOnClickListener {
+            startActivity(Intent(this, PutSpotActivity::class.java))
         }
 
-        areaRecyclerView.layoutManager = layoutManager[0]
-        newPlanRecyclerView.layoutManager = layoutManager[1]
-        favoritePlanRecyclerView.layoutManager = layoutManager[2]
-        userGenerationPlanRecyclerView.layoutManager = layoutManager[3]
+        for (_layoutCnt in 0 until 4) {
+            LAYOUT_MANAGER.add(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
+        }
+        areaRecyclerView.layoutManager = LAYOUT_MANAGER[0]
+        newPlanRecyclerView.layoutManager = LAYOUT_MANAGER[1]
+        favoritePlanRecyclerView.layoutManager = LAYOUT_MANAGER[2]
+        userGenerationPlanRecyclerView.layoutManager = LAYOUT_MANAGER[3]
 
         val snapHelper = arrayListOf<PagerSnapHelper>()
         for (_layoutCnt in 0 until 3) {
@@ -61,37 +85,228 @@ class HomeActivity : AppCompatActivity() {
         snapHelper[1].attachToRecyclerView(favoritePlanRecyclerView)
         snapHelper[2].attachToRecyclerView(userGenerationPlanRecyclerView)
 
-        homeFab.setOnClickListener {
-            Toast.makeText(this,"homeFab", Toast.LENGTH_SHORT).show()
-        }
-
+        /**************************************/
         val planListData = getPlanListData()
         val areaListData = getAreaListData()
 
         val areaRecyclerViewAdapter = AreaPageControlRecyclerViewAdapter(this, this, areaListData)
-        val newPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, planListData)
+        newPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, NEW_PLAN_LIST)
         val favoritePlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, planListData)
-        val userGenerationPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, planListData)
+        generationPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, GENERATION_PLAN_LIST)
 
         areaRecyclerView.adapter = areaRecyclerViewAdapter
         newPlanRecyclerView.adapter = newPlanRecyclerViewAdapter
         favoritePlanRecyclerView.adapter = favoritePlanRecyclerViewAdapter
-        userGenerationPlanRecyclerView.adapter = userGenerationPlanRecyclerViewAdapter
+        userGenerationPlanRecyclerView.adapter = generationPlanRecyclerViewAdapter
 
-        newPlanPageControlView.setRecyclerView(newPlanRecyclerView, layoutManager[1])
-        favoritePlanPageControlView.setRecyclerView(favoritePlanRecyclerView, layoutManager[2])
-        userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, layoutManager[3])
+        favoritePlanPageControlView.setRecyclerView(favoritePlanRecyclerView, LAYOUT_MANAGER[2])
+
+        val gtat = GetTimelineAsyncTask("", 0)
+        gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
+            override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
+                super.callback(result, timelineRecordJsonArray)
+                if (result == "RESULT-OK") {
+
+                    if (timelineRecordJsonArray != null) {
+                        if (timelineRecordJsonArray.length() > 3) {
+                            for (_removeCnt in 0 until (timelineRecordJsonArray.length() - 3)) {
+                                timelineRecordJsonArray.remove(timelineRecordJsonArray.length() - 1)
+                            }
+                        }
+                    }
+
+                    setPlanList(timelineRecordJsonArray!!, 1)
+                } else {
+                    Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+        gtat.execute()
+
+        val gsat = GetSearchAsyncTask("", generation, "", "", "")
+        gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
+            override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
+                super.callback(result, searchRecordJsonArray)
+                if (result == "RESULT-OK") {
+
+                    if (searchRecordJsonArray != null) {
+                        if (searchRecordJsonArray.length() > 3) {
+                            for (_removeCnt in 0 until (searchRecordJsonArray.length() - 3)) {
+                                searchRecordJsonArray.remove(searchRecordJsonArray.length() - 1)
+                            }
+                        }
+                    }
+
+                    setPlanList(searchRecordJsonArray!!,2)
+                } else {
+                    Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+        gsat.execute()
+    }
+
+    private fun setPlanList(timelineRecordJsonArray: JSONArray, listFlg: Int) {
+
+        //favorite用
+        val planIdList = arrayListOf<String>()
+
+        //画像取得用
+        val bmpList = arrayListOf<ArrayList<String>>()
+        var bmpValueList: ArrayList<String>
+
+        //spotTitle
+        val spotTitleList = arrayListOf<ArrayList<String>>()
+        var spotTitleValue: ArrayList<String>
+
+        for (_jsonCnt in 0 until timelineRecordJsonArray.length()) {
+            //favorite用
+            planIdList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getString("plan_id"))
+
+            //画像取得用
+            bmpValueList = arrayListOf()
+            bmpValueList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("user").getString("user_icon"))
+            val spotJsonList = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONArray("spots")
+
+            loop@ for (_spotCnt in 0 until spotJsonList.length()) {
+                when {
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
+                        break@loop
+                    }
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
+                        break@loop
+                    }
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
+                        break@loop
+                    }
+                }
+                if (spotJsonList.length() - 1 == _spotCnt) {
+                    bmpValueList.add("")
+                }
+            }
+            bmpList.add(bmpValueList)
+
+            spotTitleValue = arrayListOf()
+            for (_spotTitleCnt in 0 until spotJsonList.length()) {
+                if (spotTitleValue.size < 2) {
+                    spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
+                } else if (spotTitleValue.size == 2) {
+                    spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
+                    break
+                }
+            }
+            if (spotTitleValue.size != 3) {
+                for (_addCnt in spotTitleValue.size..3)
+                    spotTitleValue.add("")
+            }
+            spotTitleList.add(spotTitleValue)
+        }
+
+        //favorite
+        val gpfat = GetPlanFavoriteAsyncTask(planIdList, "")
+        gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+            override fun callback(resultFavoriteArrayList: ArrayList<String>) {
+                super.callback(resultFavoriteArrayList)
+                if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
+                    resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
+                    //完了
+
+                    /****************/
+                    //画像
+                    val giat = GetImageAsyncTask()
+                    giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                        override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                            if (resultBmpString == "RESULT-OK") {
+                                /****************/
+
+                                var timelinePlanData: TimelinePlanData
+                                for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
+                                    val timelineData = timelineRecordJsonArray.getJSONObject(_timelineCnt)
+                                    timelinePlanData = TimelinePlanData()
+
+                                    timelinePlanData.planId = timelineData.getLong("plan_id")
+                                    if (resultBmpList!![_timelineCnt].isNotEmpty()) {
+                                        if (resultBmpList[_timelineCnt][0] != null) {
+                                            timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
+                                        } else {
+                                            timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
+                                        }
+                                        if (resultBmpList[_timelineCnt][1] != null) {
+                                            timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
+                                        } else {
+                                            timelinePlanData.planSpotImage = null
+                                        }
+                                    } else {
+                                        timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
+                                        timelinePlanData.planSpotImage = null
+                                    }
+                                    timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
+                                    timelinePlanData.planTitle = timelineData.getString("plan_title")
+                                    timelinePlanData.planSpotTitleList.addAll(spotTitleList[_timelineCnt])
+                                    val planDate = timelineData.getString("plan_date")
+                                    val dateIndex = planDate.indexOf(" ")
+                                    timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
+                                    timelinePlanData.planFavorite = resultFavoriteArrayList[_timelineCnt]
+                                    timelinePlanData.userId = timelineData.getString("user_id")
+
+                                    /****/
+                                    when (listFlg) {
+                                        1 -> NEW_PLAN_LIST.add(timelinePlanData)
+                                        2 -> GENERATION_PLAN_LIST.add(timelinePlanData)
+                                    }
+                                    /***/
+                                }
+                                /****/
+                                when (listFlg) {
+                                    1 -> {
+                                        newPlanRecyclerViewAdapter.notifyDataSetChanged()
+                                        newPlanPageControlView.setRecyclerView(newPlanRecyclerView, LAYOUT_MANAGER[1])
+                                    }
+                                    2 -> {
+                                        generationPlanRecyclerViewAdapter.notifyDataSetChanged()
+                                        userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, LAYOUT_MANAGER[3])
+                                    }
+
+                                }
+                                /***/
+                            } else {
+                                failedAsyncTask()
+                                return
+                            }
+                        }
+                    })
+                    giat.execute(bmpList)
+                } else {
+                    failedAsyncTask()
+                    return
+                }
+            }
+        })
+        gpfat.execute()
+    }
+
+    private fun failedAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("タイムライン取得に失敗しました")
+            setPositiveButton("確認", null)
+            show()
+        }
     }
 
     fun userIconButtonTapped(view: View) {
-        Toast.makeText(this, "あいこんたっぷど", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this,DetailUserActivity::class.java))
+        startActivity(Intent(this, DetailUserActivity::class.java))
 
     }
 
-    fun planSpotButtonTapped(view: View) {
-        Toast.makeText(this, "ぷらんすぽっとたっぷど", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this,PostActivity::class.java))
+    fun planPostButtonTapped(view: View) {
+        startActivity(Intent(this, PostActivity::class.java))
+    }
+
+    fun newPlanButtonTapped(view: View) {
+        startActivity(Intent(this, TimelineActivity::class.java))
     }
 
     //BottomBarのボタン処理
@@ -149,5 +364,4 @@ class HomeActivity : AppCompatActivity() {
                 HomeAreaData("九州地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu), "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
         )
     }
-
 }
