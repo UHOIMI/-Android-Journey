@@ -66,6 +66,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="地方"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="18sp" />
@@ -79,6 +80,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -103,8 +105,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/newPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_height="wrap_content" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/newPlanPageControlView"
@@ -152,6 +153,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -183,8 +185,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/userGenerationPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_height="wrap_content" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/userGenerationPlanPageControlView"
