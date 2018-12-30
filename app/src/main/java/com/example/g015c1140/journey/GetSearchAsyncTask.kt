@@ -12,11 +12,12 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetSearchAsyncTask(keyword: String, generation: String, area: String, price: String, transportation: String) : AsyncTask<String, String, String>() {
+class GetSearchAsyncTask(keyword: String, generation: String, area: String, price: String, transportation: String, ofs:Int) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackGetSearchAsyncTask: CallbackGetSearchAsyncTask? = null
     private var result: String? = null
+    private var offset = ofs
 
     private val KEYWORD = keyword
     private val GENERATION = generation
@@ -51,7 +52,7 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
                 urlString += "transportation=$TRANSPOTTATION&"
             }
 
-            val url = URL(urlString.substring(0,urlString.length -1))
+            val url = URL("$urlString&offset=$offset")
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。

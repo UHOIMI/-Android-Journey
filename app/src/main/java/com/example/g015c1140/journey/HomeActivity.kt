@@ -25,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private val NEW_PLAN_LIST = arrayListOf<TimelinePlanData>()
     private lateinit var newPlanRecyclerViewAdapter: PlanPageControlRecyclerViewAdapter
 
+    private var generation = ""
     private val GENERATION_PLAN_LIST = arrayListOf<TimelinePlanData>()
     private lateinit var generationPlanRecyclerViewAdapter: PlanPageControlRecyclerViewAdapter
 
@@ -44,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
         homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-        val generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
+        generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
         homeUserGenerationTextView.text  = when(generation) {
             "10" -> "10歳以下"
             "100" -> "100歳以上"
@@ -123,7 +124,7 @@ class HomeActivity : AppCompatActivity() {
         })
         gtat.execute()
 
-        val gsat = GetSearchAsyncTask("", generation, "", "", "")
+        val gsat = GetSearchAsyncTask("", generation, "", "", "",0)
         gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
             override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                 super.callback(result, searchRecordJsonArray)
@@ -298,7 +299,6 @@ class HomeActivity : AppCompatActivity() {
 
     fun userIconButtonTapped(view: View) {
         startActivity(Intent(this, DetailUserActivity::class.java))
-
     }
 
     fun planPostButtonTapped(view: View) {
@@ -307,6 +307,16 @@ class HomeActivity : AppCompatActivity() {
 
     fun newPlanButtonTapped(view: View) {
         startActivity(Intent(this, TimelineActivity::class.java))
+    }
+
+    fun userGenerationPlanButtonTapped(view: View){
+        startActivity(Intent(this,TimelineActivity::class.java)
+                .putExtra("SEARCH_FLG",true)
+                .putExtra("SEARCH_VALUE_KEYWORD","")
+                .putExtra("SEARCH_VALUE_GENERATION",generation)
+                .putExtra("SEARCH_VALUE_AREA","")
+                .putExtra("SEARCH_VALUE_PRICE","")
+                .putExtra("SEARCH_VALUE_TRANSPORTATION",""))
     }
 
     //BottomBarのボタン処理
