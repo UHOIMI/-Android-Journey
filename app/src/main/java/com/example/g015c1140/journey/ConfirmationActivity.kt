@@ -122,7 +122,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
                     Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
-                    finish()
+                    startActivity(Intent(this@ConfirmationActivity,StartActivity::class.java))
                 } else {
                     AlertDialog.Builder(this@ConfirmationActivity).apply {
                         setTitle("投稿に失敗しました")
