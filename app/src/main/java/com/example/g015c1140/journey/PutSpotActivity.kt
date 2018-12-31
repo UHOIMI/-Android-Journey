@@ -1,6 +1,7 @@
 package com.example.g015c1140.journey
 
 //import io.realm.kotlin.createObject
+import android.Manifest
 import android.content.ContentUris
 import android.content.Context
 import android.content.DialogInterface
@@ -23,6 +24,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -30,6 +32,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -90,7 +93,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     lateinit private var spot: SpotData
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 12345
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 111
+        private const val STORAGE_PERMISSION_REQUEST_CODE = 222
         private const val RESULT_PICK_IMAGEFILE = 1001
     }
 
@@ -130,18 +134,15 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         spotImageView2 = this.findViewById(R.id.imageView2) as ImageView
         spotImageView3 = this.findViewById(R.id.imageView3) as ImageView
 
-        spotImageView1.setOnClickListener({ view ->
-            tappedImageNum = 1
-            onClickImage()
-        })
-        spotImageView2.setOnClickListener({ view ->
-            tappedImageNum = 2
-            onClickImage()
-        })
-        spotImageView3.setOnClickListener({ view ->
-            tappedImageNum = 3
-            onClickImage()
-        })
+        spotImageView1.setOnClickListener {
+            storagePermissionCheck(1)
+        }
+        spotImageView2.setOnClickListener {
+            storagePermissionCheck(1)
+        }
+        spotImageView3.setOnClickListener {
+            storagePermissionCheck(1)
+        }
 
 
         Realm.init(this)
@@ -238,7 +239,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this,DetailUserActivity::class.java))
+                startActivity(Intent(this, DetailUserActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
@@ -297,6 +298,20 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     }
 
+    fun storagePermissionCheck(num: Int) {
+        tappedImageNum = num
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Android 6.0 のみ、該当パーミッションが許可されていない場合
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST_CODE)
+        } else {
+            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
+            // 許可済みの場合、もしくはAndroid 6.0以前
+            // パーミッションが必要な処理
+            onClickImage()
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
         Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
@@ -315,6 +330,16 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             }
 
             //onMapReady(mMap)
+        } else if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // パーミッションが必要な処理
+                onClickImage()
+            } else {
+                // パーミッションが得られなかった時
+                // 処理を中断する・エラーメッセージを出す・アプリケーションを終了する等
+                tappedImageNum = 0
+                Toast.makeText(this, "許可しないと処理は続行できません", Toast.LENGTH_SHORT).show()
+            }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
