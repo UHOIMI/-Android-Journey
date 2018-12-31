@@ -60,5 +60,4 @@
         <activity android:name=".DetailPlanActivity" />
         <activity android:name=".HomeActivity"/>
     </application>
-
 </manifest>
