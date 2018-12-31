@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -12,9 +13,18 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.ImageButton
 import android.widget.Toast
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_search_plan.*
+import org.json.JSONArray
+import java.util.*
 
 class SearchPlanActivity : AppCompatActivity() {
+
+    private lateinit var mRealm: Realm
+    private lateinit var realmData: List<SearchKeywordRealmData>
+    private lateinit var searchTextValue: ArrayList<String>
+    private lateinit var searchTextListAdapter: ArrayAdapter<String>
 
     //交通手段ボタン用
     private lateinit var transportationImageButton: MutableList<ImageButton>
@@ -41,8 +51,51 @@ class SearchPlanActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(bottomnavigation)
         searchNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-        //交通手段ボタン設定
-        transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
+        // 項目をタップしたときの処理
+        searchTextListView.setOnItemClickListener { _, _, position, _ ->
+            // 一番上の項目をタップしたら
+            searchTextEditText.setText(realmData[position].keyword)
+        }
+
+        // 項目を長押ししたときの処理
+        searchTextListView.setOnItemLongClickListener { _, _, position, _ ->
+            // 長押しで削除
+            AlertDialog.Builder(this).apply {
+                setTitle("キーワード削除")
+                setMessage(" ${realmData[position].keyword} を削除しますか？")
+                setPositiveButton("削除") { _, _ ->
+                    // 削除をタップしたときの処理
+                    mRealm.executeTransaction {
+                        val searchKeywordRealmData = mRealm.where(SearchKeywordRealmData::class.java).equalTo("id", realmData[position].id).findAll()
+                        searchKeywordRealmData.deleteFromRealm(0)
+                    }
+                    searchTextValue.removeAt(position)
+                    setSearchKeyword()
+                }
+                setNegativeButton("戻る", null)
+                show()
+            }
+            return@setOnItemLongClickListener true
+        }
+
+        Realm.init(this)
+        val realmConfig = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        mRealm = Realm.getInstance(realmConfig)
+
+        searchTextEditText.onFocusChangeListener = OnFocusChangeListener { _, focus ->
+            if (focus) {
+                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+                setSearchKeyword()
+                searchDetailLinear.visibility = View.INVISIBLE
+                searchListLinear.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+                searchDetailLinear.visibility = View.VISIBLE
+                searchListLinear.visibility = View.INVISIBLE
+            }
+        }
 
         showSwitch.setOnCheckedChangeListener(
                 fun(_: CompoundButton?, isChecked: Boolean) {
@@ -55,24 +108,8 @@ class SearchPlanActivity : AppCompatActivity() {
                 }
         )
 
-        //値セット
-        val searchTextValue = Array(5) { i -> "searchValue-$i" }
-        val searchTextListAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, searchTextValue)
-        searchTextList.adapter = searchTextListAdapter
-
-
-        searchTextEditText.onFocusChangeListener = OnFocusChangeListener { view, focus ->
-            if (focus) {
-                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
-                searchDetailLinear.visibility = View.INVISIBLE
-                searchListLinear.visibility = View.VISIBLE
-            } else {
-                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
-                searchDetailLinear.visibility = View.VISIBLE
-                searchListLinear.visibility = View.INVISIBLE
-            }
-        }
-
+        //交通手段ボタン設定
+        transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
@@ -87,7 +124,6 @@ class SearchPlanActivity : AppCompatActivity() {
         }
     }
 
-
     //BottomBarのボタン処理
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -101,12 +137,116 @@ class SearchPlanActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this,DetailUserActivity::class.java))
+                startActivity(Intent(this, DetailUserActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
+    }
+
+    fun setSearchKeyword() {
+        //値セット
+        realmData = mRealm.where(SearchKeywordRealmData::class.java).findAll().reversed()
+        searchTextValue = arrayListOf()
+        val keywordLintLimit = if (realmData.size > 5) {
+            5
+        } else {
+            realmData.size
+        }
+        for (_realmCnt in 0 until keywordLintLimit) {
+            searchTextValue.add(realmData[_realmCnt].keyword)
+        }
+        searchTextListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, searchTextValue)
+        searchTextListView.adapter = searchTextListAdapter
+    }
+
+    fun searchButtonTapped(view: View) {
+
+        if (searchTextEditText.text.toString().replace(" ", "").replace("　", "") != "") {
+            mRealm.executeTransaction {
+                val keywordData = mRealm.createObject(SearchKeywordRealmData::class.java, UUID.randomUUID().toString())
+                keywordData.keyword = searchTextEditText.text.toString()
+                mRealm.copyToRealm(keywordData)
+            }
+        }
+
+        searchTextEditText.clearFocus()
+
+        if ((searchTextEditText.text.toString().replace(" ", "").replace("　", "") == "") &&
+                (moneySpinner.selectedItemPosition == 0) &&
+                (generationSpinner.selectedItemPosition == 0) &&
+                (TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14) == "0,0,0,0,0,0,0") &&
+                (prefecturesSpinner.selectedItemPosition == 0)
+        ) {
+            AlertDialog.Builder(this).apply {
+                setTitle("検索条件が指定されていません")
+                setMessage("最低1つは条件を指定してください")
+                setPositiveButton("確認", null)
+                show()
+            }
+        } else {
+
+            val generation =
+                    if (generationSpinner.selectedItemPosition == 0) {
+                        ""
+                    } else {
+                        when (generationSpinner.selectedItem.toString()) {
+                            "10歳以下" -> "10"
+                            "100歳以上" -> "100"
+                            else -> generationSpinner.selectedItem.toString().replace("代", "")
+                        }
+                    }
+
+            val area =
+                    when (prefecturesSpinner.selectedItemPosition == 0) {
+                        true -> ""
+                        else -> prefecturesSpinner.selectedItem.toString()
+                    }
+
+            val money =
+                    when (moneySpinner.selectedItemPosition == 0) {
+                        true -> ""
+                        else -> moneySpinner.selectedItem.toString()
+                    }
+
+            val transportation =
+                    when (TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14) == "0,0,0,0,0,0,0") {
+                        true -> ""
+                        else -> TRANSPORTATION_IMAGE_FLG.toString().replace(" ", "").substring(1, 14)
+                    }
+
+            val gsat = GetSearchAsyncTask(searchTextEditText.text.toString(), generation, area, money, transportation, 0)
+            gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
+                override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
+                    super.callback(result, searchRecordJsonArray)
+
+                    when (result) {
+
+                        "RESULT-404" -> {
+                            AlertDialog.Builder(this@SearchPlanActivity).apply {
+                                setTitle("該当する結果がありません")
+                                setPositiveButton("確認", null)
+                                show()
+                            }
+                        }
+
+                        "RESULT-OK" -> {
+                            startActivity(Intent(this@SearchPlanActivity, TimelineActivity::class.java)
+                                    .putExtra("SEARCH_FLG", true)
+                                    .putExtra("SEARCH_VALUE_KEYWORD", searchTextEditText.text.toString())
+                                    .putExtra("SEARCH_VALUE_GENERATION", generation)
+                                    .putExtra("SEARCH_VALUE_AREA", area)
+                                    .putExtra("SEARCH_VALUE_PRICE", money)
+                                    .putExtra("SEARCH_VALUE_TRANSPORTATION", transportation))
+                        }
+
+                        else -> Toast.makeText(this@SearchPlanActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            gsat.execute()
+        }
     }
 
     @SuppressLint("PrivateResource")
@@ -186,5 +326,10 @@ class SearchPlanActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRealm.close()
     }
 }

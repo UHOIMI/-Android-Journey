@@ -52,7 +52,7 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
                 urlString += "transportation=$TRANSPOTTATION&"
             }
 
-            val url = URL("$urlString&offset=$offset")
+            val url = URL("${urlString}offset=$offset")
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。
@@ -69,12 +69,15 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
             try {
                 sb.toString()
                 val jsonObject = JSONObject(sb.toString())
-                if (jsonObject.getString("status").toString() != "200") {
+                if (jsonObject.getString("status").toString() == "404") {
+                    result = "404"
+                    searchRecord = JSONArray()
+                    return result
+                }else if (jsonObject.getString("status").toString() != "200"){
                     Log.d("test", "Timeline error")
                     result = null
                     return result
                 }
-
                 searchRecord = jsonObject.getJSONArray("record")
                 result = "OK"
             } catch (e: JSONException) {
@@ -107,6 +110,10 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
             return
         }
 
+        if (result == "404"){
+            callbackGetSearchAsyncTask!!.callback("RESULT-404", searchRecord)
+            return
+        }
 
         Log.d("test GetSearchTask", "result：$result")
         callbackGetSearchAsyncTask!!.callback("RESULT-OK", searchRecord)

@@ -57,6 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button"
+                    android:onClick="searchButtonTapped"
                     android:text="検索"
                     android:textColor="@color/colorPrimary"
                     tools:layout_editor_absoluteX="251dp"
@@ -94,29 +95,6 @@
                             android:textOff="人気順で表示"
                             android:textOn="新着順で表示"
                             android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.2"
-                            android:text="いいね"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorPrimaryText"
-                            android:textSize="18sp" />
-
-                        <Spinner
-                            android:id="@+id/favriteSinner"
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.8"
-                            android:spinnerMode="dialog" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -281,7 +259,7 @@
                     android:visibility="invisible">
 
                     <ListView
-                        android:id="@+id/searchTextList"
+                        android:id="@+id/searchTextListView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
