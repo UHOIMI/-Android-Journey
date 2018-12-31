@@ -166,9 +166,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         //val
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        //val skyTree = LatLng(35.710063, 139.8107)
-        //mMap.addMarker(MarkerOptions().position(skyTree).title("東京スカイツリー"))
+/*
+         Add a marker in Sydney and move the camera
+        val skyTree = LatLng(35.710063, 139.8107)
+        mMap.addMarker(MarkerOptions().position(skyTree).title("東京スカイツリー"))
+*/
 
         val cameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(LatLng(35.710063, 139.8107))
