@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_post.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -42,6 +44,8 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //受け渡しスポットリスト用
     var spotList = mutableListOf<SpotData>()
+
+    private lateinit var mRealm: Realm
 
     /******************/
     //SelectSpotActivity用
@@ -135,6 +139,13 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+
+        Realm.init(this)
+        val realmConfig = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        mRealm = Realm.getInstance(realmConfig)
+
     }
 
     /************************************************/
@@ -502,6 +513,17 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         println("")
         println("金額：${planMoneySpinner.selectedItem}")
         println("プラン説明：${planDetailEditText.text}")
+
+//Realm削除処理テストするためコメントアウト（削除処理は完成済み）
+/*
+        spotList.forEach { spotData ->
+            mRealm.executeTransaction {
+                val spotRealmData = mRealm.where(TestRea::class.java).equalTo("id", spotData.id).findAll()
+                spotRealmData.deleteFromRealm(0)
+            }
+        }
+*/
+
         finish()
     }
 
@@ -512,5 +534,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             setPositiveButton("確認", null)
             show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRealm.close()
     }
 }
