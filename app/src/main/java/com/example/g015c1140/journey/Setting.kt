@@ -3,9 +3,11 @@ package com.example.g015c1140.journey
 class Setting {
 
     val SERVER_ADDRESS = "35.200.26.70"
-    val IP_ADDRESS = "192.168.43.84:3000"
+//    val SERVER_ADDRESS = "api.mino.asia"
+    val IP_ADDRESS = "192.168.43.97:3000"
 
-    val SERVER_IMAGE_POST_URL = "http://$SERVER_ADDRESS:443/api/v1/image/upload"
+    val SERVER_IMAGE_POST_URL = "http://$SERVER_ADDRESS:3000/api/v1/image/upload"
+    val SERVER_IMAGE_DELETE_URL = "http://$SERVER_ADDRESS:3000/api/v1/image/delete"
     val USER_IMAGE_GET_URL = "http://$SERVER_ADDRESS:8080/test1/"
 
     val USER_LOGIN_URL = "http://$IP_ADDRESS/api/v1/users/login"
@@ -14,6 +16,7 @@ class Setting {
     val USER_POST_URL = "http://$IP_ADDRESS/api/v1/users/register"
     val USER_PUT_URL = "http://$IP_ADDRESS/api/v1/users/update"
     val IMAGE_POST_URL = "http://$IP_ADDRESS/api/v1/image/upload"
+    val IMAGE_DELETE_URL = "http://$IP_ADDRESS/api/v1/image/delete"
     val SPOT_POST_URL = "http://$IP_ADDRESS/api/v1/spot/register/"
     val SPOT_GET_PID_URL = "http://$IP_ADDRESS/api/v1/spot/find?plan_id="
     val SPOT_GET_SID_URL = "http://$IP_ADDRESS/api/v1/spot/find?spot_id="

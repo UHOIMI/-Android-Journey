@@ -86,7 +86,7 @@ class EditUserActivity : AppCompatActivity() {
             pass += "*"
         }
         //↓ここで落ちたのでコメントにしました
-        pass += passLast.substring(passLast.length -4 , passLast.length)
+        pass += passLast.substring(passLast.length - 4, passLast.length)
         editUserPassTextView.text = pass
 
         val generation = when (sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")) {
@@ -96,13 +96,13 @@ class EditUserActivity : AppCompatActivity() {
         }
         editUserGenerationoSpinner.setSelection((editUserGenerationoSpinner.adapter as ArrayAdapter<String>).getPosition(generation))
 
-        editUserCommentEditText.setText( sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT,"") )
+        editUserCommentEditText.setText(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT, ""))
     }
 
 
     fun onClickImage(v: View) {
         // イメージ画像がクリックされたときに実行される処理
-        when(v.id){
+        when (v.id) {
             R.id.editUserHeaderImageButton -> imageFlg = 1
             R.id.editUserIconImageView -> imageFlg = 2
         }
@@ -128,12 +128,12 @@ class EditUserActivity : AppCompatActivity() {
                 val myApp: MyApplication = this.application as MyApplication
                 val bmp = myApp.getBmp_1()
                 myApp.clearBmp_1()
-                when(imageFlg){
+                when (imageFlg) {
                     1 -> {
                         editUserHeaderImageButton.setImageBitmap(bmp)
                         headerFlg = IMAGE_EDIT
                     }
-                    2 ->  {
+                    2 -> {
                         editUserIconImageView.setImageBitmap(bmp)
                         iconFlg = IMAGE_EDIT
                     }
@@ -167,7 +167,7 @@ class EditUserActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this,DetailUserActivity::class.java))
+                startActivity(Intent(this, DetailUserActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
@@ -266,13 +266,14 @@ class EditUserActivity : AppCompatActivity() {
             }
 
             var headeUri = ""
-            if(headerFlg == IMAGE_EDIT){
+            if (headerFlg == IMAGE_EDIT) {
                 headeUri = seveAndLoadImage("header")
             }
             var iconUrl = ""
-            if (iconFlg == IMAGE_EDIT){
+            if (iconFlg == IMAGE_EDIT) {
                 iconUrl = seveAndLoadImage("icon")
             }
+
 
             val hPuiat = PostUserIconAsyncTask()
             hPuiat.setOnCallback(object : PostUserIconAsyncTask.CallbackPostUserIconAsyncTask() {
@@ -314,9 +315,14 @@ class EditUserActivity : AppCompatActivity() {
                                         // ここからAsyncTask処理後の処理を記述します。
                                         Log.d("test UserCallback", "非同期処理$result")
                                         if (result == "RESULT-OK") {
+
+                                            val imageStrList = arrayListOf(
+                                                    sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").substringAfterLast("/"),
+                                                    sharedPreferences!!.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "").substringAfterLast("/")
+                                            )
+
                                             //完了
                                             val sharedPrefEditor = sharedPreferences!!.edit()
-
                                             for (userData in userDataList) {
                                                 when (userData[0]) {
                                                     "&user_header" -> sharedPrefEditor.putString(Setting().USER_SHARED_PREF_HEADERIMAGE, userData[1])
@@ -327,8 +333,23 @@ class EditUserActivity : AppCompatActivity() {
                                                 }
                                             }
                                             sharedPrefEditor.apply()
-                                            Toast.makeText(this@EditUserActivity, "変更が完了しました", Toast.LENGTH_SHORT).show()
-                                            finish()
+
+                                            val diat = DeleteImageAsyncTask(imageStrList)
+                                            diat.setOnCallback(object : DeleteImageAsyncTask.CallbackDeleteImageAsyncTask() {
+                                                override fun callback(resultDeleteImageString: String) {
+                                                    super.callback(resultDeleteImageString)
+                                                    // ここからAsyncTask処理後の処理を記述します。
+                                                    Log.d("test UserCallback", "非同期処理$resultDeleteImageString")
+                                                    if (resultDeleteImageString == "RESULT-OK") {
+                                                        //完了
+                                                        Toast.makeText(this@EditUserActivity, "変更が完了しました", Toast.LENGTH_SHORT).show()
+                                                        finish()
+                                                    } else {
+                                                        failedAsyncTask()
+                                                    }
+                                                }
+                                            })
+                                            diat.execute()
                                         } else {
                                             failedAsyncTask()
                                         }
@@ -355,13 +376,13 @@ class EditUserActivity : AppCompatActivity() {
         }
     }
 
-    private fun seveAndLoadImage(viewName: String): String{
+    private fun seveAndLoadImage(viewName: String): String {
         var fileOut: FileOutputStream? = null
-        var uri :Uri? = null
+        var uri: Uri? = null
         var imageName = ""
-        var imageView:ImageView? = null
+        var imageView: ImageView? = null
 
-        when(viewName){
+        when (viewName) {
             "header" -> {
                 imageName = "Header.jpg"
                 imageView = editUserHeaderImageButton
