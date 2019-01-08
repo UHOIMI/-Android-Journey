@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -99,6 +100,23 @@ class EditUserActivity : AppCompatActivity() {
         editUserCommentEditText.setText(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT, ""))
     }
 
+    fun logoutButtonTapped(view: View) {
+        AlertDialog.Builder(this).apply {
+            setTitle("ログアウトします")
+            setMessage("本当によろしいですか？")
+            setPositiveButton("はい") { _, _ ->
+                // OKをタップしたときの処理
+                val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+                val sharedPrefEditor = sharedPreferences.edit()
+                sharedPrefEditor.clear().apply()
+                Toast.makeText(this@EditUserActivity, "ログアウトしました", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@EditUserActivity,IndexActivity::class.java))
+                finish()
+            }
+            setNegativeButton("いいえ", null)
+            show()
+        }
+    }
 
     fun onClickImage(v: View) {
         // イメージ画像がクリックされたときに実行される処理
@@ -283,7 +301,8 @@ class EditUserActivity : AppCompatActivity() {
                     when (result) {
                         "RESULT-OK" -> //完了した場合
                             userDataList.add(mutableListOf("&user_header", "${Setting().USER_IMAGE_GET_URL}$data"))
-                        "NO-IMAGE" -> {}
+                        "NO-IMAGE" -> {
+                        }
                         else -> {
                             failedAsyncTask()
                             return
@@ -298,7 +317,8 @@ class EditUserActivity : AppCompatActivity() {
                             when (result) {
                                 "RESULT-OK" -> //完了した場合
                                     userDataList.add(mutableListOf("&user_icon", "${Setting().USER_IMAGE_GET_URL}$data"))
-                                "NO-IMAGE" -> {}
+                                "NO-IMAGE" -> {
+                                }
                                 else -> {
                                     failedAsyncTask()
                                     return
@@ -361,10 +381,10 @@ class EditUserActivity : AppCompatActivity() {
                             }
                         }
                     })
-                    iPuiat.execute(iconUrl,sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
+                    iPuiat.execute(iconUrl, sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
                 }
             })
-            hPuiat.execute(headeUri,sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
+            hPuiat.execute(headeUri, sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
 
         } else {
             AlertDialog.Builder(this).apply {
