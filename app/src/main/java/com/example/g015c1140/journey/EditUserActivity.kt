@@ -24,6 +24,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_edit_user.*
+import kotlinx.android.synthetic.main.activity_search_plan.*
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -110,8 +111,8 @@ class EditUserActivity : AppCompatActivity() {
                 val sharedPrefEditor = sharedPreferences.edit()
                 sharedPrefEditor.clear().apply()
                 Toast.makeText(this@EditUserActivity, "ログアウトしました", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@EditUserActivity,IndexActivity::class.java))
-                finish()
+                finishAffinity()
+                startActivity(Intent(this@EditUserActivity, IndexActivity::class.java))
             }
             setNegativeButton("いいえ", null)
             show()
