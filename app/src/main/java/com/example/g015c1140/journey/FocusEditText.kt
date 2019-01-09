@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 
-class SearchEditText : EditText {
+class FocusEditText : EditText {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

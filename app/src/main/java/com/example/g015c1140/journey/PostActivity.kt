@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import kotlinx.android.synthetic.main.activity_edit_user.*
 import kotlinx.android.synthetic.main.activity_post.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -146,6 +147,15 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 .build()
         mRealm = Realm.getInstance(realmConfig)
 
+        planDetailEditText.onFocusChangeListener = View.OnFocusChangeListener { _, focus ->
+            if (focus) {
+                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+                navigation.visibility = View.INVISIBLE
+            } else {
+                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+                navigation.visibility = View.VISIBLE
+            }
+        }
     }
 
     /************************************************/

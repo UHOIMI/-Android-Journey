@@ -189,7 +189,7 @@
                 android:entries="@array/moneyList"
                 android:spinnerMode="dialog" />
 
-            <EditText
+            <com.example.g015c1140.journey.FocusEditText
                 android:id="@+id/planDetailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

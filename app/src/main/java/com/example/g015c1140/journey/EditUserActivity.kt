@@ -99,6 +99,17 @@ class EditUserActivity : AppCompatActivity() {
         editUserGenerationoSpinner.setSelection((editUserGenerationoSpinner.adapter as ArrayAdapter<String>).getPosition(generation))
 
         editUserCommentEditText.setText(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_COMMENT, ""))
+
+        editUserCommentEditText.onFocusChangeListener = View.OnFocusChangeListener { _, focus ->
+            if (focus) {
+                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+                userEditNavigation.visibility = View.INVISIBLE
+            } else {
+                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+                userEditNavigation.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     fun logoutButtonTapped(view: View) {
