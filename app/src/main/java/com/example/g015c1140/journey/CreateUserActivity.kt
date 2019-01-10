@@ -143,10 +143,10 @@ class CreateUserActivity : AppCompatActivity() {
                             result += "パスワードを入力してください\n"
                         }
 
-                        if (generationSpinner.selectedItem.toString() == "あなたの年代を選択してください") {
+                        if (generationSpinner.selectedItemPosition == 0) {
                             result += "年代を選択してください\n"
                         }
-                        if (genderSpinner.selectedItem.toString() == "あなたの性別を選択してください") {
+                        if (genderSpinner.selectedItemPosition == 0) {
                             result += "性別を選択してください\n"
                         }
 

@@ -268,7 +268,7 @@ class EditUserActivity : AppCompatActivity() {
             result += "ユーザー名を入力してください\n"
         }
 
-        if (editUserGenerationoSpinner.selectedItem.toString() == "あなたの年代を選択してください") {
+        if (editUserGenerationoSpinner.selectedItemPosition == 0) {
             result += "年代を選択してください\n"
         }
 
@@ -295,13 +295,22 @@ class EditUserActivity : AppCompatActivity() {
                 userDataList.add(mutableListOf("&comment", editUserCommentEditText.text.toString()))
             }
 
+
+            val imageStrList = arrayListOf<String>()
             var headeUri = ""
             if (headerFlg == IMAGE_EDIT) {
                 headeUri = seveAndLoadImage("header")
+                imageStrList.add(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "").substringAfterLast("/"))
+            }else{
+                imageStrList.add("")
             }
+
             var iconUrl = ""
             if (iconFlg == IMAGE_EDIT) {
                 iconUrl = seveAndLoadImage("icon")
+                imageStrList.add(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").substringAfterLast("/"))
+            }else{
+                imageStrList.add("")
             }
 
 
@@ -347,11 +356,6 @@ class EditUserActivity : AppCompatActivity() {
                                         // ここからAsyncTask処理後の処理を記述します。
                                         Log.d("test UserCallback", "非同期処理$result")
                                         if (result == "RESULT-OK") {
-
-                                            val imageStrList = arrayListOf(
-                                                    sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").substringAfterLast("/"),
-                                                    sharedPreferences!!.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "").substringAfterLast("/")
-                                            )
 
                                             //完了
                                             val sharedPrefEditor = sharedPreferences!!.edit()

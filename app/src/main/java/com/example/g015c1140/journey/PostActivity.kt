@@ -466,7 +466,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             checkResult += "プラン名が入力されていません\n"
         }
 
-        if (planPrefecturesSpinner.selectedItem.toString() == "投稿する場所の都道府県別を選択してください") {
+        if (planPrefecturesSpinner.selectedItemPosition == 0) {
             checkResult += "都道府県が選択されていません\n"
         }
 
@@ -478,7 +478,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             checkResult += "交通手段が選択されていません\n"
         }
 
-        if (planMoneySpinner.selectedItem.toString() == "プランに掛かる金額を選択してください") {
+        if (planMoneySpinner.selectedItemPosition == 0) {
             checkResult += "金額が選択されていません\n"
         }
 
