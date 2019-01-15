@@ -1,7 +1,9 @@
 package com.example.g015c1140.journey
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -33,6 +35,8 @@ class TimelineActivity : AppCompatActivity() {
     private var areaFlg = false
     //地方などにつかう用
     private var areaApiString = ""
+
+    private var favoriteFlg = false
     /*********/
 
     // 1ページ辺りの項目数
@@ -62,6 +66,8 @@ class TimelineActivity : AppCompatActivity() {
 
         areaFlg = intent.getBooleanExtra("AREA_FLG", false)
 
+        favoriteFlg = intent.getBooleanExtra("FAVORITE_FLG", false)
+
         title = when {
             searchFlg -> {
                 searchValueKeyword = intent.getStringExtra("SEARCH_VALUE_KEYWORD")
@@ -74,6 +80,10 @@ class TimelineActivity : AppCompatActivity() {
             areaFlg -> {
                 areaApiString = intent.getStringExtra("AREA_STRING")
                 intent.getStringExtra("AREA_NAME")
+            }
+            favoriteFlg -> {
+                timelineSwipeRefresh.isEnabled = false
+                "お気に入り一覧"
             }
             else -> "タイムライン"
         }
@@ -93,14 +103,16 @@ class TimelineActivity : AppCompatActivity() {
 
         timelineListAdapter = TimelinePlanListAdapter(this, this)
 
-        //引っ張って更新用
-        timelineSwipeRefresh.setColorSchemeResources(R.color.colorPrimary)
-        timelineSwipeRefresh.setOnRefreshListener {
-            // 引っ張って離した時に呼ばれます。
-            setTimeline(0, true)
-            try {
-            } catch (e: InterruptedException) {
-                Toast.makeText(this, "erorr", Toast.LENGTH_SHORT).show()
+        if (!favoriteFlg) {
+            //引っ張って更新用
+            timelineSwipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+            timelineSwipeRefresh.setOnRefreshListener {
+                // 引っ張って離した時に呼ばれます。
+                setTimeline(0, true)
+                try {
+                } catch (e: InterruptedException) {
+                    Toast.makeText(this, "erorr", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -109,13 +121,13 @@ class TimelineActivity : AppCompatActivity() {
 
         setTimeline(0, true)
 
-        //下のクルクル
-        timelineListView.addFooterView(getProgFooter())
+        if (!favoriteFlg)
+            //下のクルクル
+            timelineListView.addFooterView(getProgFooter())
 
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
-
-            if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
+            if (favoriteFlg || !(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
                 Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 
                 val myApp = this.application as MyApplication
@@ -172,36 +184,61 @@ class TimelineActivity : AppCompatActivity() {
     //refreshFlgが true:新しく投稿されたプラン取得 　false:昔のプラン取得
     private fun setTimeline(ofset: Int, refreshFlg: Boolean) {
 
-        if (!searchFlg) {
+        if (!searchFlg && !favoriteFlg) {
             val gtat = GetTimelineAsyncTask(areaApiString, ofset)
             gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
                 override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                     super.callback(result, timelineRecordJsonArray)
                     if (result == "RESULT-OK") {
-                        setTimelineList(timelineRecordJsonArray!!, ofset, refreshFlg)
+                        setTimelineList(timelineRecordJsonArray!!, refreshFlg)
                     } else {
                         Toast.makeText(this@TimelineActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
             gtat.execute()
-        } else {
-            val gsat = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation,ofset)
+        } else if (searchFlg) {
+            val gsat = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation, ofset)
             gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
                 override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                     super.callback(result, searchRecordJsonArray)
                     if (result == "RESULT-OK") {
-                        setTimelineList(searchRecordJsonArray!!, ofset, refreshFlg)
+                        setTimelineList(searchRecordJsonArray!!, refreshFlg)
                     } else {
                         Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
             gsat.execute()
+        } else if (favoriteFlg) {
+            val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+            val gufat = GetUserFavoriteAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, ""))
+            gufat.setOnCallback(object : GetUserFavoriteAsyncTask.CallbackGetUserFavoriteAsyncTask() {
+                override fun callback(result: String, favoriteRecordJSONArray: JSONArray?) {
+                    super.callback(result, favoriteRecordJSONArray)
+                    if (result != "RESULT-NG") {
+                        if (result == "RESULT-OK") {
+                            setTimelineList(favoriteRecordJSONArray!!, refreshFlg)
+                        } else {
+                            AlertDialog.Builder(this@TimelineActivity).apply {
+                                setTitle("お気に入りのプランがありません")
+                                setMessage("元の画面に戻って下さい")
+                                setPositiveButton("戻る") { _, _ ->
+                                    finish()
+                                }
+                                show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+            gufat.execute()
         }
     }
 
-    private fun setTimelineList(resultRecordJsonArray: JSONArray, ofset: Int, refreshFlg: Boolean) {
+    private fun setTimelineList(resultRecordJsonArray: JSONArray, refreshFlg: Boolean) {
 
         if (refreshFlg && !firstApi) {
             refreshLoop@ for (_jsonCnt in 0 until resultRecordJsonArray.length()) {

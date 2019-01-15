@@ -137,10 +137,12 @@ class HomeActivity : AppCompatActivity() {
                             }
                         }
                     }
-
                     setPlanList(searchRecordJsonArray!!,2)
-                } else {
-                    Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+
+                } else if(result == "RESULT-404") {
+                    Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                 }
             }
         })

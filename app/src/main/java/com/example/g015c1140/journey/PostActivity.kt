@@ -334,6 +334,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             R.id.navigation_favorite -> {
                 planTitleEditText.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
