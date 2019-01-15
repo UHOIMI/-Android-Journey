@@ -28,32 +28,34 @@ import kotlin.collections.ArrayList
 class SelectSpotActivity : AppCompatActivity() {
 
     private lateinit var mRealm: Realm
-    var dataList = ArrayList<String>()
-    var spotDataList = ArrayList<TestRea>()
 
-    //インテントで来たリスト用
-    private var spotList = arrayListOf<SpotData>()
+    //Realmにあるリスト用
+    private var realmSavedSpotList = arrayListOf<SpotData>()
 
     //インテントするリスト用
-    private var newSpotList = arrayListOf<SpotData>()
+    private var newIntentSpotList = arrayListOf<SpotData>()
 
-    //spotListから生成する個人が追加した表示用のスポット名用
-    private val spotNameList = ArrayList<String>()
-    private val spotNameList2 = ArrayList<ListSpot>()
 
-    //選択したリスト項目の名前を表示するリスト用
-    private val newSpotNameList = ArrayList<String>()
-    private val newSpotNameList2 = ArrayList<ListSpot>()
+    @SuppressLint("SimpleDateFormat")
+    private val DF = SimpleDateFormat("yyyy/MM/dd hh:MM")
 
+    //spotListから生成する個人が追加した表示用のスポット名用 Realm使用
+    private val realmSpotNameList = ArrayList<String>()
+    private val realmSpotList = ArrayList<ListSpot>()
     //登録した用
     private lateinit var userSpotListView: ListView
 
+    //選択したリスト項目の名前を表示するリスト用
+    private val newSpotNameList = ArrayList<String>()
+    private val newSpotList = ArrayList<ListSpot>()
+    private val selectSpotRealmPositionList = arrayListOf<Int?>()
     //選択した用
     private lateinit var selectSpotListView: ListView
 
-    /****************/// test you
-    private lateinit var userSpotAdapter: ArrayAdapter<String>
-    private lateinit var userSpotAdapter2: SpotListAdapter
+    /****************/
+//    private lateinit var userSpotAdapter: ArrayAdapter<String>
+    private lateinit var userSpotAdapter: SpotListAdapter
+    private lateinit var selectSpotAdapter: ArrayAdapter<String>
     /******************/
 
     /****************/
@@ -75,33 +77,22 @@ class SelectSpotActivity : AppCompatActivity() {
                 .build()
         mRealm = Realm.getInstance(realmConfig)
 
-        var realmList = mRealm.where(TestRea::class.java).findAll()
-
-        val df = SimpleDateFormat("yyyy/MM/dd hh:MM")
+        val realmList = mRealm.where(TestRea::class.java).findAll()
 
         for (_sd in realmList) {
-            spotList.add(SpotData(_sd.id, _sd.name, _sd.latitude, _sd.longitude, _sd.comment, _sd.image_A, _sd.image_B, _sd.image_C, _sd.datetime))
-            spotNameList.add(_sd.name + "\n" + df.format(_sd.datetime))
-            var ls = ListSpot()
+            realmSavedSpotList.add(SpotData(_sd.id, _sd.name, _sd.latitude, _sd.longitude, _sd.comment, _sd.image_A, _sd.image_B, _sd.image_C, _sd.datetime))
+            realmSpotNameList.add(_sd.name + "\n" + DF.format(_sd.datetime))
+            val ls = ListSpot()
             ls.name = _sd.name
-            ls.datetime = df.format(_sd.datetime)
-            spotNameList2.add(ls)
+            ls.datetime = DF.format(_sd.datetime)
+            realmSpotList.add(ls)
+            selectSpotRealmPositionList.add(-1)
         }
 
-        userSpotListView = findViewById(R.id.userSpotList) as ListView
-        userSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spotNameList)
-        userSpotAdapter2 = SpotListAdapter(this)
-        userSpotAdapter2.setSpotList(spotNameList2)
-        //userSpotListView.adapter = userSpotAdapter
-        userSpotListView.adapter = userSpotAdapter2
-
-        /*userSpotListView.setOnItemClickListener {parent, view, position, id ->
-
-            val intent = Intent(this, DetailSpotActivity::class.java)
-            var tappedSpot = SpotData(spotDataList[position]!!.id,spotDataList[position]!!.name,spotDataList[position]!!.latitude,spotDataList[position]!!.longitude,spotDataList[position]!!.comment,spotDataList[position]!!.image_A,spotDataList[position]!!.image_B,spotDataList[position]!!.image_C,spotDataList[position]!!.datetime)
-            intent.putExtra("SPOT",tappedSpot)
-            startActivity(intent)
-        }*/
+        userSpotListView = findViewById(R.id.userSpotList)
+        userSpotAdapter = SpotListAdapter(this)
+        userSpotAdapter.setSpotList(realmSpotList)
+        userSpotListView.adapter = userSpotAdapter
 
         /****************/
         spotCnt = intent.getIntExtra("SPOTCNT", 100)
@@ -109,36 +100,25 @@ class SelectSpotActivity : AppCompatActivity() {
 
         val spinner = findViewById<Spinner>(R.id.sort)
 
-/*        for(_spotList in spotList) {
-            spotNameList.add(df.format(_spotList.dateTime) + "：" + _spotList.title)
-        }
-
-        // テストのためuserSpotAdapterなどのvalなどの宣言をクラス変数に移動した
-        //val
-        userSpotAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spotNameList)
-        userSpotListView = findViewById(R.id.userSpotList)
-        userSpotListView.adapter = userSpotAdapter*/
-
-        val selectSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, newSpotNameList)
+        selectSpotAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, newSpotNameList)
         selectSpotListView = findViewById(R.id.selectSpotList)
         selectSpotListView.adapter = selectSpotAdapter
 
-        userSpotListView.setOnItemClickListener { parent, view, position, _ ->
+        userSpotListView.setOnItemClickListener { _, view, position, _ ->
 
-            if (view.isEnabled == true) {
+            if (view.isEnabled) {
                 if (spotCnt < 20) {
                     val msg = (position + 1).toString() + "番目のアイテムが追加されました"
                     Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
-                    val list = parent as ListView
-                    //val item = list.getItemAtPosition(position) as String
-                    //val adapter = list.adapter as ArrayAdapter<String>
-                    newSpotNameList2.add(userSpotAdapter2.getItem(position) as ListSpot)
-                    selectSpotAdapter.add((spotCnt + 1).toString() + "．" + userSpotAdapter2.getName(position))
-                    userSpotAdapter2.setGray(position, true)
+                    newSpotList.add(userSpotAdapter.getItem(position) as ListSpot)
+                    selectSpotAdapter.add((spotCnt + 1).toString() + "．" + userSpotAdapter.getName(position))
+                    selectSpotRealmPositionList[newSpotList.size-1] = position
+                    userSpotAdapter.setGray(position, true)
                     view.setBackgroundColor(Color.GRAY)
                     view.isEnabled = false
-                    newSpotList.add(spotList[position])
-                    selectSpotListView.adapter = selectSpotAdapter
+                    newIntentSpotList.add(realmSavedSpotList[position])
+                    selectSpotListView.deferNotifyDataSetChanged()
+                    userSpotAdapter.notifyDataSetChanged()
                     spotCnt++
                 } else {
                     Toast.makeText(this, "スポットは最大20件までです", Toast.LENGTH_SHORT).show()
@@ -146,22 +126,29 @@ class SelectSpotActivity : AppCompatActivity() {
             }
         }
 
-        selectSpotListView.setOnItemLongClickListener { _, _, position, _ ->
+        selectSpotListView.setOnItemLongClickListener { _, view, position, _ ->
             AlertDialog.Builder(this).apply {
                 setTitle("スポット削除")
                 setMessage("スポット:${newSpotNameList[position]} を削除しますか？")
-                setPositiveButton("削除", { _, _ ->
+                setPositiveButton("削除") { _, _ ->
                     // 削除をタップしたときの処理
                     //spotListAdapter.remove(spotListAdapter.getItem(position))
-                    newSpotNameList2.removeAt(position)
-                    newSpotNameList.removeAt(position)
-                    //spotList.removeAt(position)
+//                    newSpotNameList.removeAt(position)
+                    newSpotList.removeAt(position)
+                    newIntentSpotList.removeAt(position)
+
+                    if (selectSpotRealmPositionList[position] != null){
+                        userSpotAdapter.setGray(selectSpotRealmPositionList[position]!!,false)
+                        userSpotAdapter.notifyDataSetChanged()
+                    }
+                    selectSpotRealmPositionList.removeAt(position)
+
                     //削除した項目以下の連番更新
-                    for (_cnt in position until newSpotNameList2.size) {
-                        newSpotNameList[_cnt] = "${position + _cnt}．${newSpotNameList2[_cnt].name}"
+                    for (_cnt in position until newSpotList.size) {
+                        newSpotNameList[_cnt] = "${position + _cnt}．${newSpotList[_cnt].name}"
                     }
                     selectSpotAdapter.notifyDataSetChanged()
-                })
+                }
                 setNegativeButton("戻る", null)
                 show()
             }
@@ -232,7 +219,7 @@ class SelectSpotActivity : AppCompatActivity() {
         //登録ボタンタップ時
         R.id.saveButton -> {
             Toast.makeText(this, "登録ボタン", Toast.LENGTH_LONG).show()
-            setResult(RESULT_OK, Intent().putExtra("SPOTDATA", newSpotList))
+            setResult(RESULT_OK, Intent().putExtra("SPOTDATA", newIntentSpotList))
             finish()
             true
         }
@@ -252,9 +239,9 @@ class SelectSpotActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_home -> {
                 //spotNameEditText.setText(R.string.title_home)
-                spotList.add(SpotData("tokenID", "tmp${spotList.size}", 1.0, 2.0, "", "", "", "", Date()))
-                spotNameList.add(spotList[spotList.size - 1].title)
-                userSpotAdapter.notifyDataSetChanged()
+                realmSavedSpotList.add(SpotData("tokenID", "tmp${realmSavedSpotList.size}", 1.0, 2.0, "", "", "", "", Date()))
+                realmSpotNameList.add(realmSavedSpotList[realmSavedSpotList.size - 1].title)
+//                userSpotAdapter.notifyDataSetChanged()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
@@ -283,14 +270,17 @@ class SelectSpotActivity : AppCompatActivity() {
             Log.d("エックス", intent.getStringExtra("LatLngX"))
             Log.d("ワイ", intent.getStringExtra("LatLngY"))
             Log.d("名前", intent.getStringExtra("NAME"))
-            //val GETPOINT = LatLng(Double.parseDouble(intent.getStringExtra("LatLngX")), Double.parseDouble(intent.getStringExtra("LatLngY")))
-            /*for(_newSpotList in newSpotList) {
-                newSpotNameList.add(_newSpotList.name)
-            }*/
-            val selectSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, newSpotNameList)
-            selectSpotAdapter.add((spotCnt + 1).toString() + "．" + intent.getStringExtra("NAME"))
-            newSpotList.add(SpotData("tokenID", intent.getStringExtra("NAME"), parseDouble(intent.getStringExtra("LatLngX")), parseDouble(intent.getStringExtra("LatLngY")), "", "", "", "", Date()))
 
+//            val selectSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, newSpotNameList)
+            selectSpotAdapter.add((spotCnt + 1).toString() + "．" + intent.getStringExtra("NAME"))
+            selectSpotRealmPositionList.add(null)
+            newIntentSpotList.add(SpotData("tokenID", intent.getStringExtra("NAME"), parseDouble(intent.getStringExtra("LatLngX")), parseDouble(intent.getStringExtra("LatLngY")), "", "", "", "", Date()))
+
+            val listSpot = ListSpot()
+            listSpot.name = intent.getStringExtra("NAME")
+            listSpot.datetime = DF.format(Date())
+
+            newSpotList.add(listSpot)
             selectSpotListView.adapter = selectSpotAdapter
 
             spotCnt++
@@ -298,18 +288,11 @@ class SelectSpotActivity : AppCompatActivity() {
     }
 
     fun sortList() {
-        //val tempSpotList = spotList
-        //val tempSpotNameList = spotNameList
-        spotList.reverse()
-        spotNameList.reverse()
-        spotNameList2.reverse()
-        userSpotAdapter2.reverseColor()
-        userSpotAdapter2.notifyDataSetChanged()
-        //val userSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spotNameList)
-        //userSpotListView.adapter = userSpotAdapter
-        /*spotList.clear()
-        for(_tempSpot in tempSpotList) {
-            spotList.add(_tempSpot)
-        }*/
+        realmSavedSpotList.reverse()
+        realmSpotNameList.reverse()
+        realmSpotList.reverse()
+        selectSpotRealmPositionList.reverse()
+        userSpotAdapter.reverseColor()
+        userSpotAdapter.notifyDataSetChanged()
     }
 }
