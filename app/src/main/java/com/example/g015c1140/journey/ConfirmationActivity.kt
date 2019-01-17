@@ -59,7 +59,7 @@ class ConfirmationActivity : AppCompatActivity() {
 
         userData[4] =
                 when {
-                    userData[4] == "10歳以下" -> "10"
+                    userData[4] == "10歳以下" -> "0"
                     userData[4] == "100歳以上" -> "100"
                     else -> userData[4].replace("代", "")
                 }

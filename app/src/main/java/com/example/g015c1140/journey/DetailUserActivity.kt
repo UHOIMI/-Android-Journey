@@ -217,7 +217,7 @@ class DetailUserActivity : AppCompatActivity() {
 
         detailUserNameTextView.text = userName
         detailUserGenerationTextView.text = when (generation) {
-            "10" -> "10歳以下"
+            "0" -> "10歳以下"
             "100" -> "100歳以上"
             else -> "$generation 代"
         }

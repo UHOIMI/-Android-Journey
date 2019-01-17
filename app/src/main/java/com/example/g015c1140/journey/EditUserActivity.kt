@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -24,7 +23,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_edit_user.*
-import kotlinx.android.synthetic.main.activity_search_plan.*
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -92,7 +90,7 @@ class EditUserActivity : AppCompatActivity() {
         editUserPassTextView.text = pass
 
         val generation = when (sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")) {
-            "10" -> "10歳以下"
+            "0" -> "10歳以下"
             "100" -> "100歳以上"
             else -> "${sharedPreferences!!.getString(Setting().USER_SHARED_PREF_GENERATION, "")}代"
         }
@@ -282,7 +280,7 @@ class EditUserActivity : AppCompatActivity() {
 
             generation =
                     when {
-                        editUserGenerationoSpinner.selectedItem.toString() == "10歳以下" -> "10"
+                        editUserGenerationoSpinner.selectedItem.toString() == "10歳以下" -> "0"
                         editUserGenerationoSpinner.selectedItem.toString() == "100歳以上" -> "100"
                         else -> editUserGenerationoSpinner.selectedItem.toString().replace("代", "")
                     }

@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
         homeUserGenerationTextView.text  = when(generation) {
-            "10" -> "10歳以下"
+            "0" -> "10歳以下"
             "100" -> "100歳以上"
             else -> "${generation}代"
         }
