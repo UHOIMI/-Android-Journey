@@ -12,7 +12,7 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetSearchAsyncTask(keyword: String, generation: String, area: String, price: String, transportation: String, ofs:Int) : AsyncTask<String, String, String>() {
+class GetSearchAsyncTask(keyword: String, generation: String, area: String, price: String, transportation: String, ofs: Int) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackGetSearchAsyncTask: CallbackGetSearchAsyncTask? = null
@@ -31,25 +31,34 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
+        var limit: String? = null
+
+        if (params.isNotEmpty()) {
+            limit = params[0]
+        }
+
 
         try {
 
             var urlString = Setting().SEARCH_GET_URL
 
-            if (KEYWORD != ""){
-               urlString += "keyword=$KEYWORD&"
+            if (KEYWORD != "") {
+                urlString += "keyword=$KEYWORD&"
             }
-            if (GENERATION != ""){
+            if (GENERATION != "") {
                 urlString += "generation=$GENERATION&"
             }
-            if (AREA != ""){
+            if (AREA != "") {
                 urlString += "area=$AREA&"
             }
-            if (PRICE != ""){
+            if (PRICE != "") {
                 urlString += "price=$PRICE&"
             }
-            if (TRANSPOTTATION != ""){
+            if (TRANSPOTTATION != "") {
                 urlString += "transportation=$TRANSPOTTATION&"
+            }
+            if (limit != null){
+                urlString += "limit=$limit&"
             }
 
             val url = URL("${urlString}offset=$offset")
@@ -73,7 +82,7 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
                     result = "404"
                     searchRecord = JSONArray()
                     return result
-                }else if (jsonObject.getString("status").toString() != "200"){
+                } else if (jsonObject.getString("status").toString() != "200") {
                     Log.d("test", "Timeline error")
                     result = null
                     return result
@@ -106,11 +115,11 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
 
         if (result == null) {
             Log.d("test GetSearchTask", "return null")
-            callbackGetSearchAsyncTask!!.callback("RESULT-NG",null)
+            callbackGetSearchAsyncTask!!.callback("RESULT-NG", null)
             return
         }
 
-        if (result == "404"){
+        if (result == "404") {
             callbackGetSearchAsyncTask!!.callback("RESULT-404", searchRecord)
             return
         }
@@ -124,6 +133,6 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
     }
 
     open class CallbackGetSearchAsyncTask {
-        open fun callback(result: String,searchRecordJsonArray: JSONArray?) {}
+        open fun callback(result: String, searchRecordJsonArray: JSONArray?) {}
     }
 }

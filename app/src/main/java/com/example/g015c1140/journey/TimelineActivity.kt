@@ -3,7 +3,6 @@ package com.example.g015c1140.journey
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -261,8 +260,8 @@ class TimelineActivity : AppCompatActivity() {
             var bmpValueList: ArrayList<String>
 
             //spotTitle
-            val spotTitleList = arrayListOf<ArrayList<String>>()
-            var spotTitleValue: ArrayList<String>
+            val spotTitleList = arrayListOf<String>()
+            var spotTitleValue: String
 
             for (_jsonCnt in 0 until resultRecordJsonArray.length()) {
                 //favorite用
@@ -271,46 +270,25 @@ class TimelineActivity : AppCompatActivity() {
                 //画像取得用
                 bmpValueList = arrayListOf()
                 bmpValueList.add(resultRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("user").getString("user_icon"))
-                val spotJsonList = resultRecordJsonArray.getJSONObject(_jsonCnt).getJSONArray("spots")
+                val spotJson = resultRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("spot")
 
-                loop@ for (_spotCnt in 0 until spotJsonList.length()) {
-                    when {
-                        spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
-                            bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
-                            break@loop
-                        }
-                        spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
-                            bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
-                            break@loop
-                        }
-                        spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
-                            bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
-                            break@loop
-                        }
+                when {
+                    spotJson.getString("spot_image_a") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_a"))
                     }
-                    if (spotJsonList.length() - 1 == _spotCnt) {
-                        bmpValueList.add("")
+                    spotJson.getString("spot_image_b") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_b"))
                     }
+                    spotJson.getString("spot_image_c") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_c"))
+                    }
+                }
+                if (bmpValueList.size == 1) {
+                    bmpValueList.add("")
                 }
                 bmpList.add(bmpValueList)
 
-                spotTitleValue = arrayListOf()
-                for (_spotTitleCnt in 0 until spotJsonList.length()) {
-                    if (spotTitleValue.size < 2) {
-                        /************/
-                        //タイムラインエリアにはspotTitleがない
-                        spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
-                        /************/
-
-                    } else if (spotTitleValue.size == 2) {
-                        spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
-                        break
-                    }
-                }
-                if (spotTitleValue.size != 3) {
-                    for (_addCnt in spotTitleValue.size..3)
-                        spotTitleValue.add("")
-                }
+                spotTitleValue = spotJson.getString("spot_title")
                 spotTitleList.add(spotTitleValue)
             }
 
@@ -346,7 +324,7 @@ class TimelineActivity : AppCompatActivity() {
                                             if (resultBmpList[_timelineCnt][1] != null) {
                                                 timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
                                             } else {
-                                                timelinePlanData.planSpotImage = null
+                                                timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                             }
                                         } else {
                                             timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
@@ -354,7 +332,7 @@ class TimelineActivity : AppCompatActivity() {
                                         }
                                         timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
                                         timelinePlanData.planTitle = timelineData.getString("plan_title")
-                                        timelinePlanData.planSpotTitleList.addAll(spotTitleList[_timelineCnt])
+                                        timelinePlanData.planSpotTitle = spotTitleList[_timelineCnt]
                                         val planDate = timelineData.getString("plan_date")
                                         val dateIndex = planDate.indexOf(" ")
                                         timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))

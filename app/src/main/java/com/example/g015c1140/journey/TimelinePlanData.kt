@@ -9,7 +9,7 @@ data class TimelinePlanData (
     var planUserName: String = "",
     var planTitle: String = "",
     var planSpotImage: Bitmap? = null,
-    var planSpotTitleList: ArrayList<String> = arrayListOf(),
+    var planSpotTitle:String = "",
     var planTime: String = "",
     var planFavorite: String = ""
 )

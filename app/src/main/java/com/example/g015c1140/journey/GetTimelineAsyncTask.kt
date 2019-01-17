@@ -26,11 +26,26 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
+        var limit:String?  = null
+        var userId:String? = null
+
+        for (_cnt in 0 until params.size){
+            when(_cnt){
+                0 -> limit = params[_cnt]
+                1 -> userId = params[_cnt]
+            }
+        }
 
         try {
 
             val url = if(AREA == ""){
-                URL("${Setting().TIMELINE_GET_URL}$OFSET")
+                var url = "${Setting().TIMELINE_GET_URL}$OFSET"
+                if (limit != null){
+                    url = "$url&limit=$limit"
+                }else if(userId != null){
+                    url = "$url&user_id=$userId"
+                }
+                URL(url)
             }else{
                 URL("${Setting().TIMELINE_GET_URL}$OFSET&$AREA")
             }

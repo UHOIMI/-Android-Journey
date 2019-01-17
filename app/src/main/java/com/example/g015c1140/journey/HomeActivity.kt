@@ -108,6 +108,7 @@ class HomeActivity : AppCompatActivity() {
                 super.callback(result, timelineRecordJsonArray)
                 if (result == "RESULT-OK") {
 
+/*
                     if (timelineRecordJsonArray != null) {
                         if (timelineRecordJsonArray.length() > 3) {
                             for (_removeCnt in 0 until (timelineRecordJsonArray.length() - 3)) {
@@ -115,6 +116,7 @@ class HomeActivity : AppCompatActivity() {
                             }
                         }
                     }
+*/
 
                     setPlanList(timelineRecordJsonArray!!, 1)
                 } else {
@@ -122,31 +124,27 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         })
-        gtat.execute()
+        gtat.execute("3")
 
         val gsat = GetSearchAsyncTask("", generation, "", "", "",0)
         gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
             override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                 super.callback(result, searchRecordJsonArray)
-                if (result == "RESULT-OK") {
-
-                    if (searchRecordJsonArray != null) {
-                        if (searchRecordJsonArray.length() > 3) {
-                            for (_removeCnt in 0 until (searchRecordJsonArray.length() - 3)) {
-                                searchRecordJsonArray.remove(searchRecordJsonArray.length() - 1)
-                            }
-                        }
-                    }
-                    setPlanList(searchRecordJsonArray!!,2)
-
-                } else if(result == "RESULT-404") {
-                    Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
-                }else{
-                    Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
+                when (result) {
+                    "RESULT-OK" -> /*                    if (searchRecordJsonArray != null) {
+                                if (searchRecordJsonArray.length() > 3) {
+                                    for (_removeCnt in 0 until (searchRecordJsonArray.length() - 3)) {
+                                        searchRecordJsonArray.remove(searchRecordJsonArray.length() - 1)
+                                    }
+                                }
+                            }*/
+                        setPlanList(searchRecordJsonArray!!,2)
+                    "RESULT-404" -> Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                 }
             }
         })
-        gsat.execute()
+        gsat.execute("3")
     }
 
     private fun setPlanList(timelineRecordJsonArray: JSONArray, listFlg: Int) {
@@ -159,8 +157,8 @@ class HomeActivity : AppCompatActivity() {
         var bmpValueList: ArrayList<String>
 
         //spotTitle
-        val spotTitleList = arrayListOf<ArrayList<String>>()
-        var spotTitleValue: ArrayList<String>
+        val spotTitleList = arrayListOf<String>()
+        var spotTitleValue: String
 
         for (_jsonCnt in 0 until timelineRecordJsonArray.length()) {
             //favorite用
@@ -169,42 +167,25 @@ class HomeActivity : AppCompatActivity() {
             //画像取得用
             bmpValueList = arrayListOf()
             bmpValueList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("user").getString("user_icon"))
-            val spotJsonList = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONArray("spots")
+            val spotJson = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("spot")
 
-            loop@ for (_spotCnt in 0 until spotJsonList.length()) {
                 when {
-                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
-                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
-                        break@loop
+                    spotJson.getString("spot_image_a") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_a"))
                     }
-                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
-                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
-                        break@loop
+                    spotJson.getString("spot_image_b") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_b"))
                     }
-                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
-                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
-                        break@loop
+                    spotJson.getString("spot_image_c") != "" -> {
+                        bmpValueList.add(spotJson.getString("spot_image_c"))
                     }
                 }
-                if (spotJsonList.length() - 1 == _spotCnt) {
+                if (bmpValueList.size == 1) {
                     bmpValueList.add("")
                 }
-            }
             bmpList.add(bmpValueList)
 
-            spotTitleValue = arrayListOf()
-            for (_spotTitleCnt in 0 until spotJsonList.length()) {
-                if (spotTitleValue.size < 2) {
-                    spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
-                } else if (spotTitleValue.size == 2) {
-                    spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
-                    break
-                }
-            }
-            if (spotTitleValue.size != 3) {
-                for (_addCnt in spotTitleValue.size..3)
-                    spotTitleValue.add("")
-            }
+            spotTitleValue = spotJson.getString("spot_title")
             spotTitleList.add(spotTitleValue)
         }
 
@@ -240,7 +221,7 @@ class HomeActivity : AppCompatActivity() {
                                         if (resultBmpList[_timelineCnt][1] != null) {
                                             timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
                                         } else {
-                                            timelinePlanData.planSpotImage = null
+                                            timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                         }
                                     } else {
                                         timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
@@ -248,7 +229,7 @@ class HomeActivity : AppCompatActivity() {
                                     }
                                     timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
                                     timelinePlanData.planTitle = timelineData.getString("plan_title")
-                                    timelinePlanData.planSpotTitleList.addAll(spotTitleList[_timelineCnt])
+                                    timelinePlanData.planSpotTitle = spotTitleList[_timelineCnt]
                                     val planDate = timelineData.getString("plan_date")
                                     val dateIndex = planDate.indexOf(" ")
                                     timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
@@ -355,7 +336,7 @@ class HomeActivity : AppCompatActivity() {
                     "テスト$i",
                     "title",
                     BitmapFactory.decodeResource(resources, R.drawable.no_image),
-                    arrayListOf("supot 1", "supot 2", "supot 3"),
+                    "supot 1",
                     "00月00日",
                     "100"
             )
