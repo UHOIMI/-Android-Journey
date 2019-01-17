@@ -34,7 +34,9 @@
         <item>501円 ~ 1000円</item>
         <item>1001円 ~ 5000円</item>
         <item>5001円 ~ 10000円</item>
-        <item>10001円以上</item>
+        <item>10001円 ~ 20000円</item>
+        <item>20001円 ~ 50000円</item>
+        <item>50001円以上</item>
     </string-array>
 
 
