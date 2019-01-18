@@ -335,7 +335,7 @@ class TimelineActivity : AppCompatActivity() {
                                             }
                                         } else {
                                             timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
-                                            timelinePlanData.planSpotImage = null
+                                            timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                         }
                                         timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
                                         timelinePlanData.planTitle = timelineData.getString("plan_title")
