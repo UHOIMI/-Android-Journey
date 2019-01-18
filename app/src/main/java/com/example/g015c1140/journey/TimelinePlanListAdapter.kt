@@ -55,9 +55,9 @@ class TimelinePlanListAdapter(internal var context: Context,internal val activit
         (view.findViewById(R.id.planUserNameTextView) as TextView).text = timelinePlanDataList[position].planUserName
         (view.findViewById(R.id.planTitleTextView) as TextView).text = timelinePlanDataList[position].planTitle
         (view.findViewById(R.id.planSpotImageView) as ImageView).setImageBitmap(timelinePlanDataList[position].planSpotImage)
-        (view.findViewById(R.id.planSpotNameTextView) as TextView).text = timelinePlanDataList[position].planSpotTitle
-//        (view.findViewById(R.id.planSpotName2TextView) as TextView).text = timelinePlanDataList[position].planSpotTitleList[1]
-//        (view.findViewById(R.id.planSpotName3TextView) as TextView).text = timelinePlanDataList[position].planSpotTitleList[2]
+        (view.findViewById(R.id.planSpotName1TextView) as TextView).text = timelinePlanDataList[position].planSpotTitleList[0]
+        (view.findViewById(R.id.planSpotName2TextView) as TextView).text = timelinePlanDataList[position].planSpotTitleList[1]
+        (view.findViewById(R.id.planSpotName3TextView) as TextView).text = timelinePlanDataList[position].planSpotTitleList[2]
         (view.findViewById(R.id.planTimeTextView) as TextView).text = timelinePlanDataList[position].planTime
         (view.findViewById(R.id.planFavoriteTextView) as TextView).text = timelinePlanDataList[position].planFavorite
 

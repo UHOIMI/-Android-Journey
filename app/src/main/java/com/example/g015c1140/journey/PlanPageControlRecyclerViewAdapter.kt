@@ -56,7 +56,9 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         val planUserNameTextView = (view.findViewById(R.id.planUserNameTextView) as TextView)
         val planTitleTextView = (view.findViewById(R.id.planTitleTextView) as TextView)
         val planSpotImageView = (view.findViewById(R.id.planSpotImageView) as ImageView)
-        val planSpotNameTextView = (view.findViewById(R.id.planSpotNameTextView) as TextView)
+        val planSpotName1TextView = (view.findViewById(R.id.planSpotName1TextView) as TextView)
+        val planSpotName2TextView = (view.findViewById(R.id.planSpotName2TextView) as TextView)
+        val planSpotName3TextView = (view.findViewById(R.id.planSpotName3TextView) as TextView)
         val planTimeTextView = (view.findViewById(R.id.planTimeTextView) as TextView)
         val planFavoriteTextView = (view.findViewById(R.id.planFavoriteTextView) as TextView)
     }
@@ -68,7 +70,10 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         holder.planUserNameTextView.text = timelinePlanDataList[position].planUserName
         holder.planTitleTextView.text = timelinePlanDataList[position].planTitle
         holder.planSpotImageView.setImageBitmap(timelinePlanDataList[position].planSpotImage)
-        holder.planSpotNameTextView.text = timelinePlanDataList[position].planSpotTitle
+        val planSpotTitleList = timelinePlanDataList[position].planSpotTitleList
+        holder.planSpotName1TextView.text = planSpotTitleList[0]
+        holder.planSpotName2TextView.text = planSpotTitleList[1]
+        holder.planSpotName3TextView.text = planSpotTitleList[2]
 
         holder.planTimeTextView.text = timelinePlanDataList[position].planTime
         holder.planFavoriteTextView.text = timelinePlanDataList[position].planFavorite

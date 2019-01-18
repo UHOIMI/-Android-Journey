@@ -57,13 +57,13 @@ class GetUserFavoriteAsyncTask(uId: String) : AsyncTask<Void, String, String>() 
                         var jsonObject:JSONObject
                         var jsonPlan:JSONObject
                         var jsonUser:JSONObject
-                        var jsonSpot:JSONObject
+                        var jsonSpot:JSONArray
 
                         for (_jaCnt in 0 until resultJsonArray.length()){
                             jsonObject = resultJsonArray[_jaCnt] as JSONObject
                             jsonPlan = jsonObject.getJSONObject("plan")
                             jsonUser = jsonObject.getJSONObject("user")
-                            jsonSpot = jsonObject.getJSONObject("spot")
+                            jsonSpot = jsonObject.getJSONArray("spots")
 
                             convertJsonObject = JSONObject()
                             convertJsonObject.put("plan_date", jsonPlan.getString("plan_date"))
@@ -75,7 +75,7 @@ class GetUserFavoriteAsyncTask(uId: String) : AsyncTask<Void, String, String>() 
                             convertJsonObject.put("price", jsonPlan.getString("price"))
                             convertJsonObject.put("area", jsonPlan.getString("area"))
                             convertJsonObject.put("user", jsonUser)
-                            convertJsonObject.put("spot", jsonSpot)
+                            convertJsonObject.put("spots", jsonSpot)
                             CONVERT_JSON_ARRAY.put(convertJsonObject)
                         }
                         result = "favorite-yes"

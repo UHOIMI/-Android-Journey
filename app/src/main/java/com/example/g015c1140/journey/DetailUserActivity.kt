@@ -258,7 +258,7 @@ class DetailUserActivity : AppCompatActivity() {
                     val bmpList = arrayListOf<String>()
 
                     //spotTitle
-                    val spotTitle: String
+                    var spotTitleValue: ArrayList<String> = arrayListOf()
 
 //                        for (_jsonCnt in 0 until timelineRecordJsonArray!!.length()) {
                     //favorite用
@@ -266,24 +266,40 @@ class DetailUserActivity : AppCompatActivity() {
 
                     //画像取得用
                     bmpList.add(timelineRecordJsonArray.getJSONObject(0).getJSONObject("user").getString("user_icon"))
-                    val spotJson = timelineRecordJsonArray.getJSONObject(0).getJSONObject("spot")
+                    val spotJsonList = timelineRecordJsonArray.getJSONObject(0).getJSONArray("spots")
 
-                    when {
-                        spotJson.getString("spot_image_a") != "" -> {
-                            bmpList.add(spotJson.getString("spot_image_a"))
+                    loop@ for (_spotCnt in 0 until spotJsonList.length()) {
+                        when {
+                            spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
+                                bmpList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
+                                break@loop
+                            }
+                            spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
+                                bmpList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
+                                break@loop
+                            }
+                            spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
+                                bmpList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
+                                break@loop
+                            }
                         }
-                        spotJson.getString("spot_image_b") != "" -> {
-                            bmpList.add(spotJson.getString("spot_image_b"))
-                        }
-                        spotJson.getString("spot_image_c") != "" -> {
-                            bmpList.add(spotJson.getString("spot_image_c"))
+                        if (spotJsonList.length() - 1 == _spotCnt) {
+                            bmpList.add("")
                         }
                     }
-                    if (bmpList.size == 1) {
-                        bmpList.add("")
-                    }
 
-                    spotTitle = spotJson.getString("spot_title")
+                    for (_spotTitleCnt in 0 until spotJsonList.length()) {
+                        if (spotTitleValue.size < 2) {
+                            spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
+                        } else if (spotTitleValue.size == 2) {
+                            spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
+                            break
+                        }
+                    }
+                    if (spotTitleValue.size != 3) {
+                        for (_addCnt in spotTitleValue.size..3)
+                            spotTitleValue.add("")
+                    }
 //                        }
 
                     //favorite
@@ -326,12 +342,17 @@ class DetailUserActivity : AppCompatActivity() {
                                             mUserName = timelineData.getJSONObject("user").getString("user_name")
                                             detailUserLastPlanNameTextView.text = mUserName
                                             detailUserLastPlanTitleTextView.text = timelineData.getString("plan_title")
-                                            detailUserLastPlanSpotNameTextView.text = spotTitle
+                                            detailUserLastPlanSpotName1TextView.text = spotTitleValue[0]
+                                            detailUserLastPlanSpotName2TextView.text = spotTitleValue[1]
+                                            detailUserLastPlanSpotName3TextView.text = spotTitleValue[2]
                                             val planDate = timelineData.getString("plan_date")
                                             val dateIndex = planDate.indexOf(" ")
                                             detailUserLastPlanTimeTextView.text = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
                                             detailUserLastPlanFavoriteTextView.text = resultFavoriteArrayList[0]
                                             mUserId = timelineData.getString("user_id")
+
+                                            detailUserLastPlanLinearLayout.visibility = View.VISIBLE
+                                            detailUserShowAllPlanButton.visibility = View.VISIBLE
 
                                         } else {
                                             failedAsyncTask()

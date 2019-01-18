@@ -157,8 +157,8 @@ class HomeActivity : AppCompatActivity() {
         var bmpValueList: ArrayList<String>
 
         //spotTitle
-        val spotTitleList = arrayListOf<String>()
-        var spotTitleValue: String
+        val spotTitleList = arrayListOf<ArrayList<String>>()
+        var spotTitleValue: ArrayList<String>
 
         for (_jsonCnt in 0 until timelineRecordJsonArray.length()) {
             //favorite用
@@ -167,25 +167,42 @@ class HomeActivity : AppCompatActivity() {
             //画像取得用
             bmpValueList = arrayListOf()
             bmpValueList.add(timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("user").getString("user_icon"))
-            val spotJson = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONObject("spot")
+            val spotJsonList = timelineRecordJsonArray.getJSONObject(_jsonCnt).getJSONArray("spots")
 
+            loop@ for (_spotCnt in 0 until spotJsonList.length()) {
                 when {
-                    spotJson.getString("spot_image_a") != "" -> {
-                        bmpValueList.add(spotJson.getString("spot_image_a"))
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_a"))
+                        break@loop
                     }
-                    spotJson.getString("spot_image_b") != "" -> {
-                        bmpValueList.add(spotJson.getString("spot_image_b"))
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_b"))
+                        break@loop
                     }
-                    spotJson.getString("spot_image_c") != "" -> {
-                        bmpValueList.add(spotJson.getString("spot_image_c"))
+                    spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c") != "" -> {
+                        bmpValueList.add(spotJsonList.getJSONObject(_spotCnt).getString("spot_image_c"))
+                        break@loop
                     }
                 }
-                if (bmpValueList.size == 1) {
+                if (spotJsonList.length() - 1 == _spotCnt) {
                     bmpValueList.add("")
                 }
+            }
             bmpList.add(bmpValueList)
 
-            spotTitleValue = spotJson.getString("spot_title")
+            spotTitleValue = arrayListOf()
+            for (_spotTitleCnt in 0 until spotJsonList.length()) {
+                if (spotTitleValue.size < 2) {
+                    spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
+                } else if (spotTitleValue.size == 2) {
+                    spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
+                    break
+                }
+            }
+            if (spotTitleValue.size != 3) {
+                for (_addCnt in spotTitleValue.size..3)
+                    spotTitleValue.add("")
+            }
             spotTitleList.add(spotTitleValue)
         }
 
@@ -229,7 +246,7 @@ class HomeActivity : AppCompatActivity() {
                                     }
                                     timelinePlanData.planUserName = timelineData.getJSONObject("user").getString("user_name")
                                     timelinePlanData.planTitle = timelineData.getString("plan_title")
-                                    timelinePlanData.planSpotTitle = spotTitleList[_timelineCnt]
+                                    timelinePlanData.planSpotTitleList.addAll(spotTitleList[_timelineCnt])
                                     val planDate = timelineData.getString("plan_date")
                                     val dateIndex = planDate.indexOf(" ")
                                     timelinePlanData.planTime = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
@@ -336,7 +353,7 @@ class HomeActivity : AppCompatActivity() {
                     "テスト$i",
                     "title",
                     BitmapFactory.decodeResource(resources, R.drawable.no_image),
-                    "supot 1",
+                    arrayListOf("supot 1", "supot 2", "supot 3"),
                     "00月00日",
                     "100"
             )

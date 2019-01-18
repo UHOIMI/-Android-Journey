@@ -190,7 +190,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -205,30 +204,45 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
                             android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/detailUserLastPlanSpotNameTextView"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/detailUserLastPlanSpotName1TextView"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
                                 android:layout_weight="1"
                                 android:ellipsize="end"
-                                android:maxWidth="92dp"
+                                android:maxWidth="100dp"
                                 android:maxLines="1"
+                                android:text="TextView"
                                 android:textSize="14sp" />
 
                             <TextView
-                                android:id="@+id/textView18"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/detailUserLastPlanSpotName2TextView"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
                                 android:layout_weight="1"
-                                android:maxWidth="8dp"
-                                android:text="など"
-                                android:textAlignment="textEnd" />
+                                android:ellipsize="end"
+                                android:maxWidth="100dp"
+                                android:maxLines="1"
+                                android:text="TextView"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/detailUserLastPlanSpotName3TextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
+                                android:maxWidth="100dp"
+                                android:maxLines="1"
+                                android:text="TextView"
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <LinearLayout
