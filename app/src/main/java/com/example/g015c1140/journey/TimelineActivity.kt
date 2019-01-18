@@ -36,6 +36,8 @@ class TimelineActivity : AppCompatActivity() {
     private var areaApiString = ""
 
     private var favoriteFlg = false
+
+    private var postedFlag = false
     /*********/
 
     // 1ページ辺りの項目数
@@ -67,6 +69,8 @@ class TimelineActivity : AppCompatActivity() {
 
         favoriteFlg = intent.getBooleanExtra("FAVORITE_FLG", false)
 
+        postedFlag = intent.getBooleanExtra("POSTED_FLG", false)
+
         title = when {
             searchFlg -> {
                 searchValueKeyword = intent.getStringExtra("SEARCH_VALUE_KEYWORD")
@@ -74,7 +78,7 @@ class TimelineActivity : AppCompatActivity() {
                 searchValueArea = intent.getStringExtra("SEARCH_VALUE_AREA")
                 searchValuePrice = intent.getStringExtra("SEARCH_VALUE_PRICE")
                 searchValueTransportation = intent.getStringExtra("SEARCH_VALUE_TRANSPORTATION")
-                "検索結果"
+                "検索結果一覧"
             }
             areaFlg -> {
                 areaApiString = intent.getStringExtra("AREA_STRING")
@@ -84,7 +88,10 @@ class TimelineActivity : AppCompatActivity() {
                 timelineSwipeRefresh.isEnabled = false
                 "お気に入り一覧"
             }
-            else -> "タイムライン"
+            postedFlag ->{
+                "過去の投稿一覧"
+            }
+            else -> "新着プラン一覧"
         }
         /*******************/
 

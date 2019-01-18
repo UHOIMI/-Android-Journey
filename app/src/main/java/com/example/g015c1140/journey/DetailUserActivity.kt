@@ -1,8 +1,10 @@
 package com.example.g015c1140.journey
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -13,7 +15,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detail_user.*
+import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 
 class DetailUserActivity : AppCompatActivity() {
 
@@ -22,6 +26,16 @@ class DetailUserActivity : AppCompatActivity() {
     private var anotherUserFlg = false
 
     val IMAGE_OK = 100
+
+    @SuppressLint("SimpleDateFormat")
+    private val DATE_FORMAT_IN = SimpleDateFormat("yyyy-MM-dd")
+    @SuppressLint("SimpleDateFormat")
+    private val DATE_FORMAT_OUT = SimpleDateFormat("MM月dd日")
+
+    private var mPlanId = ""
+    private var mUserId = ""
+    private var mUserName = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +66,10 @@ class DetailUserActivity : AppCompatActivity() {
         }
 
         anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
+
+        detailUserLastPlanLinearLayout.visibility = View.GONE
+        detailUserShowAllPlanButton.visibility = View.GONE
+        detailUserLastPlanText.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -67,7 +85,7 @@ class DetailUserActivity : AppCompatActivity() {
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_COMMENT, "コメントが存在しません"),
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, ""),
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
-                    )
+            )
 
             /*            val headerString =
             if (headerString != "") {
@@ -180,11 +198,11 @@ class DetailUserActivity : AppCompatActivity() {
         }
     }
 
-    fun spotListButtonTapped(view: View){
-        startActivity(Intent(this,SpotListActivity::class.java))
+    fun spotListButtonTapped(view: View) {
+        startActivity(Intent(this, SpotListActivity::class.java))
     }
 
-    private fun setUser(userName: String, generation: String, gender: String, comment: String, header: String, icon: String){
+    private fun setUser(userName: String, generation: String, gender: String, comment: String, header: String, icon: String) {
         if (header.contains("http")) {
             val giat = GetImageAsyncTask()
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
@@ -223,6 +241,141 @@ class DetailUserActivity : AppCompatActivity() {
         }
         detailUserGenderTextView.text = gender
         detailUserCommentTextView.text = comment
+
+
+        val gtat = GetTimelineAsyncTask("", 0)
+        gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
+            override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
+                super.callback(result, timelineRecordJsonArray)
+                if (result == "RESULT-OK") {
+
+                    if (timelineRecordJsonArray == null) {
+                        detailUserLastPlanText.visibility = View.VISIBLE
+                        return
+                    }
+                    detailUserLastPlanLinearLayout.visibility = View.VISIBLE
+                    detailUserShowAllPlanButton.visibility = View.VISIBLE
+
+                    //画像取得用
+                    val bmpList = arrayListOf<String>()
+
+                    //spotTitle
+                    val spotTitle: String
+
+//                        for (_jsonCnt in 0 until timelineRecordJsonArray!!.length()) {
+                    //favorite用
+                    mPlanId = timelineRecordJsonArray.getJSONObject(0).getString("plan_id")
+
+                    //画像取得用
+                    bmpList.add(timelineRecordJsonArray.getJSONObject(0).getJSONObject("user").getString("user_icon"))
+                    val spotJson = timelineRecordJsonArray.getJSONObject(0).getJSONObject("spot")
+
+                    when {
+                        spotJson.getString("spot_image_a") != "" -> {
+                            bmpList.add(spotJson.getString("spot_image_a"))
+                        }
+                        spotJson.getString("spot_image_b") != "" -> {
+                            bmpList.add(spotJson.getString("spot_image_b"))
+                        }
+                        spotJson.getString("spot_image_c") != "" -> {
+                            bmpList.add(spotJson.getString("spot_image_c"))
+                        }
+                    }
+                    if (bmpList.size == 1) {
+                        bmpList.add("")
+                    }
+
+                    spotTitle = spotJson.getString("spot_title")
+//                        }
+
+                    //favorite
+                    val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(mPlanId), "")
+                    gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+                        override fun callback(resultFavoriteArrayList: ArrayList<String>) {
+                            super.callback(resultFavoriteArrayList)
+                            if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
+                                resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
+                                //完了
+
+                                /****************/
+                                //画像
+                                val giat = GetImageAsyncTask()
+                                giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                                    override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
+                                        if (resultBmpString == "RESULT-OK") {
+                                            /****************/
+
+//                                            var timelinePlanData = TimelinePlanData()
+//                                                for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
+                                            val timelineData = timelineRecordJsonArray.getJSONObject(0)
+
+                                            if (resultBmpList!![0].isNotEmpty()) {
+                                                if (resultBmpList[0][0] != null) {
+                                                    detailUserLastPlanIconCircleImage.setImageBitmap(resultBmpList[0][0])
+                                                } else {
+                                                    detailUserLastPlanIconCircleImage.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
+                                                }
+                                                if (resultBmpList[0][1] != null) {
+                                                    detailUserLastPlanSpotImageView.setImageBitmap(resultBmpList[0][1])
+                                                } else {
+                                                    detailUserLastPlanSpotImageView.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
+
+                                                }
+                                            } else {
+                                                detailUserLastPlanIconCircleImage.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
+                                                detailUserLastPlanSpotImageView.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
+                                            }
+                                            mUserName = timelineData.getJSONObject("user").getString("user_name")
+                                            detailUserLastPlanNameTextView.text = mUserName
+                                            detailUserLastPlanTitleTextView.text = timelineData.getString("plan_title")
+                                            detailUserLastPlanSpotNameTextView.text = spotTitle
+                                            val planDate = timelineData.getString("plan_date")
+                                            val dateIndex = planDate.indexOf(" ")
+                                            detailUserLastPlanTimeTextView.text = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
+                                            detailUserLastPlanFavoriteTextView.text = resultFavoriteArrayList[0]
+                                            mUserId = timelineData.getString("user_id")
+
+                                        } else {
+                                            failedAsyncTask()
+                                            return
+                                        }
+                                    }
+                                })
+                                giat.execute(arrayListOf(bmpList))
+                            } else {
+                                failedAsyncTask()
+                                return
+                            }
+                        }
+                    })
+                    gpfat.execute()
+                } else {
+                    Toast.makeText(this@DetailUserActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+        gtat.execute("1", intent.getStringExtra("USER_ID"))
+    }
+
+    private fun failedAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("タイムライン取得に失敗しました")
+            setPositiveButton("確認", null)
+            show()
+        }
+    }
+
+    fun detailUserLastPlanIconTapped(view: View) {
+        startActivity(Intent(this, DetailUserActivity::class.java).putExtra("ANOTHER_USER", true).putExtra("USER_ID", mUserId))
+    }
+
+    fun detailUserLastPlanSpotImageTapped(view: View) {
+        val myApp = this.application as MyApplication
+        myApp.setBmp_1((detailUserLastPlanIconCircleImage.drawable as BitmapDrawable).bitmap)
+        startActivity(
+                Intent(this, DetailPlanActivity::class.java)
+                        .putStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME", arrayListOf(mPlanId, mUserId, mUserName))
+        )
     }
 
     //ボトムバータップ時
