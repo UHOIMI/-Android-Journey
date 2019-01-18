@@ -68,7 +68,7 @@ class DetailUserActivity : AppCompatActivity() {
         anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
 
         detailUserLastPlanLinearLayout.visibility = View.GONE
-        detailUserShowAllPlanButton.visibility = View.GONE
+        detailUserShowAllPlanButton.visibility = View.INVISIBLE
         detailUserLastPlanText.visibility = View.GONE
     }
 
@@ -253,8 +253,6 @@ class DetailUserActivity : AppCompatActivity() {
                         detailUserLastPlanText.visibility = View.VISIBLE
                         return
                     }
-                    detailUserLastPlanLinearLayout.visibility = View.VISIBLE
-                    detailUserShowAllPlanButton.visibility = View.VISIBLE
 
                     //画像取得用
                     val bmpList = arrayListOf<String>()
