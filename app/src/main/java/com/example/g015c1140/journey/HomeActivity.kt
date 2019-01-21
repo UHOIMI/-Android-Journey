@@ -70,37 +70,30 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, PutSpotActivity::class.java))
         }
 
-        for (_layoutCnt in 0 until 4) {
+        for (_layoutCnt in 0 until 3) {
             LAYOUT_MANAGER.add(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
         }
         areaRecyclerView.layoutManager = LAYOUT_MANAGER[0]
         newPlanRecyclerView.layoutManager = LAYOUT_MANAGER[1]
-        favoritePlanRecyclerView.layoutManager = LAYOUT_MANAGER[2]
-        userGenerationPlanRecyclerView.layoutManager = LAYOUT_MANAGER[3]
+        userGenerationPlanRecyclerView.layoutManager = LAYOUT_MANAGER[2]
 
         val snapHelper = arrayListOf<PagerSnapHelper>()
-        for (_layoutCnt in 0 until 3) {
+        for (_layoutCnt in 0 until 2) {
             snapHelper.add(PagerSnapHelper())
         }
         snapHelper[0].attachToRecyclerView(newPlanRecyclerView)
-        snapHelper[1].attachToRecyclerView(favoritePlanRecyclerView)
-        snapHelper[2].attachToRecyclerView(userGenerationPlanRecyclerView)
+        snapHelper[1].attachToRecyclerView(userGenerationPlanRecyclerView)
 
         /**************************************/
-        val planListData = getPlanListData()
         val areaListData = getAreaListData()
 
         val areaRecyclerViewAdapter = AreaPageControlRecyclerViewAdapter(this, this, areaListData)
         newPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, NEW_PLAN_LIST)
-        val favoritePlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, planListData)
         generationPlanRecyclerViewAdapter = PlanPageControlRecyclerViewAdapter(this, this, GENERATION_PLAN_LIST)
 
         areaRecyclerView.adapter = areaRecyclerViewAdapter
         newPlanRecyclerView.adapter = newPlanRecyclerViewAdapter
-        favoritePlanRecyclerView.adapter = favoritePlanRecyclerViewAdapter
         userGenerationPlanRecyclerView.adapter = generationPlanRecyclerViewAdapter
-
-        favoritePlanPageControlView.setRecyclerView(favoritePlanRecyclerView, LAYOUT_MANAGER[2])
 
         val gtat = GetTimelineAsyncTask("", 0)
         gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
@@ -250,7 +243,7 @@ class HomeActivity : AppCompatActivity() {
                                     }
                                     2 -> {
                                         generationPlanRecyclerViewAdapter.notifyDataSetChanged()
-                                        userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, LAYOUT_MANAGER[3])
+                                        userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, LAYOUT_MANAGER[2])
                                     }
 
                                 }
@@ -320,28 +313,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         false
-    }
-
-    //テスト用データ作成
-    private fun getPlanListData(): ArrayList<TimelinePlanData> {
-        val list = arrayListOf<TimelinePlanData>()
-
-        var timelinePlanData: TimelinePlanData
-        for (i in 0 until 5) {
-            timelinePlanData = TimelinePlanData(
-                    0,
-                    "mm",
-                    BitmapFactory.decodeResource(resources, R.drawable.no_image),
-                    "テスト$i",
-                    "title",
-                    BitmapFactory.decodeResource(resources, R.drawable.no_image),
-                    arrayListOf("supot 1", "supot 2", "supot 3"),
-                    "00月00日",
-                    "100"
-            )
-            list.add(timelinePlanData)
-        }
-        return list
     }
 
     private fun getAreaListData(): ArrayList<HomeAreaData> {

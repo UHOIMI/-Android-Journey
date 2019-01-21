@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
 import android.widget.ImageButton
 import android.widget.Toast
 import io.realm.Realm
@@ -97,17 +96,6 @@ class SearchPlanActivity : AppCompatActivity() {
             }
         }
 
-        showSwitch.setOnCheckedChangeListener(
-                fun(_: CompoundButton?, isChecked: Boolean) {
-                    // 表示する文字列をスイッチのオンオフで変える
-                    showSwitch.text = if (isChecked) {
-                        showSwitch.textOn
-                    } else {
-                        showSwitch.textOff
-                    }
-                }
-        )
-
         //交通手段ボタン設定
         transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
     }
@@ -145,7 +133,7 @@ class SearchPlanActivity : AppCompatActivity() {
         false
     }
 
-    fun setSearchKeyword() {
+    private fun setSearchKeyword() {
         //値セット
         realmData = mRealm.where(SearchKeywordRealmData::class.java).findAll().reversed()
         searchTextValue = arrayListOf()

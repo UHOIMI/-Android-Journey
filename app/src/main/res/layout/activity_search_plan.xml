@@ -75,76 +75,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <Switch
-                            android:id="@+id/showSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:switchMinWidth="70dp"
-                            android:switchPadding="20dp"
-                            android:text="新着順で表示"
-                            android:textColorLink="@color/colorPrimary"
-                            android:textOff="人気順で表示"
-                            android:textOn="新着順で表示"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.2"
-                            android:text="金額"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorPrimaryText"
-                            android:textSize="18sp" />
-
-                        <Spinner
-                            android:id="@+id/moneySpinner"
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.8"
-                            android:entries="@array/moneyList"
-                            android:spinnerMode="dialog" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.2"
-                            android:text="年代"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorPrimaryText"
-                            android:textSize="18sp" />
-
-                        <Spinner
-                            android:id="@+id/generationSpinner"
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.8"
-                            android:entries="@array/generationList"
-                            android:spinnerMode="dialog" />
-                    </LinearLayout>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -228,12 +158,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="24dp"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_height="wrap_content"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="0.2"
                             android:text="地方"
                             android:textAlignment="center"
@@ -242,11 +172,62 @@
 
                         <Spinner
                             android:id="@+id/prefecturesSpinner"
-                            android:layout_height="wrap_content"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="0.8"
                             android:entries="@array/prefecturesList"
-                            android:spinnerMode="dialog" />
+                            android:spinnerMode="dialog"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.2"
+                            android:text="金額"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="18sp" />
+
+                        <Spinner
+                            android:id="@+id/moneySpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.8"
+                            android:entries="@array/moneyList"
+                            android:spinnerMode="dialog"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.2"
+                            android:text="年代"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="18sp" />
+
+                        <Spinner
+                            android:id="@+id/generationSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.8"
+                            android:entries="@array/generationList"
+                            android:spinnerMode="dialog"
+                            android:textAlignment="center" />
                     </LinearLayout>
 
                 </LinearLayout>
