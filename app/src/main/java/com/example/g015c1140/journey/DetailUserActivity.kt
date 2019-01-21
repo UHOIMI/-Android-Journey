@@ -62,7 +62,8 @@ class DetailUserActivity : AppCompatActivity() {
         detailUserShowAllPlanButton.setOnClickListener {
             //perform your action here
             Toast.makeText(this, "すべて表示タップ", Toast.LENGTH_SHORT).show()
-            //finish()
+            startActivity(Intent(this, TimelineActivity::class.java).putExtra("POSTED_FLG",true).putExtra("USER_ID", mUserId))
+            finish()
         }
 
         anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
@@ -77,6 +78,9 @@ class DetailUserActivity : AppCompatActivity() {
 
         if (!anotherUserFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
+
+            mUserId = sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "")
+            mUserName = sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME, "")
 
             setUser(
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_NAME, "名前が存在しません"),
@@ -140,6 +144,9 @@ class DetailUserActivity : AppCompatActivity() {
                         resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                         //完了
                         /****************/
+                        mUserId = resultUserAccountList[0].getString("user_id")
+                        mUserName = resultUserAccountList[0].getString("user_name")
+
                         setUser(
                                 resultUserAccountList[0].getString("user_name"),
                                 resultUserAccountList[0].getString("generation"),
@@ -339,7 +346,6 @@ class DetailUserActivity : AppCompatActivity() {
                                                 detailUserLastPlanIconCircleImage.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
                                                 detailUserLastPlanSpotImageView.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
                                             }
-                                            mUserName = timelineData.getJSONObject("user").getString("user_name")
                                             detailUserLastPlanNameTextView.text = mUserName
                                             detailUserLastPlanTitleTextView.text = timelineData.getString("plan_title")
                                             detailUserLastPlanSpotName1TextView.text = spotTitleValue[0]
@@ -349,7 +355,6 @@ class DetailUserActivity : AppCompatActivity() {
                                             val dateIndex = planDate.indexOf(" ")
                                             detailUserLastPlanTimeTextView.text = DATE_FORMAT_OUT.format(DATE_FORMAT_IN.parse(planDate.substring(0, dateIndex)))
                                             detailUserLastPlanFavoriteTextView.text = resultFavoriteArrayList[0]
-                                            mUserId = timelineData.getString("user_id")
 
                                             detailUserLastPlanLinearLayout.visibility = View.VISIBLE
                                             detailUserShowAllPlanButton.visibility = View.VISIBLE
@@ -373,7 +378,7 @@ class DetailUserActivity : AppCompatActivity() {
                 }
             }
         })
-        gtat.execute("1", intent.getStringExtra("USER_ID"))
+        gtat.execute("1", mUserId)
     }
 
     private fun failedAsyncTask() {
@@ -388,7 +393,7 @@ class DetailUserActivity : AppCompatActivity() {
         startActivity(Intent(this, DetailUserActivity::class.java).putExtra("ANOTHER_USER", true).putExtra("USER_ID", mUserId))
     }
 
-    fun detailUserLastPlanSpotImageTapped(view: View) {
+    fun detailUserLastPlanSpotTapped(view: View) {
         val myApp = this.application as MyApplication
         myApp.setBmp_1((detailUserLastPlanIconCircleImage.drawable as BitmapDrawable).bitmap)
         startActivity(

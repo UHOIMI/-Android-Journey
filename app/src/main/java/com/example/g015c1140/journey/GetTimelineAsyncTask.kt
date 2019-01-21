@@ -26,11 +26,11 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
 
         //ここでAPIを叩きます。バックグラウンドで処理する内容です。
         var connection: HttpURLConnection? = null
-        var limit:String?  = null
-        var userId:String? = null
+        var limit: String? = null
+        var userId: String? = null
 
-        for (_cnt in 0 until params.size){
-            when(_cnt){
+        for (_cnt in 0 until params.size) {
+            when (_cnt) {
                 0 -> limit = params[_cnt]
                 1 -> userId = params[_cnt]
             }
@@ -38,15 +38,16 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
 
         try {
 
-            val url = if(AREA == ""){
+            val url = if (AREA == "") {
                 var url = "${Setting().TIMELINE_GET_URL}$OFSET"
-                if (limit != null){
+                if (limit != null) {
                     url = "$url&limit=$limit"
-                }else if(userId != null){
+                }
+                if (userId != null) {
                     url = "$url&user_id=$userId"
                 }
                 URL(url)
-            }else{
+            } else {
                 URL("${Setting().TIMELINE_GET_URL}$OFSET&$AREA")
             }
 
@@ -70,9 +71,9 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
                     result = null
                     return result
                 }
-
                 timelineRecord = jsonObject.getJSONArray("record")
                 result = "OK"
+
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -219,7 +220,7 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
 
         if (result == null) {
             Log.d("test GetUserIdTask", "return null")
-            callbackGetTimelineAsyncTask!!.callback("RESULT-NG",null)
+            callbackGetTimelineAsyncTask!!.callback("RESULT-NG", null)
             return
         }
 

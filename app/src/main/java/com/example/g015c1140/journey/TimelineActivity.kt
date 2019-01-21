@@ -38,6 +38,7 @@ class TimelineActivity : AppCompatActivity() {
     private var favoriteFlg = false
 
     private var postedFlag = false
+    private var postedUserId = ""
     /*********/
 
     // 1ページ辺りの項目数
@@ -88,7 +89,9 @@ class TimelineActivity : AppCompatActivity() {
                 timelineSwipeRefresh.isEnabled = false
                 "お気に入り一覧"
             }
-            postedFlag ->{
+            postedFlag -> {
+                timelineSwipeRefresh.isEnabled = false
+                postedUserId = intent.getStringExtra("USER_ID")
                 "過去の投稿一覧"
             }
             else -> "新着プラン一覧"
@@ -109,7 +112,7 @@ class TimelineActivity : AppCompatActivity() {
 
         timelineListAdapter = TimelinePlanListAdapter(this, this)
 
-        if (!favoriteFlg) {
+        if (!favoriteFlg && !postedFlag) {
             //引っ張って更新用
             timelineSwipeRefresh.setColorSchemeResources(R.color.colorPrimary)
             timelineSwipeRefresh.setOnRefreshListener {
@@ -127,13 +130,12 @@ class TimelineActivity : AppCompatActivity() {
 
         setTimeline(0, true)
 
-        if (!favoriteFlg)
-            //下のクルクル
-            timelineListView.addFooterView(getProgFooter())
+        //下のクルクル
+        timelineListView.addFooterView(getProgFooter())
 
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
-            if (favoriteFlg || !(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
+            if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
                 Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 
                 val myApp = this.application as MyApplication
@@ -188,10 +190,10 @@ class TimelineActivity : AppCompatActivity() {
     }
 
     //refreshFlgが true:新しく投稿されたプラン取得 　false:昔のプラン取得
-    private fun setTimeline(ofset: Int, refreshFlg: Boolean) {
+    private fun setTimeline(offset: Int, refreshFlg: Boolean) {
 
         if (!searchFlg && !favoriteFlg) {
-            val gtat = GetTimelineAsyncTask(areaApiString, ofset)
+            val gtat = GetTimelineAsyncTask(areaApiString, offset)
             gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
                 override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                     super.callback(result, timelineRecordJsonArray)
@@ -202,9 +204,9 @@ class TimelineActivity : AppCompatActivity() {
                     }
                 }
             })
-            gtat.execute()
+            gtat.execute(null, postedUserId)
         } else if (searchFlg) {
-            val gsat = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation, ofset)
+            val gsat = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation, offset)
             gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
                 override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                     super.callback(result, searchRecordJsonArray)
@@ -218,7 +220,7 @@ class TimelineActivity : AppCompatActivity() {
             gsat.execute()
         } else if (favoriteFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-            val gufat = GetUserFavoriteAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, ""))
+            val gufat = GetUserFavoriteAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, ""), offset)
             gufat.setOnCallback(object : GetUserFavoriteAsyncTask.CallbackGetUserFavoriteAsyncTask() {
                 override fun callback(result: String, favoriteRecordJSONArray: JSONArray?) {
                     super.callback(result, favoriteRecordJSONArray)
