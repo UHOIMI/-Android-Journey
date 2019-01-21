@@ -14,11 +14,9 @@ class IndexActivity : AppCompatActivity() {
 
     fun onCreateButtonTapped(v: View) {
         startActivity(Intent(this, CreateUserActivity::class.java))
-        finish()
     }
 
     fun onLoginButtonTapped(v: View) {
         startActivity(Intent(this, LoginActivity::class.java))
-        finish()
     }
 }

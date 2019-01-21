@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import kotlinx.android.synthetic.main.activity_edit_user.*
 import kotlinx.android.synthetic.main.activity_post.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -347,6 +346,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun onPostButtonTapped(view: View) {
+        postButton.isClickable = false
         //全部がOKな場合
         if (checkData()) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
@@ -496,6 +496,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 setPositiveButton("確認", null)
                 show()
             }
+            postButton.isClickable = true
             false
         }
     }
@@ -545,6 +546,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             setPositiveButton("確認", null)
             show()
         }
+        postButton.isClickable = true
     }
 
     override fun onDestroy() {

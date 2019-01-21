@@ -84,6 +84,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     fab.setOnClickListener {
                         if (favoriteFlg){
+                            fab.isClickable = false
                             Toast.makeText(this@DetailPlanActivity, "お気に入り削除", Toast.LENGTH_SHORT).show()
                             val dfat = DeletePlanFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
                             dfat.setOnCallback(object : DeletePlanFavoriteAsyncTask.CallbackDeletePlanFavoriteAsyncTask() {
@@ -95,6 +96,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                         //完了
                                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_off)
                                         favoriteFlg = false
+                                        fab.isClickable = true
                                     } else {
                                         AlertDialog.Builder(this@DetailPlanActivity).apply {
                                             setTitle("お気に入り削除に失敗しました")
@@ -102,12 +104,14 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                             setPositiveButton("確認", null)
                                             show()
                                         }
+                                        fab.isClickable = true
                                     }
                                 }
                             })
                             dfat.execute()
 
                         } else {
+                            fab.isClickable = false
                             Toast.makeText(this@DetailPlanActivity, "お気に入り登録", Toast.LENGTH_SHORT).show()
                             val pfat = PostFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
                             pfat.setOnCallback(object : PostFavoriteAsyncTask.CallbackPostFavoriteAsyncTask() {
@@ -119,6 +123,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                         //完了
                                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
                                         favoriteFlg = true
+                                        fab.isClickable = true
                                     } else {
                                         AlertDialog.Builder(this@DetailPlanActivity).apply {
                                             setTitle("お気に入り追加に失敗しました")
@@ -126,6 +131,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                             setPositiveButton("確認", null)
                                             show()
                                         }
+                                        fab.isClickable = true
                                     }
                                 }
                             })
@@ -364,6 +370,7 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
             setPositiveButton("確認", null)
             show()
         }
+        detailPlanFab.isClickable = false
     }
 
 

@@ -62,19 +62,18 @@ class DetailUserActivity : AppCompatActivity() {
         detailUserShowAllPlanButton.setOnClickListener {
             //perform your action here
             Toast.makeText(this, "すべて表示タップ", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, TimelineActivity::class.java).putExtra("POSTED_FLG",true).putExtra("USER_ID", mUserId))
-            finish()
+            startActivity(Intent(this, TimelineActivity::class.java).putExtra("POSTED_FLG", true).putExtra("USER_ID", mUserId))
         }
 
         anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
-
-        detailUserLastPlanLinearLayout.visibility = View.GONE
-        detailUserShowAllPlanButton.visibility = View.INVISIBLE
-        detailUserLastPlanText.visibility = View.GONE
     }
 
     override fun onResume() {
         super.onResume()
+
+        detailUserLastPlanLinearLayout.visibility = View.GONE
+        detailUserShowAllPlanButton.visibility = View.INVISIBLE
+        detailUserLastPlanText.visibility = View.GONE
 
         if (!anotherUserFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
@@ -256,11 +255,6 @@ class DetailUserActivity : AppCompatActivity() {
                 super.callback(result, timelineRecordJsonArray)
                 if (result == "RESULT-OK") {
 
-                    if (timelineRecordJsonArray == null) {
-                        detailUserLastPlanText.visibility = View.VISIBLE
-                        return
-                    }
-
                     //画像取得用
                     val bmpList = arrayListOf<String>()
 
@@ -269,7 +263,7 @@ class DetailUserActivity : AppCompatActivity() {
 
 //                        for (_jsonCnt in 0 until timelineRecordJsonArray!!.length()) {
                     //favorite用
-                    mPlanId = timelineRecordJsonArray.getJSONObject(0).getString("plan_id")
+                    mPlanId = timelineRecordJsonArray!!.getJSONObject(0).getString("plan_id")
 
                     //画像取得用
                     bmpList.add(timelineRecordJsonArray.getJSONObject(0).getJSONObject("user").getString("user_icon"))
@@ -373,6 +367,9 @@ class DetailUserActivity : AppCompatActivity() {
                         }
                     })
                     gpfat.execute()
+                } else if (result == "RESULT-404") {
+                    detailUserLastPlanText.visibility = View.VISIBLE
+                    return
                 } else {
                     Toast.makeText(this@DetailUserActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                 }

@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun onLoginButtonTapped(v: View) {
 
+        loginLoginButton.isClickable = false
         var result = ""
         if (loginIdEditText.text.toString().isEmpty())
             result += "ユーザーIDを入力してください\n"
@@ -86,7 +87,8 @@ class LoginActivity : AppCompatActivity() {
                                     sharedPrefEditor.putBoolean(Setting().USER_SHARED_PREF_FLG, true)
                                     sharedPrefEditor.apply()
                                     Toast.makeText(this@LoginActivity, "引継ぎが完了しました", Toast.LENGTH_SHORT).show()
-                                    startActivity(Intent(this@LoginActivity,StartActivity::class.java))
+                                    finishAffinity()
+                                    startActivity(Intent(this@LoginActivity,HomeActivity::class.java))
                                 } else {
                                     AlertDialog.Builder(this@LoginActivity).apply {
                                         setTitle("引継ぎに失敗しました")
@@ -94,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
                                         setPositiveButton("確認", null)
                                         show()
                                     }
+                                    loginLoginButton.isClickable = true
                                 }
                             }
                         })
@@ -107,6 +110,7 @@ class LoginActivity : AppCompatActivity() {
                             setPositiveButton("確認", null)
                             show()
                         }
+                        loginLoginButton.isClickable = true
                     }
                 }
             })
@@ -118,6 +122,7 @@ class LoginActivity : AppCompatActivity() {
                 setPositiveButton("確認", null)
                 show()
             }
+            loginLoginButton.isClickable = true
         }
         /********************/
     }

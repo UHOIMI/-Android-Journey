@@ -109,16 +109,17 @@
                 android:textSize="18sp" />
 
             <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/generationSpinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteY="377dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="8dp"
                 android:layout_marginBottom="16dp"
                 android:entries="@array/generationList"
                 android:spinnerMode="dialog"
-                android:layout_marginLeft="8dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="377dp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -128,13 +129,14 @@
                 android:textSize="18sp" />
 
             <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/genderSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="8dp"
                 android:layout_marginBottom="16dp"
                 android:entries="@array/genderList"
-                android:spinnerMode="dialog"
-                android:layout_marginLeft="8dp"/>
+                android:spinnerMode="dialog" />
 
             <Button
                 android:id="@+id/doneButton"

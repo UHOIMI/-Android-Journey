@@ -150,6 +150,7 @@ class SearchPlanActivity : AppCompatActivity() {
     }
 
     fun searchButtonTapped(view: View) {
+        searchButton.isClickable = false
 
         if (searchTextEditText.text.toString().replace(" ", "").replace("　", "") != "") {
             mRealm.executeTransaction {
@@ -172,6 +173,7 @@ class SearchPlanActivity : AppCompatActivity() {
                 setMessage("最低1つは条件を指定してください")
                 setPositiveButton("確認", null)
                 show()
+                searchButton.isClickable = true
             }
         } else {
 
@@ -216,10 +218,12 @@ class SearchPlanActivity : AppCompatActivity() {
                                 setTitle("該当する結果がありません")
                                 setPositiveButton("確認", null)
                                 show()
+                                searchButton.isClickable = true
                             }
                         }
 
                         "RESULT-OK" -> {
+                            searchButton.isClickable = true
                             startActivity(Intent(this@SearchPlanActivity, TimelineActivity::class.java)
                                     .putExtra("SEARCH_FLG", true)
                                     .putExtra("SEARCH_VALUE_KEYWORD", searchTextEditText.text.toString())
@@ -229,7 +233,10 @@ class SearchPlanActivity : AppCompatActivity() {
                                     .putExtra("SEARCH_VALUE_TRANSPORTATION", transportation))
                         }
 
-                        else -> Toast.makeText(this@SearchPlanActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                        else -> {
+                            Toast.makeText(this@SearchPlanActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                            searchButton.isClickable = true
+                        }
                     }
                 }
             })

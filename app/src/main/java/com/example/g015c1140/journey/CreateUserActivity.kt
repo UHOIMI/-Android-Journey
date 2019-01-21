@@ -28,7 +28,7 @@ class CreateUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
 
-        val inputFilter = InputFilter { source, start, end, dest, dstart, dend ->
+        val inputFilter = InputFilter { source, _, _, _, dend, _ ->
             if (source.toString().matches("^[a-zA-Z0-9]+$".toRegex())) {
                 source
             } else {
@@ -63,6 +63,7 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun onClickImage(v: View) {
+        iconImageButton.isClickable = false
         // イメージ画像がクリックされたときに実行される処理
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -82,6 +83,8 @@ class CreateUserActivity : AppCompatActivity() {
                 intent.putExtra("imageFlg", 2)
                 startActivityForResult(intent, RESULT_CROP)
             }
+        }else{
+            iconImageButton.isClickable = true
         }
 
         if (requestCode == RESULT_CROP && resultCode == Activity.RESULT_OK) {
@@ -90,10 +93,14 @@ class CreateUserActivity : AppCompatActivity() {
             myApp.clearBmp_1()
             iconImageButton.setImageBitmap(bmp)
             userIcon  = "OK"
+            iconImageButton.isClickable = true
+        }else{
+            iconImageButton.isClickable = true
         }
     }
 
     fun onDoneButtonTapped(v: View) {
+        doneButton.isClickable = false
         var result = ""
         if (createIdEditText.text.toString().isEmpty()) {
             result += "ユーザーIDを入力してください\n"
@@ -176,12 +183,12 @@ class CreateUserActivity : AppCompatActivity() {
                 generationSpinner.selectedItem.toString(),
                 genderSpinner.selectedItem.toString()
         )
-        startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
         if (userIcon == "OK"){
             val myApp = this.application as MyApplication
             myApp.setBmp_1((iconImageButton.drawable as BitmapDrawable).bitmap)
         }
-        finish()
+        doneButton.isClickable = true
+        startActivity(Intent(this, ConfirmationActivity::class.java).putStringArrayListExtra("USERDATA", userData))
     }
 
     private fun checkFailure(string: String) {
@@ -191,5 +198,6 @@ class CreateUserActivity : AppCompatActivity() {
             setPositiveButton("確認", null)
             show()
         }
+        doneButton.isClickable = true
     }
 }

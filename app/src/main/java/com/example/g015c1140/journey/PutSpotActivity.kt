@@ -123,6 +123,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         val saveButton = findViewById<Button>(R.id.saveButton)
         saveButton.setOnClickListener {
+            saveButton.isClickable = false
             saveSpot()
         }
 
@@ -508,6 +509,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 })
                 show()
             }
+            saveButton.isClickable = true
         } else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
             //print(mRealm.where(RealmSpotData::class.java).findAll())

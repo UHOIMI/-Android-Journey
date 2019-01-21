@@ -129,6 +129,8 @@ class EditUserActivity : AppCompatActivity() {
     }
 
     fun onClickImage(v: View) {
+        editUserHeaderImageButton.isClickable = false
+        editUserIconImageView.isClickable = false
         // イメージ画像がクリックされたときに実行される処理
         when (v.id) {
             R.id.editUserHeaderImageButton -> imageFlg = 1
@@ -166,6 +168,13 @@ class EditUserActivity : AppCompatActivity() {
                         iconFlg = IMAGE_EDIT
                     }
                 }
+                editUserHeaderImageButton.isClickable = true
+                editUserIconImageView.isClickable = true
+            }
+
+            else ->{
+                editUserHeaderImageButton.isClickable = true
+                editUserIconImageView.isClickable = true
             }
         }
     }
@@ -259,6 +268,7 @@ class EditUserActivity : AppCompatActivity() {
 
     //保存ボタン処理
     fun saveButtonTapped(v: View) {
+        editUserSaveButton.isClickable = false
         //APIにPOST
         var result = ""
         var generation = ""
@@ -407,6 +417,7 @@ class EditUserActivity : AppCompatActivity() {
                 setPositiveButton("確認", null)
                 show()
             }
+            editUserSaveButton.isClickable = true
         }
     }
 
@@ -506,5 +517,6 @@ class EditUserActivity : AppCompatActivity() {
             setPositiveButton("確認", null)
             show()
         }
+        editUserSaveButton.isClickable = true
     }
 }

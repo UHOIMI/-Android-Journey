@@ -52,6 +52,7 @@ class ConfirmationActivity : AppCompatActivity() {
     }
 
     fun onDoneButtonTapped(v: View) {
+        doneButton.isClickable = false
         //投稿
         if (userData[0] == "OK") {
             userData[0] = seveAndLoadImage()
@@ -105,6 +106,7 @@ class ConfirmationActivity : AppCompatActivity() {
             setPositiveButton("確認", null)
             show()
         }
+        doneButton.isClickable = true
     }
 
     private fun userCreate() {
@@ -122,7 +124,8 @@ class ConfirmationActivity : AppCompatActivity() {
                     sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
                     Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@ConfirmationActivity,StartActivity::class.java))
+                    finishAffinity()
+                    startActivity(Intent(this@ConfirmationActivity,HomeActivity::class.java))
                 } else {
                     AlertDialog.Builder(this@ConfirmationActivity).apply {
                         setTitle("投稿に失敗しました")
@@ -130,8 +133,8 @@ class ConfirmationActivity : AppCompatActivity() {
                         setPositiveButton("確認", null)
                         show()
                     }
+                    doneButton.isClickable = true
                 }
-
             }
         })
         puat.execute(userData)
