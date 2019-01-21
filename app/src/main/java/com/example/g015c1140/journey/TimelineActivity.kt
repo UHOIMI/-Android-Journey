@@ -197,10 +197,10 @@ class TimelineActivity : AppCompatActivity() {
             gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
                 override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                     super.callback(result, timelineRecordJsonArray)
-                    if (result == "RESULT-OK") {
-                        setTimelineList(timelineRecordJsonArray!!, refreshFlg)
-                    } else {
-                        Toast.makeText(this@TimelineActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                    when (result) {
+                        "RESULT-OK" -> setTimelineList(timelineRecordJsonArray!!, refreshFlg)
+                        "RESULT-404" -> deleteFooterProgress()
+                        else -> Toast.makeText(this@TimelineActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -210,10 +210,10 @@ class TimelineActivity : AppCompatActivity() {
             gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
                 override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                     super.callback(result, searchRecordJsonArray)
-                    if (result == "RESULT-OK") {
-                        setTimelineList(searchRecordJsonArray!!, refreshFlg)
-                    } else {
-                        Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
+                    when (result) {
+                        "RESULT-OK" -> setTimelineList(searchRecordJsonArray!!, refreshFlg)
+                        "RESULT-404" -> deleteFooterProgress()
+                        else -> Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -228,14 +228,7 @@ class TimelineActivity : AppCompatActivity() {
                         if (result == "RESULT-OK") {
                             setTimelineList(favoriteRecordJSONArray!!, refreshFlg)
                         } else {
-                            AlertDialog.Builder(this@TimelineActivity).apply {
-                                setTitle("お気に入りのプランがありません")
-                                setMessage("元の画面に戻って下さい")
-                                setPositiveButton("戻る") { _, _ ->
-                                    finish()
-                                }
-                                show()
-                            }
+                            deleteFooterProgress()
                         }
                     } else {
                         Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
@@ -244,6 +237,12 @@ class TimelineActivity : AppCompatActivity() {
             })
             gufat.execute()
         }
+    }
+
+    private fun deleteFooterProgress() {
+        timelineListView.removeFooterView(progressFooter)
+        timelineListView.setOnScrollListener(null)
+        Toast.makeText(this@TimelineActivity, "プランがありません", Toast.LENGTH_SHORT).show()
     }
 
     private fun setTimelineList(resultRecordJsonArray: JSONArray, refreshFlg: Boolean) {

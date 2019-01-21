@@ -12,11 +12,13 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetUserFavoriteAsyncTask(uId: String) : AsyncTask<Void, String, String>() {
+class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, String, String>() {
 
     //callBack用
     private var callbackGetUserFavoriteAsyncTask: CallbackGetUserFavoriteAsyncTask? = null
     private var result: String? = null
+    private val OFSET = offset
+
     private val USER_ID = uId
 
     val CONVERT_JSON_ARRAY = JSONArray()
@@ -33,7 +35,7 @@ class GetUserFavoriteAsyncTask(uId: String) : AsyncTask<Void, String, String>() 
         }
 
         try {
-            val url = URL("${Setting().FAVORITE_GET_UID_URL}$USER_ID")
+            val url = URL("${Setting().FAVORITE_GET_UID_URL}$USER_ID&offset=$OFSET")
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。

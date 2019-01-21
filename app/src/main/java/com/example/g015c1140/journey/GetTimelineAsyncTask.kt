@@ -12,13 +12,13 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, String>() {
+class GetTimelineAsyncTask(area: String, offset: Int) : AsyncTask<String, String, String>() {
 
     //callBack用
     private var callbackGetTimelineAsyncTask: CallbackGetTimelineAsyncTask? = null
     private var result: String? = null
 
-    private val OFSET = ofset
+    private val OFSET = offset
     private val AREA = area
     private var timelineRecord: JSONArray? = null
 
@@ -67,6 +67,11 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
                 sb.toString()
                 val jsonObject = JSONObject(sb.toString())
                 if (jsonObject.getString("status").toString() != "200") {
+                    if (jsonObject.getString("status").toString() == "404") {
+                        Log.d("test", "Timeline 404")
+                        result = "404"
+                        return result
+                    }
                     Log.d("test", "Timeline error")
                     result = null
                     return result
@@ -224,9 +229,12 @@ class GetTimelineAsyncTask(area: String, ofset:Int) : AsyncTask<String, String, 
             return
         }
 
-
-        Log.d("test GettimelineTask", "result：$result")
-        callbackGetTimelineAsyncTask!!.callback("RESULT-OK",timelineRecord)
+        if (result == "404") {
+            callbackGetTimelineAsyncTask!!.callback("RESULT-404", null)
+        } else {
+            Log.d("test GettimelineTask", "result：$result")
+            callbackGetTimelineAsyncTask!!.callback("RESULT-OK", timelineRecord)
+        }
     }
 
     fun setOnCallback(cb: CallbackGetTimelineAsyncTask) {

@@ -17,7 +17,7 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
     //callBack用
     private var callbackGetSearchAsyncTask: CallbackGetSearchAsyncTask? = null
     private var result: String? = null
-    private var offset = ofs
+    private val OFFSET = ofs
 
     private val KEYWORD = keyword
     private val GENERATION = generation
@@ -61,7 +61,7 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
                 urlString += "limit=$limit&"
             }
 
-            val url = URL("${urlString}offset=$offset")
+            val url = URL("${urlString}offset=$OFFSET")
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。

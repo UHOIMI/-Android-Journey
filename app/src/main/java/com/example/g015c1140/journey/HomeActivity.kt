@@ -106,21 +106,10 @@ class HomeActivity : AppCompatActivity() {
         gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
             override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                 super.callback(result, timelineRecordJsonArray)
-                if (result == "RESULT-OK") {
-
-/*
-                    if (timelineRecordJsonArray != null) {
-                        if (timelineRecordJsonArray.length() > 3) {
-                            for (_removeCnt in 0 until (timelineRecordJsonArray.length() - 3)) {
-                                timelineRecordJsonArray.remove(timelineRecordJsonArray.length() - 1)
-                            }
-                        }
-                    }
-*/
-
-                    setPlanList(timelineRecordJsonArray!!, 1)
-                } else {
-                    Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
+                when (result) {
+                    "RESULT-OK" -> setPlanList(timelineRecordJsonArray!!, 1)
+                    "RESULT-404" -> Toast.makeText(this@HomeActivity, "新着3件はありません", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -131,14 +120,7 @@ class HomeActivity : AppCompatActivity() {
             override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                 super.callback(result, searchRecordJsonArray)
                 when (result) {
-                    "RESULT-OK" -> /*                    if (searchRecordJsonArray != null) {
-                                if (searchRecordJsonArray.length() > 3) {
-                                    for (_removeCnt in 0 until (searchRecordJsonArray.length() - 3)) {
-                                        searchRecordJsonArray.remove(searchRecordJsonArray.length() - 1)
-                                    }
-                                }
-                            }*/
-                        setPlanList(searchRecordJsonArray!!,2)
+                    "RESULT-OK" -> setPlanList(searchRecordJsonArray!!,2)
                     "RESULT-404" -> Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
                     else -> Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                 }
