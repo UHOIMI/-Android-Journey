@@ -7,4 +7,7 @@
 
     <!-- バー文字色-->
     <color name="colorPrimaryText">#000000</color>
+
+    <!-- bottomNavigation Color-->
+    <color name="bottom_navigation_color">#fafafa</color>
 </resources>

@@ -107,7 +107,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/newPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_corners" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/newPlanPageControlView"
@@ -151,7 +152,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/userGenerationPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_corners" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/userGenerationPlanPageControlView"
@@ -185,6 +187,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:menu="@menu/bottom_navigation" />
 
 
