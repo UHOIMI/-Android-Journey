@@ -45,7 +45,7 @@ class AreaPageControlRecyclerViewAdapter(context: Context, activity: Activity, a
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.areaName = areaDataList[position].areaName
-        holder.areaImageView.setImageBitmap(areaDataList[position].areaImage)
+        holder.areaImageView.setImageDrawable(areaDataList[position].areaImage)
         holder.areaApiString = areaDataList[position].areaApiString
     }
 }

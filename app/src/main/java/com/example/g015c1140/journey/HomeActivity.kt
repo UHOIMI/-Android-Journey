@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -16,6 +17,8 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONArray
 import java.text.SimpleDateFormat
+
+
 
 
 class HomeActivity : AppCompatActivity() {
@@ -316,15 +319,33 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun getAreaListData(): ArrayList<HomeAreaData> {
+
+        val hokkaidou = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.hokkaidou))
+        hokkaidou.cornerRadius = 50f
+        val touhoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.touhoku))
+        touhoku.cornerRadius = 50f
+        val kantou = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kantou))
+        kantou.cornerRadius = 50f
+        val chuubu = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.chuubu))
+        chuubu.cornerRadius = 50f
+        val kinki = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kinki))
+        kinki.cornerRadius = 50f
+        val chuugoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.chuugoku))
+        chuugoku.cornerRadius = 50f
+        val shikoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.shikoku))
+        shikoku.cornerRadius = 50f
+        val kyuusyuu = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu))
+        kyuusyuu.cornerRadius = 50f
+
         return arrayListOf(
-                HomeAreaData("北海道地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.hokkaidou), "area=北海道"),
-                HomeAreaData("東北地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.touhoku), "area=青森県&area=岩手県&area=秋田県&area=宮城県&area=山形県&area=福島県"),
-                HomeAreaData("関東地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kantou), "area=茨城県&area=栃木県&area=群馬県&area=埼玉県&area=千葉県&area=東京都&area=神奈川県"),
-                HomeAreaData("中部地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.chuubu), "area=山梨県&area=長野県&area=新潟県&area=富山県&area=石川県&area=福井県&area=静岡県&area=愛知県&area=岐阜県"),
-                HomeAreaData("近畿地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kinki), "area=三重県&area=滋賀県&area=京都府&area=大阪府&area=兵庫県&area=奈良県&area=和歌山県"),
-                HomeAreaData("中国地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.chuugoku), "area=鳥取県&area=島根県&area=岡山県&area=広島県&area=山口県"),
-                HomeAreaData("四国地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.shikoku), "area=香川県&area=愛媛県&area=徳島県&area=高知県"),
-                HomeAreaData("九州地方のプラン", BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu), "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
+                HomeAreaData("北海道地方のプラン", hokkaidou, "area=北海道"),
+                HomeAreaData("東北地方のプラン", touhoku, "area=青森県&area=岩手県&area=秋田県&area=宮城県&area=山形県&area=福島県"),
+                HomeAreaData("関東地方のプラン", kantou, "area=茨城県&area=栃木県&area=群馬県&area=埼玉県&area=千葉県&area=東京都&area=神奈川県"),
+                HomeAreaData("中部地方のプラン", chuubu, "area=山梨県&area=長野県&area=新潟県&area=富山県&area=石川県&area=福井県&area=静岡県&area=愛知県&area=岐阜県"),
+                HomeAreaData("近畿地方のプラン", kinki, "area=三重県&area=滋賀県&area=京都府&area=大阪府&area=兵庫県&area=奈良県&area=和歌山県"),
+                HomeAreaData("中国地方のプラン", chuugoku, "area=鳥取県&area=島根県&area=岡山県&area=広島県&area=山口県"),
+                HomeAreaData("四国地方のプラン", shikoku, "area=香川県&area=愛媛県&area=徳島県&area=高知県"),
+                HomeAreaData("九州地方のプラン", kyuusyuu, "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
         )
     }
 }
