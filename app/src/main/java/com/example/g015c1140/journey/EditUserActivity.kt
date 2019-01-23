@@ -56,9 +56,11 @@ class EditUserActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomavigation: BottomNavigationView = findViewById(R.id.userEditNavigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
+        AdjustmentBottomNavigation().disableShiftMode(userEditNavigation)
+
+        val myApp = this.application as MyApplication
+        userEditNavigation.selectedItemId = myApp.getBnp()
         userEditNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         headerFlg = intent.getIntExtra("headerFlg", -1)
@@ -195,16 +197,21 @@ class EditUserActivity : AppCompatActivity() {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                startActivity(Intent(this,HomeActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
+                startActivity(Intent(this,SearchPlanActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this, DetailUserActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }

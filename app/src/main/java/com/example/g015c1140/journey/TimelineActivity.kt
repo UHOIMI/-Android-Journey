@@ -59,6 +59,8 @@ class TimelineActivity : AppCompatActivity() {
     private var progressFooter: View? = null
     private var bottomRefreshFlg = true
 
+    private var myApp:MyApplication? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timeline)
@@ -105,10 +107,15 @@ class TimelineActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
-        bottomavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+        myApp = this.application as MyApplication
+        AdjustmentBottomNavigation().disableShiftMode(navigation)
+        if (favoriteFlg) {
+            navigation.selectedItemId = R.id.navigation_favorite
+        }else{
+            navigation.selectedItemId = myApp!!.getBnp()
+        }
+        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         timelineListAdapter = TimelinePlanListAdapter(this, this)
 
@@ -138,14 +145,20 @@ class TimelineActivity : AppCompatActivity() {
             if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
                 Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 
-                val myApp = this.application as MyApplication
-                myApp.setBmp_1((TIMELINE_LIST[position].planUserIconImage!!))
+                myApp!!.setBmp_1((TIMELINE_LIST[position].planUserIconImage!!))
 
                 startActivity(
                         Intent(this, DetailPlanActivity::class.java)
                                 .putStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME", arrayListOf(TIMELINE_LIST[position].planId.toString(), TIMELINE_LIST[position].userId, TIMELINE_LIST[position].planUserName))
                 )
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (favoriteFlg) {
+            myApp!!.setBnp(R.id.navigation_favorite)
         }
     }
 
@@ -172,17 +185,20 @@ class TimelineActivity : AppCompatActivity() {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                startActivity(Intent(this, HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
+                startActivity(Intent(this, SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
+                if (!favoriteFlg)
+                    startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
                 startActivity(Intent(this, DetailUserActivity::class.java))
-                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

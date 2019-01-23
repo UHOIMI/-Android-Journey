@@ -40,8 +40,7 @@ class SplashActivity : AppCompatActivity() {
                             Toast.makeText(this@SplashActivity,"ログイン情報あり\nToken取得完了", Toast.LENGTH_SHORT).show()
 
                             if(!isFinishing) {
-                                startActivity(Intent(this@SplashActivity, StartActivity::class.java))
-//                        startActivity(Intent(this@SplashActivity,HomeActivity::class.java))
+                                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
                                 finish()
                             }
                         } else {

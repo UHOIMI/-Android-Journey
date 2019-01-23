@@ -7,6 +7,7 @@ class MyApplication : Application() {
 
     private var bmp_1: Bitmap? = null
     private var bmp_2: Bitmap? = null
+    private var bnp:Int = 0
 
 
     fun setBmp_1(bmp: Bitmap) {
@@ -17,12 +18,20 @@ class MyApplication : Application() {
         this.bmp_2 = bmp
     }
 
+    fun setBnp(int: Int){
+        bnp = int
+    }
+
     fun getBmp_1(): Bitmap? {
         return bmp_1
     }
 
     fun getBmp_2(): Bitmap? {
         return bmp_2
+    }
+
+    fun getBnp(): Int {
+        return bnp
     }
 
     fun clearBmp_1() {

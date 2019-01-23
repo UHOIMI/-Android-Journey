@@ -38,13 +38,17 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private val DATE_FORMAT_OUT = SimpleDateFormat("MM月dd日")
 
+    private var myApp:MyApplication? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         //ボトムバー設定
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
+        myApp = this.application as MyApplication
         AdjustmentBottomNavigation().disableShiftMode(homeBottomNavigation)
+        homeBottomNavigation.selectedItemId = R.id.navigation_home
         homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
@@ -123,6 +127,11 @@ class HomeActivity : AppCompatActivity() {
             }
         })
         gsat.execute("3")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        myApp!!.setBnp(R.id.navigation_home)
     }
 
     private fun setPlanList(timelineRecordJsonArray: JSONArray, listFlg: Int) {
@@ -304,14 +313,15 @@ class HomeActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
+                startActivity(Intent(this,SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
                 startActivity(Intent(this, DetailUserActivity::class.java))
-                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

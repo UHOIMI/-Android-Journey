@@ -36,6 +36,7 @@ class DetailUserActivity : AppCompatActivity() {
     private var mUserId = ""
     private var mUserName = ""
 
+    private var myApp:MyApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +54,17 @@ class DetailUserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
+        anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
+
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
+        myApp = this.application as MyApplication
+        AdjustmentBottomNavigation().disableShiftMode(navigation)
+        if (!anotherUserFlg) {
+            navigation.selectedItemId = R.id.navigation_setting
+        }else{
+            navigation.selectedItemId = myApp!!.getBnp()
+        }
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         detailUserShowAllPlanButton.setOnClickListener {
@@ -64,8 +72,6 @@ class DetailUserActivity : AppCompatActivity() {
             Toast.makeText(this, "すべて表示タップ", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, TimelineActivity::class.java).putExtra("POSTED_FLG", true).putExtra("USER_ID", mUserId))
         }
-
-        anotherUserFlg = intent.getBooleanExtra("ANOTHER_USER", false)
     }
 
     override fun onResume() {
@@ -76,6 +82,8 @@ class DetailUserActivity : AppCompatActivity() {
         detailUserLastPlanText.visibility = View.GONE
 
         if (!anotherUserFlg) {
+            myApp!!.setBnp(R.id.navigation_setting)
+
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
             mUserId = sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "")
@@ -403,19 +411,18 @@ class DetailUserActivity : AppCompatActivity() {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                //spotNameTextView.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //spotNameTextView.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //spotNameTextView.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                //spotNameTextView.setText(R.string.title_setting)
                 return@OnNavigationItemSelectedListener true
             }
         }

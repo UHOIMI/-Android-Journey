@@ -51,7 +51,10 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
-        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+
+        val myApp = this.application as MyApplication
+        bottomNavigation.selectedItemId = myApp.getBnp()
+        bottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         anotherSpotFlg = intent.getBooleanExtra("ANOTHER-SPOT-FLG", false)
 
@@ -242,20 +245,19 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                spotNameTextView.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                spotNameTextView.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                spotNameTextView.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
                 startActivity(Intent(this, DetailUserActivity::class.java))
-                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

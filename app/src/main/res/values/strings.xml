@@ -7,7 +7,7 @@
     <string name="title_setting">Setting</string>
 
     <string-array name="generationList">
-        <item>--年代を選択--</item>
+        <item>年代を選択してください</item>
         <item>10歳以下</item>
         <item>10代</item>
         <item>20代</item>
@@ -22,14 +22,14 @@
     </string-array>
 
     <string-array name="genderList">
-        <item>--性別を選択--</item>
+        <item>性別を選択してください</item>
         <item>男性</item>
         <item>女性</item>
     </string-array>
 
     <!-- spinner 金額-->
     <string-array name="moneyList">
-        <item>--金額を選択--</item>
+        <item>金額を選択してください</item>
         <item>500円以下</item>
         <item>501円 ~ 1000円</item>
         <item>1001円 ~ 5000円</item>
@@ -41,7 +41,7 @@
 
 
     <string-array name="prefecturesList">
-        <item>--都道府県を選択--</item>
+        <item>都道府県を選択してください</item>
         <item>北海道</item>
         <item>青森県</item>
         <item>岩手県</item>

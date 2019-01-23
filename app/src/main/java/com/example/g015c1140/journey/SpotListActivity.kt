@@ -44,9 +44,11 @@ class SpotListActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
+        AdjustmentBottomNavigation().disableShiftMode(navigation)
+
+        val myApp = this.application as MyApplication
+        navigation.selectedItemId = myApp.getBnp()
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         Realm.init(this)
@@ -130,23 +132,23 @@ class SpotListActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    //ボトムバータップ時
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                //spotNameTextView.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //spotNameTextView.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //spotNameTextView.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                startActivity(Intent(this,DetailUserActivity::class.java))
-                finish()
+                startActivity(Intent(this, DetailUserActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
         }

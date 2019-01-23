@@ -31,6 +31,8 @@ class SearchPlanActivity : AppCompatActivity() {
     //交通手段ボタンフラグ用
     private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0, 0, 0, 0, 0, 0, 0)
 
+    private var myApp:MyApplication? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_plan)
@@ -45,9 +47,10 @@ class SearchPlanActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomnavigation: BottomNavigationView = findViewById(R.id.searchNavigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomnavigation)
+        myApp = this.application as MyApplication
+        AdjustmentBottomNavigation().disableShiftMode(searchNavigation)
+        searchNavigation.selectedItemId = R.id.navigation_search
         searchNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         // 項目をタップしたときの処理
@@ -100,6 +103,11 @@ class SearchPlanActivity : AppCompatActivity() {
         transportationImageButton = mutableListOf(findViewById(R.id.walkImageButton), findViewById(R.id.bicycleImageButton), findViewById(R.id.carImageButton), findViewById(R.id.busImageButton), findViewById(R.id.trainImageButton), findViewById(R.id.airplaneImageButton), findViewById(R.id.boatImageButton))
     }
 
+    override fun onResume() {
+        super.onResume()
+        myApp!!.setBnp(R.id.navigation_search)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //戻るボタンタップ時
         android.R.id.home -> {
@@ -116,17 +124,18 @@ class SearchPlanActivity : AppCompatActivity() {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                startActivity(Intent(this,HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
                 startActivity(Intent(this, DetailUserActivity::class.java))
-                finish()
                 return@OnNavigationItemSelectedListener true
             }
         }

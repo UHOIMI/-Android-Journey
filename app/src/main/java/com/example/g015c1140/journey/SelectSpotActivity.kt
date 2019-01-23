@@ -204,9 +204,11 @@ class SelectSpotActivity : AppCompatActivity() {
 
         /************/
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
+        AdjustmentBottomNavigation().disableShiftMode(navigation)
+
+        val myApp = this.application as MyApplication
+        navigation.selectedItemId = myApp.getBnp()
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         /****************/
 
@@ -246,18 +248,18 @@ class SelectSpotActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                //spotNameEditText.setText(R.string.title_home)
-                realmSavedSpotList.add(SpotData("tokenID", "tmp${realmSavedSpotList.size}", 1.0, 2.0, "", "", "", "", Date()))
-                realmSpotNameList.add(realmSavedSpotList[realmSavedSpotList.size - 1].title)
-//                userSpotAdapter.notifyDataSetChanged()
+                startActivity(Intent(this,HomeActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //spotNameEditText.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //spotNameEditText.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {

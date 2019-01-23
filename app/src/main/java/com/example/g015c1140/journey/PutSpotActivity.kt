@@ -113,9 +113,11 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.putSpotNavigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
+        AdjustmentBottomNavigation().disableShiftMode(putSpotNavigation)
+
+        val myApp = this.application as MyApplication
+        putSpotNavigation.selectedItemId = myApp.getBnp()
         putSpotNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         spotNameTextView = findViewById(R.id.nameText) as EditText
@@ -228,15 +230,18 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                //spotNameTextView.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //spotNameTextView.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //spotNameTextView.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -280,7 +285,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             //　位置情報権限確認
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                //startActivity(Intent(this, StartActivity::class.java))
                 //　権限がない場合
                 ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
                 mMap = googleMap
@@ -407,7 +411,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             //　権限がない場合
             //////ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
             //ActivityCompat.requestPermissions()
-            //startActivity(Intent(this, StartActivity::class.java))
             return
         }
 

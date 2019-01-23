@@ -75,9 +75,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar!!.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomavigation: BottomNavigationView = findViewById(R.id.navigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomavigation)
+        AdjustmentBottomNavigation().disableShiftMode(navigation)
+
+        val myApp = this.application as MyApplication
+        navigation.selectedItemId = myApp.getBnp()
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         //Map呼び出し
@@ -324,16 +326,18 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                planTitleEditText.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                planTitleEditText.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                planTitleEditText.setText(R.string.title_favorite)
                 startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {

@@ -46,10 +46,8 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.setHomeButtonEnabled(true)
 
         //ボトムバー設定
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.detailPlanNavigation)
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
-        AdjustmentBottomNavigation().disableShiftMode(bottomNavigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+        AdjustmentBottomNavigation().disableShiftMode(detailPlanNavigation)
 
         //map準備
         val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
@@ -64,6 +62,9 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         val myApp: MyApplication = this.application as MyApplication
         detailPlanUserIconCircleView.setImageBitmap(myApp.getBmp_1())
         myApp.clearBmp_1()
+
+        detailPlanNavigation.selectedItemId = myApp.getBnp()
+        detailPlanNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         /************************************/
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
@@ -389,15 +390,15 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                //spotNameTextView.setText(R.string.title_home)
+                startActivity(Intent(this,HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                //spotNameTextView.setText(R.string.title_search)
+                startActivity(Intent(this,SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                //spotNameTextView.setText(R.string.title_favorite)
+                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
