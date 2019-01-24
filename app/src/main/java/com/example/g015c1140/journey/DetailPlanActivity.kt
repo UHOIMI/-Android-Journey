@@ -2,6 +2,7 @@ package com.example.g015c1140.journey
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -25,12 +26,17 @@ import org.json.JSONObject
 
 class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var gMap : GoogleMap
+    private lateinit var gMap: GoogleMap
     private var favoriteFlg = false
     private val SPOT_LIST = arrayListOf<DetailPlanSpotData>()
     private var userId = ""
+    private var planId = ""
     private val SPOT_ADDRESS = arrayListOf<ArrayList<Double>>()
     private lateinit var detailPlanSpotListAdapter: DetailPlanSpotListAdapter
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private var spotJsonList: ArrayList<JSONObject>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +61,10 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //intent
         val intentString = intent.getStringArrayListExtra("PLAN-ID_USER-ID_USER-NAME")
-        val planId = intentString[0]
+        planId = intentString[0]
         userId = intentString[1]
+
+        sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
         detailPlanUserNameTextView.text = intentString[2]
         val myApp: MyApplication = this.application as MyApplication
@@ -66,25 +74,28 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         detailPlanNavigation.selectedItemId = myApp.getBnp()
         detailPlanNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
+        if (userId != sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none")) {
+            detailPlanDeleteButton.visibility = View.GONE
+        }
+
         /************************************/
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
-        val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
         //favorite
-        val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(planId),sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"))
+        val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(planId), sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"))
         gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
             override fun callback(resultFavoriteArrayList: ArrayList<String>) {
                 super.callback(resultFavoriteArrayList)
                 if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
                     resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
                     //完了
-                    if ( resultFavoriteArrayList[0] == "favorite-yes"){
+                    if (resultFavoriteArrayList[0] == "favorite-yes") {
                         favoriteFlg = true
                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
                     }
 
                     fab.setOnClickListener {
-                        if (favoriteFlg){
+                        if (favoriteFlg) {
                             fab.isClickable = false
                             Toast.makeText(this@DetailPlanActivity, "お気に入り削除", Toast.LENGTH_SHORT).show()
                             val dfat = DeletePlanFavoriteAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
@@ -153,12 +164,12 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         detailPlanSpotListAdapter.setDetailPlanSpotList(SPOT_LIST)
         detailPlanSpotListView.adapter = detailPlanSpotListAdapter
 
-        detailPlanSpotListView.setOnItemClickListener{ _, _, position, _ ->
-             startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("ANOTHER-SPOT-FLG",true).putExtra("ANOTHER-SPOT-ID", SPOT_LIST[position].spotId.toString()))
+        detailPlanSpotListView.setOnItemClickListener { _, _, position, _ ->
+            startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("ANOTHER-SPOT-FLG", true).putExtra("ANOTHER-SPOT-ID", SPOT_LIST[position].spotId.toString()))
         }
 
         //planApi
-        val gpat = GetPlanAsyncTask(planId,true)
+        val gpat = GetPlanAsyncTask(planId, true)
         gpat.setOnCallback(object : GetPlanAsyncTask.CallbackGetPlanAsyncTask() {
             override fun callback(resultPlanJson: JSONObject) {
                 super.callback(resultPlanJson)
@@ -193,93 +204,17 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                         detailPlanBoatImageButton.setImageResource(R.drawable.s_boat_on)
                     }
 
-/*                  val spotIdList = arrayListOf<String>()
-                    if (resultPlanJson.getString("spot_id_a") != "null") {
-                        spotIdList.add(resultPlanJson.getString("spot_id_a"))
 
-                        if (resultPlanJson.getString("spot_id_b") != "null") {
-                            spotIdList.add(resultPlanJson.getString("spot_id_b"))
-
-                            if (resultPlanJson.getString("spot_id_c") != "null") {
-                                spotIdList.add(resultPlanJson.getString("spot_id_c"))
-
-                                if (resultPlanJson.getString("spot_id_d") != "null") {
-                                    spotIdList.add(resultPlanJson.getString("spot_id_d"))
-
-                                    if (resultPlanJson.getString("spot_id_e") != "null") {
-                                        spotIdList.add(resultPlanJson.getString("spot_id_e"))
-
-                                        if (resultPlanJson.getString("spot_id_f") != "null") {
-                                            spotIdList.add(resultPlanJson.getString("spot_id_f"))
-
-                                            if (resultPlanJson.getString("spot_id_g") != "null") {
-                                                spotIdList.add(resultPlanJson.getString("spot_id_g"))
-
-                                                if (resultPlanJson.getString("spot_id_h") != "null") {
-                                                    spotIdList.add(resultPlanJson.getString("spot_id_h"))
-
-                                                    if (resultPlanJson.getString("spot_id_i") != "null") {
-                                                        spotIdList.add(resultPlanJson.getString("spot_id_i"))
-
-                                                        if (resultPlanJson.getString("spot_id_j") != "null") {
-                                                            spotIdList.add(resultPlanJson.getString("spot_id_j"))
-
-                                                            if (resultPlanJson.getString("spot_id_k") != "null") {
-                                                                spotIdList.add(resultPlanJson.getString("spot_id_k"))
-
-                                                                if (resultPlanJson.getString("spot_id_l") != "null") {
-                                                                    spotIdList.add(resultPlanJson.getString("spot_id_l"))
-
-                                                                    if (resultPlanJson.getString("spot_id_m") != "null") {
-                                                                        spotIdList.add(resultPlanJson.getString("spot_id_m"))
-
-                                                                        if (resultPlanJson.getString("spot_id_n") != "null") {
-                                                                            spotIdList.add(resultPlanJson.getString("spot_id_n"))
-
-                                                                            if (resultPlanJson.getString("spot_id_o") != "null") {
-                                                                                spotIdList.add(resultPlanJson.getString("spot_id_o"))
-
-                                                                                if (resultPlanJson.getString("spot_id_p") != "null") {
-                                                                                    spotIdList.add(resultPlanJson.getString("spot_id_p"))
-
-                                                                                    if (resultPlanJson.getString("spot_id_q") != "null") {
-                                                                                        spotIdList.add(resultPlanJson.getString("spot_id_q"))
-
-                                                                                        if (resultPlanJson.getString("spot_id_r") != "null") {
-                                                                                            spotIdList.add(resultPlanJson.getString("spot_id_r"))
-
-                                                                                            if (resultPlanJson.getString("spot_id_s") != "null") {
-                                                                                                spotIdList.add(resultPlanJson.getString("spot_id_s"))
-
-                                                                                                if (resultPlanJson.getString("spot_id_t") != "null") {
-                                                                                                    spotIdList.add(resultPlanJson.getString("spot_id_t"))
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }*/
-
-                    val gsat = GetSpotAsyncTask( planId, true)
+                    val gsat = GetSpotAsyncTask(planId, true)
                     gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                         override fun callback(resultSpotJsonList: ArrayList<JSONObject>?, resultIdFlg: Boolean) {
                             super.callback(resultSpotJsonList, resultIdFlg)
                             if (resultSpotJsonList!![resultSpotJsonList.size - 1].getString("result") == "RESULT-OK" && resultIdFlg) {
                                 resultSpotJsonList.removeAt(resultSpotJsonList.size - 1)
+
+                                if (userId == sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none")) {
+                                    spotJsonList = resultSpotJsonList
+                                }
 
                                 //完了
                                 val bmp = arrayListOf<String>()
@@ -361,8 +296,94 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(SPOT_ADDRESS[0][0], SPOT_ADDRESS[0][1]), 12.5f))
     }
 
-    fun detailPlanUserIconTapped(view: View){
-        startActivity(Intent(this,DetailUserActivity::class.java).putExtra("ANOTHER_USER",true).putExtra("USER_ID", userId))
+    fun detailPlanDeleteButtonTapped(view: View) {
+        detailPlanDeleteButton.isClickable = false
+
+        val imgList = arrayListOf<String>()
+
+        for (_spotCnt in 0 until spotJsonList!!.size) {
+
+            if (spotJsonList!![_spotCnt].getString("spot_image_a").contains("http"))
+                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_a").substringAfterLast("/"))
+
+            if (spotJsonList!![_spotCnt].getString("spot_image_b").contains("http"))
+                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_b").substringAfterLast("/"))
+
+            if (spotJsonList!![_spotCnt].getString("spot_image_c").contains("http"))
+                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_c").substringAfterLast("/"))
+        }
+
+        /********************/
+        //spotを削除
+        val dsat = DeleteSpotAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+        dsat.setOnCallback(object : DeleteSpotAsyncTask.CallbackDeleteSpotAsyncTask() {
+            override fun callback(resultDeleteSpotString: String) {
+                super.callback(resultDeleteSpotString)
+                // ここからAsyncTask処理後の処理を記述します。
+                Log.d("test SpotCallback", "非同期処理結果：$resultDeleteSpotString")
+                if (resultDeleteSpotString == "RESULT-OK") {
+                    /********************/
+                    //Planを削除
+                    val dpat = DeletePlanAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                    dpat.setOnCallback(object : DeletePlanAsyncTask.CallbackDeletePlanAsyncTask() {
+                        override fun callback(resultDeletePlanString: String) {
+                            super.callback(resultDeletePlanString)
+                            // ここからAsyncTask処理後の処理を記述します。
+                            Log.d("test PlanCallback", "非同期処理$resultDeletePlanString")
+                            if (resultDeletePlanString == "RESULT-OK") {
+                                /********************/
+                                //imageを削除
+                                val diat = DeleteImageAsyncTask(imgList)
+                                diat.setOnCallback(object : DeleteImageAsyncTask.CallbackDeleteImageAsyncTask() {
+                                    override fun callback(resultDeleteImageString: String) {
+                                        super.callback(resultDeleteImageString)
+                                        // ここからAsyncTask処理後の処理を記述します。
+                                        Log.d("test ImageCallback", "非同期処理$resultDeleteImageString")
+                                        if (resultDeleteImageString == "RESULT-OK") {
+                                            //完了した場合
+                                            finishAffinity()
+                                            startActivity(Intent(this@DetailPlanActivity, DetailUserActivity::class.java))
+                                        } else {
+                                            failedDeleteAsyncTask()
+                                        }
+                                    }
+                                })
+                                diat.execute()
+
+                                /********************/
+                            }else{
+                                failedDeleteAsyncTask()
+                            }
+                        }
+                    })
+                    dpat.execute()
+                    /********************/
+
+                } else {
+                    failedDeleteAsyncTask()
+                }
+            }
+        })
+        dsat.execute()
+        /********************/
+    }
+
+    private fun failedDeleteAsyncTask() {
+        AlertDialog.Builder(this).apply {
+            setTitle("プラン削除に失敗しました")
+            setPositiveButton("確認", null)
+            show()
+        }
+        detailPlanDeleteButton.isClickable = true
+    }
+
+    fun detailPlanUserIconTapped(view: View) {
+
+        if (userId != sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none")) {
+            startActivity(Intent(this, DetailUserActivity::class.java).putExtra("ANOTHER_USER", true).putExtra("USER_ID", userId))
+        } else {
+            startActivity(Intent(this, DetailUserActivity::class.java))
+        }
     }
 
     private fun failedAsyncTask() {
@@ -390,15 +411,15 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                startActivity(Intent(this,HomeActivity::class.java))
+                startActivity(Intent(this, HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                startActivity(Intent(this,SearchPlanActivity::class.java))
+                startActivity(Intent(this, SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {

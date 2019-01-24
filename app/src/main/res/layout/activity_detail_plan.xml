@@ -18,6 +18,16 @@
             android:background="@drawable/gradient"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
+            <Button
+                android:id="@+id/detailPlanDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="#00000000"
+                android:onClick="detailPlanDeleteButtonTapped"
+                android:text="削除"
+                android:textColor="@android:color/holo_red_dark" />
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
