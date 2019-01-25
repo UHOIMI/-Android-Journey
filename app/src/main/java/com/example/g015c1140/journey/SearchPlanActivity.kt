@@ -31,7 +31,7 @@ class SearchPlanActivity : AppCompatActivity() {
     //交通手段ボタンフラグ用
     private val TRANSPORTATION_IMAGE_FLG = mutableListOf(0, 0, 0, 0, 0, 0, 0)
 
-    private var myApp:MyApplication? = null
+    private var myApp: MyApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,6 @@ class SearchPlanActivity : AppCompatActivity() {
 
         // 項目をタップしたときの処理
         searchTextListView.setOnItemClickListener { _, _, position, _ ->
-            // 一番上の項目をタップしたら
             searchTextEditText.setText(realmData[position].keyword)
         }
 
@@ -124,14 +123,14 @@ class SearchPlanActivity : AppCompatActivity() {
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                startActivity(Intent(this,HomeActivity::class.java))
+                startActivity(Intent(this, HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -162,9 +161,21 @@ class SearchPlanActivity : AppCompatActivity() {
         searchButton.isClickable = false
 
         if (searchTextEditText.text.toString().replace(" ", "").replace("　", "") != "") {
+            val keywordText = searchTextEditText.text.toString()
+
+            loop@for (value in realmData){
+                if (keywordText == value.keyword) {
+                    mRealm.executeTransaction {
+                        val searchKeywordRealmData = mRealm.where(SearchKeywordRealmData::class.java).equalTo("keyword", keywordText).findFirst()
+                        searchKeywordRealmData!!.deleteFromRealm()
+                    }
+                    break@loop
+                }
+            }
+
             mRealm.executeTransaction {
                 val keywordData = mRealm.createObject(SearchKeywordRealmData::class.java, UUID.randomUUID().toString())
-                keywordData.keyword = searchTextEditText.text.toString()
+                keywordData.keyword = keywordText
                 mRealm.copyToRealm(keywordData)
             }
         }

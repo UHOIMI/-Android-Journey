@@ -1,10 +1,14 @@
 package com.example.g015c1140.journey
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -56,6 +60,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     private val MARKER_LIST = mutableListOf<Marker>()
     /******************/
 
+    companion object {
+        private const val STORAGE_PERMISSION_REQUEST_CODE = 222
+    }
+
+    private var storagePermissionFlg = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -352,7 +361,9 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     fun onPostButtonTapped(view: View) {
         postButton.isClickable = false
         //全部がOKな場合
-        if (checkData()) {
+        storagePermissionCheck()
+
+        if (checkData() && storagePermissionFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
             val imageList = arrayListOf<String>()
             spotList.forEach {
@@ -461,6 +472,8 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             })
             piat.execute(imageList)
+        }else{
+            postButton.isClickable = true
         }
     }
 
@@ -500,8 +513,37 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 setPositiveButton("確認", null)
                 show()
             }
-            postButton.isClickable = true
             false
+        }
+    }
+
+    private fun storagePermissionCheck() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Android 6.0 のみ、該当パーミッションが許可されていない場合
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST_CODE)
+        } else {
+            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
+            // 許可済みの場合、もしくはAndroid 6.0以前
+            // パーミッションが必要な処理
+            storagePermissionFlg = true
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+        Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
+        // 自分のコード以外がrequestPermissionsしているかもしれないので、requestCodeをチェックします。
+        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // パーミッションが必要な処理
+                storagePermissionFlg = true
+            } else {
+                // パーミッションが得られなかった時
+                // 処理を中断する・エラーメッセージを出す・アプリケーションを終了する等
+                Toast.makeText(this, "許可して頂けない場合は、スポット画像を投稿する処理ができません", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 

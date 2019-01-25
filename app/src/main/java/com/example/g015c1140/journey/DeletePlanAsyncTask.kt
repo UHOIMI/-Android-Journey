@@ -31,7 +31,7 @@ class DeletePlanAsyncTask(pId: String, tkn:String) : AsyncTask<Void, String, Str
             return "PLAN_ID-Error"
 
         try {
-            val url = URL(Setting().PLAN_DELETE_URL)
+            val url = URL("${Setting().PLAN_DELETE_URL}plan_id=$PLAN_ID&token=$TOKEN")
 
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "DELETE"
@@ -45,14 +45,14 @@ class DeletePlanAsyncTask(pId: String, tkn:String) : AsyncTask<Void, String, Str
             try {
 
                 out = connection.outputStream
-                out.write((
-                        "plan_id=$PLAN_ID" +
-                                "&token=$TOKEN"
-                        ).toByteArray()
-                )
-
-                out.flush()
-                Log.d("debug", "flush")
+//                out.write((
+//                        "plan_id=$PLAN_ID" +
+//                                "&token=$TOKEN"
+//                        ).toByteArray()
+//                )
+//
+//                out.flush()
+//                Log.d("debug", "flush")
 
                 val `is` = connection.inputStream
                 val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))

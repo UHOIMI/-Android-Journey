@@ -16,4 +16,4 @@ open class TestRea(
         open var image_A: String = "",
         open var image_B: String = "",
         open var image_C: String = ""
-) : RealmObject(){}
+) : RealmObject()

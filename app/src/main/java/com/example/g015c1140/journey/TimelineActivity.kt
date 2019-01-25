@@ -17,6 +17,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_timeline.*
 import layout.TimelinePlanListAdapter
 import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 class TimelineActivity : AppCompatActivity() {
@@ -59,7 +60,7 @@ class TimelineActivity : AppCompatActivity() {
     private var progressFooter: View? = null
     private var bottomRefreshFlg = true
 
-    private var myApp:MyApplication? = null
+    private var myApp: MyApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +113,7 @@ class TimelineActivity : AppCompatActivity() {
         AdjustmentBottomNavigation().disableShiftMode(navigation)
         if (favoriteFlg) {
             navigation.selectedItemId = R.id.navigation_favorite
-        }else{
+        } else {
             navigation.selectedItemId = myApp!!.getBnp()
         }
         navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
@@ -127,7 +128,7 @@ class TimelineActivity : AppCompatActivity() {
                 setTimeline(0, true)
                 try {
                 } catch (e: InterruptedException) {
-                    Toast.makeText(this, "erorr", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -242,7 +243,35 @@ class TimelineActivity : AppCompatActivity() {
                     super.callback(result, favoriteRecordJSONArray)
                     if (result != "RESULT-NG") {
                         if (result == "RESULT-OK") {
-                            setTimelineList(favoriteRecordJSONArray!!, refreshFlg)
+
+                            val postUserIdList = arrayListOf<String>()
+                            for (_timelineCnt in 0 until favoriteRecordJSONArray!!.length()){
+                                postUserIdList.add( favoriteRecordJSONArray.getJSONObject(_timelineCnt).getString("user_id") )
+                            }
+
+                            val guaat = GetUserAccountAsyncTask(postUserIdList)
+                            guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
+                                override fun callback(resultUserAccountList: ArrayList<JSONObject>) {
+                                    super.callback(resultUserAccountList)
+                                    // ここからAsyncTask処理後の処理を記述します。
+                                    Log.d("test GetUserAccCallback", "非同期処理${resultUserAccountList[resultUserAccountList.size - 1]}")
+                                    if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
+                                        resultUserAccountList.removeAt(resultUserAccountList.size - 1)
+                                        var jsonUser: JSONObject
+
+                                        for (_timelineCnt in 0 until favoriteRecordJSONArray.length()){
+                                            jsonUser = JSONObject()
+                                            jsonUser.put("user_name", resultUserAccountList[_timelineCnt].getString("user_name"))
+                                            jsonUser.put("user_icon", resultUserAccountList[_timelineCnt].getString("user_icon"))
+                                            favoriteRecordJSONArray.getJSONObject(_timelineCnt).put("user", jsonUser)
+                                        }
+                                        setTimelineList(favoriteRecordJSONArray, refreshFlg)
+                                    } else {
+                                        Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            })
+                            guaat.execute()
                         } else {
                             deleteFooterProgress()
                         }

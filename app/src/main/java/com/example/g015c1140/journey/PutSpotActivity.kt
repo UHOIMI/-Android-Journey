@@ -80,7 +80,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     var image_B: String = ""
     var image_C: String = ""
 
-    var imageIntent = getIntent()
+    var imageIntent = intent
     private lateinit var mRealm: Realm
     var editFlag: Boolean = false
 
@@ -230,17 +230,17 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                startActivity(Intent(this,HomeActivity::class.java))
+                startActivity(Intent(this, HomeActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                startActivity(Intent(this,SearchPlanActivity::class.java))
+                startActivity(Intent(this, SearchPlanActivity::class.java))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 finish()
                 return@OnNavigationItemSelectedListener true
             }
@@ -264,11 +264,11 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             AlertDialog.Builder(this).apply {
                 setTitle("位置情報が有効になっていません")
                 setMessage("このままアプリを続行したい場合は、有効化してください")
-                setPositiveButton("設定", { _, _ ->
+                setPositiveButton("設定") { _, _ ->
                     // OKをタップしたときの処理
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     startActivity(intent)
-                })
+                }
                 setNegativeButton("戻る", null)
                 show()
             }
@@ -283,10 +283,21 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         if (editFlag == false) {
             //　位置情報権限確認
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 //　権限がない場合
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+//
+//                } else {
+//                    val toast = Toast.makeText(this, "許可されないとアプリが実行できません", Toast.LENGTH_SHORT)
+//                    toast.show()
+//
+//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+//
+//                }
                 mMap = googleMap
                 return
             }
@@ -649,7 +660,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     fun create(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
         mRealm.executeTransaction {
-            var trea = mRealm.createObject(TestRea::class.java, UUID.randomUUID().toString())
+            val trea = mRealm.createObject(TestRea::class.java, UUID.randomUUID().toString())
             trea.name = name
             trea.latitude = latitude
             trea.longitude = longitude

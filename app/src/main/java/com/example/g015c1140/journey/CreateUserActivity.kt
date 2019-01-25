@@ -28,7 +28,7 @@ class CreateUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
 
-        val inputFilter = InputFilter { source, _, _, _, dend, _ ->
+        val inputFilter = InputFilter { source, _, _, _, _, _ ->
             if (source.toString().matches("^[a-zA-Z0-9]+$".toRegex())) {
                 source
             } else {

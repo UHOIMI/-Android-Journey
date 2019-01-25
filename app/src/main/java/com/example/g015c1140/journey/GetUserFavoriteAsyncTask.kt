@@ -58,13 +58,11 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
 
                         var jsonObject:JSONObject
                         var jsonPlan:JSONObject
-                        var jsonUser:JSONObject
                         var jsonSpot:JSONArray
 
                         for (_jaCnt in 0 until resultJsonArray.length()){
                             jsonObject = resultJsonArray[_jaCnt] as JSONObject
                             jsonPlan = jsonObject.getJSONObject("plan")
-                            jsonUser = jsonObject.getJSONObject("user")
                             jsonSpot = jsonObject.getJSONArray("spots")
 
                             convertJsonObject = JSONObject()
@@ -76,7 +74,6 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
                             convertJsonObject.put("transportation", jsonPlan.getString("transportation"))
                             convertJsonObject.put("price", jsonPlan.getString("price"))
                             convertJsonObject.put("area", jsonPlan.getString("area"))
-                            convertJsonObject.put("user", jsonUser)
                             convertJsonObject.put("spots", jsonSpot)
                             CONVERT_JSON_ARRAY.put(convertJsonObject)
                         }

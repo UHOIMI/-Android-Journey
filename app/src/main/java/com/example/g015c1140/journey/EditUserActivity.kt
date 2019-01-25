@@ -222,7 +222,7 @@ class EditUserActivity : AppCompatActivity() {
     //Password表示ボタン処理
     fun passVisibleButtonTapped(v: View) {
         // テキスト入力用Viewの作成
-        val inputFilter = InputFilter { source, start, end, dest, dstart, dend ->
+        val inputFilter = InputFilter { source, _, _, _, _, _ ->
             if (source.toString().matches("^[a-zA-Z0-9]+$".toRegex())) {
                 source
             } else {
@@ -312,9 +312,9 @@ class EditUserActivity : AppCompatActivity() {
 
 
             val imageStrList = arrayListOf<String>()
-            var headeUri = ""
+            var headerUri = ""
             if (headerFlg == IMAGE_EDIT) {
-                headeUri = seveAndLoadImage("header")
+                headerUri = saveAndLoadImage("header")
                 imageStrList.add(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_HEADERIMAGE, "").substringAfterLast("/"))
             }else{
                 imageStrList.add("")
@@ -322,7 +322,7 @@ class EditUserActivity : AppCompatActivity() {
 
             var iconUrl = ""
             if (iconFlg == IMAGE_EDIT) {
-                iconUrl = seveAndLoadImage("icon")
+                iconUrl = saveAndLoadImage("icon")
                 imageStrList.add(sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").substringAfterLast("/"))
             }else{
                 imageStrList.add("")
@@ -415,7 +415,7 @@ class EditUserActivity : AppCompatActivity() {
                     iPuiat.execute(iconUrl, sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
                 }
             })
-            hPuiat.execute(headeUri, sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
+            hPuiat.execute(headerUri, sharedPreferences!!.getString(Setting().USER_SHARED_PREF_ID, ""))
 
         } else {
             AlertDialog.Builder(this).apply {
@@ -428,7 +428,7 @@ class EditUserActivity : AppCompatActivity() {
         }
     }
 
-    private fun seveAndLoadImage(viewName: String): String {
+    private fun saveAndLoadImage(viewName: String): String {
         var fileOut: FileOutputStream? = null
         var uri: Uri? = null
         var imageName = ""
@@ -502,14 +502,14 @@ class EditUserActivity : AppCompatActivity() {
 
     private fun getDataColumn(context: Context, uri: Uri, selection: String?, vararg selectionArgs: String?/*[]*/): String {
         var cursor: Cursor? = null
-        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         try {
             cursor = context.contentResolver.query(
                     uri, projection, selection, selectionArgs, null
             )
             if (cursor != null && cursor.moveToFirst()) {
-                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
-                return cursor.getString(cindex);
+                val cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex)
             }
         } finally {
             cursor?.close()

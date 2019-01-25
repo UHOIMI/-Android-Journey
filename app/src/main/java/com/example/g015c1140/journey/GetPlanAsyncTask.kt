@@ -11,7 +11,7 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
-//flg = tureならplan_id falseならuser_id
+//flg = trueならplan_id falseならuser_id
 class GetPlanAsyncTask(id: String, flg: Boolean) : AsyncTask<String, String, String>() {
     private val ID = id
     private val FLG = flg

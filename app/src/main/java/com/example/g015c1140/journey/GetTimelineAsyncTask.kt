@@ -232,7 +232,7 @@ class GetTimelineAsyncTask(area: String, offset: Int) : AsyncTask<String, String
         if (result == "404") {
             callbackGetTimelineAsyncTask!!.callback("RESULT-404", null)
         } else {
-            Log.d("test GettimelineTask", "result：$result")
+            Log.d("test GetTimelineTask", "result：$result")
             callbackGetTimelineAsyncTask!!.callback("RESULT-OK", timelineRecord)
         }
     }
