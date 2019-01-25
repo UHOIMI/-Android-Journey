@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/journey_background"
     tools:context=".DetailSpotActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -17,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
         </android.support.v7.widget.Toolbar>
 
@@ -59,6 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:background="@drawable/round_corners"
+        android:padding="4dp"
         android:text="スポット名"
         android:textSize="30dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +74,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="コメント"
+        android:textColor="@color/colorPrimaryText"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spotNameTextView" />
@@ -118,6 +122,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation" />
 
@@ -127,6 +132,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/round_corners"
+        android:padding="4dp"
         android:text="TextView"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"

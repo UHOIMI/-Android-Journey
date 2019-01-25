@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/journey_background"
     tools:context=".DetailUserActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -68,6 +69,8 @@
                     android:id="@+id/detailUserNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/round_corners"
+                    android:padding="4dp"
                     android:text="ユーザ名"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -77,6 +80,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/round_corners"
+                    android:padding="4dp"
                     android:paddingLeft="16dp"
                     android:text="性別"
                     android:textAlignment="textStart"
@@ -87,6 +92,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/round_corners"
+                    android:padding="4dp"
                     android:paddingLeft="16dp"
                     android:text="年代"
                     android:textSize="20sp" />
@@ -96,6 +103,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/round_corners"
+                    android:padding="4dp"
                     android:paddingLeft="16dp"
                     android:text="コメント"
                     android:textSize="20sp" />
@@ -141,9 +150,11 @@
                     android:id="@+id/detailUserLastPlanLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/round_corners"
                     android:clickable="true"
                     android:onClick="detailUserLastPlanSpotTapped"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -337,6 +348,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:menu="@menu/bottom_navigation" />
 
 

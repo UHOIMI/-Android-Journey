@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/journey_background"
     tools:context=".SelectSpotActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -23,10 +24,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="60dp"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -49,7 +50,9 @@
         <ListView
             android:id="@+id/selectSpotList"
             android:layout_width="match_parent"
-            android:layout_height="206dp">
+            android:layout_height="190dp"
+            android:divider="@drawable/gradient"
+            android:dividerHeight="2dp">
 
         </ListView>
 
@@ -57,6 +60,7 @@
             android:id="@+id/userSpotText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="あなたが登録したスポット"
             android:textColor="@color/colorPrimaryText"
             android:textSize="20sp" />
@@ -87,7 +91,9 @@
         <ListView
             android:id="@+id/userSpotList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:divider="@color/journey_background"
+            android:dividerHeight="8dp" />
 
     </LinearLayout>
 
@@ -96,9 +102,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:menu="@menu/bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>

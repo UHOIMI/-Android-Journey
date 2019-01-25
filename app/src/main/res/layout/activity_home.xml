@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2f2"
+    android:background="@color/journey_background"
     tools:context=".HomeActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -71,7 +71,7 @@
                 android:layout_marginTop="8dp"
                 android:text="地方"
                 android:textColor="@color/colorPrimaryText"
-                android:textSize="18sp" />
+                android:textSize="21sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/areaRecyclerView"
@@ -91,7 +91,7 @@
                     android:layout_weight="0.7"
                     android:text="新着3件"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
 
                 <Button
                     android:id="@+id/newPlanButton"
@@ -107,8 +107,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/newPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_corners" />
+                android:layout_height="wrap_content" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/newPlanPageControlView"
@@ -128,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -136,7 +135,7 @@
                     android:layout_weight="0.7"
                     android:text="の新着3件"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
 
                 <Button
                     android:id="@+id/userGenerationPlanButton"
@@ -152,8 +151,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/userGenerationPlanRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_corners" />
+                android:layout_height="wrap_content" />
 
             <com.example.g015c1140.journey.PageControlView
                 android:id="@+id/userGenerationPlanPageControlView"

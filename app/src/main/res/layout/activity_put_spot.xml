@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/journey_background"
     tools:context=".PutSpotActivity">
 
         <android.support.design.widget.AppBarLayout
@@ -26,7 +27,8 @@
                             android:layout_gravity="right"
                             android:background="#00000000"
                             android:text="保存"
-                            android:textColor="@color/colorPrimaryText" />
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="14sp" />
 
                 </android.support.v7.widget.Toolbar>
 
@@ -75,13 +77,17 @@
 
                         <EditText
                             android:id="@+id/nameText"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/round_corners"
                             android:ems="10"
-                            android:hint="Name"
+                            android:hint="スポット名を入力して下さい"
                             android:inputType="textPersonName"
+                            android:padding="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/spotNameTextView" />
 
@@ -92,6 +98,8 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="16dp"
                             android:text="スポット名"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
 
@@ -102,6 +110,8 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="16dp"
                             android:text="コメント"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="20sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
@@ -112,15 +122,16 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
+                            android:background="@drawable/round_corners"
                             android:ems="10"
-                            android:hint="コメント"
+                            android:hint="プラン説明を入力して下さい"
                             android:inputType="textMultiLine"
                             android:maxLines="100"
                             android:minLines="1"
+                            android:padding="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView7"
-                            tools:text="プラン説明" />
+                            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
                         <ImageView
                             android:id="@+id/imageView2"
@@ -142,7 +153,6 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="16dp"
                             android:layout_weight="1"
-                            android:onClick="onClickImage"
                             app:layout_constraintEnd_toStartOf="@+id/imageView2"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/commentEditText"
@@ -185,6 +195,7 @@
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
             android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/bottom_navigation_color"
             app:menu="@menu/bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>

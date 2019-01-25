@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchPlanActivity"
+    android:background="@color/journey_background"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    tools:context=".SearchPlanActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -45,9 +46,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/round_corners"
                     android:ems="10"
                     android:hint="プランを検索"
                     android:inputType="text|textPersonName"
+                    android:padding="8dp"
                     android:textSize="18sp"
                     tools:layout_editor_absoluteX="74dp"
                     tools:layout_editor_absoluteY="88dp" />
@@ -88,7 +91,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:background="@drawable/round_corners"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
 
                         <ImageButton
                             android:id="@+id/walkImageButton"
@@ -175,7 +180,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.8"
+                            android:background="@drawable/round_corners"
                             android:entries="@array/prefecturesList"
+                            android:padding="8dp"
                             android:spinnerMode="dialog"
                             android:textAlignment="center" />
                     </LinearLayout>
@@ -200,7 +207,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.8"
+                            android:background="@drawable/round_corners"
                             android:entries="@array/moneyList"
+                            android:padding="8dp"
                             android:spinnerMode="dialog"
                             android:textAlignment="center" />
                     </LinearLayout>
@@ -225,7 +234,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.8"
+                            android:background="@drawable/round_corners"
                             android:entries="@array/generationList"
+                            android:padding="8dp"
                             android:spinnerMode="dialog"
                             android:textAlignment="center" />
                     </LinearLayout>
@@ -242,7 +253,9 @@
                     <ListView
                         android:id="@+id/searchTextListView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:divider="@drawable/gradient"
+                        android:dividerHeight="2dp" />
 
                 </LinearLayout>
 
@@ -265,6 +278,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:menu="@menu/bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>

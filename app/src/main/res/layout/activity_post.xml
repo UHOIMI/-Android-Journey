@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/journey_background"
     tools:context=".PostActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -18,12 +19,24 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@android:color/transparent"
+                android:onClick="onPostButtonTapped"
+                android:text="投稿"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="14sp" />
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v4.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -59,12 +72,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/round_corners"
                 android:ems="10"
                 android:hint="プラン名を入力してください"
                 android:inputType="text"
                 android:lines="1"
                 android:maxLength="20"
-                android:minLines="1" />
+                android:minLines="1"
+                android:padding="8dp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -80,7 +95,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/round_corners"
                 android:entries="@array/prefecturesList"
+                android:padding="8dp"
                 android:spinnerMode="dialog" />
 
 
@@ -89,7 +106,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="-8dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:divider="@drawable/gradient"
+                android:dividerHeight="2dp"
+                android:padding="1dp" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -104,9 +124,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:layout_marginRight="5dp"
+                android:background="@drawable/round_corners"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
                 <ImageButton
                     android:id="@+id/walkImageButton"
@@ -186,7 +208,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/round_corners"
                 android:entries="@array/moneyList"
+                android:padding="8dp"
                 android:spinnerMode="dialog" />
 
             <com.example.g015c1140.journey.FocusEditText
@@ -194,29 +218,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/round_corners"
                 android:ems="10"
-                android:hint="プラン詳細"
+                android:hint="プラン詳細を入力して下さい"
                 android:inputType="textMultiLine"
                 android:maxLines="100"
                 android:minLines="1"
-                tools:text="プラン説明" />
-
-            <Button
-                android:id="@+id/postButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/transparent"
-                android:onClick="onPostButtonTapped"
-                android:text="投稿"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp" />
+                android:padding="8dp" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
-                android:layout_height="60dp" />
+                android:layout_height="75dp" />
 
         </LinearLayout>
 
@@ -227,9 +240,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/bottom_navigation_color"
         app:menu="@menu/bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>
