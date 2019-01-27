@@ -84,7 +84,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     private lateinit var mRealm: Realm
     var editFlag: Boolean = false
 
-    val df = SimpleDateFormat("yyyyMMddHHmmssSSS")
+//    val df = SimpleDateFormat("yyyyMMddHHmmssSSS")
     var errorMessage = ""
 
     val RESULT_SUBACTIVITY = 1000

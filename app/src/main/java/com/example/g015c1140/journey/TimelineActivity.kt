@@ -163,6 +163,7 @@ class TimelineActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun getProgFooter(): View? {
         if (progressFooter == null) {
             progressFooter = layoutInflater.inflate(R.layout.listview_footer, null)

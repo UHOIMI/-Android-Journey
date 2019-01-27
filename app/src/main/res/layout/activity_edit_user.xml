@@ -46,7 +46,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/header_default" />
+                app:srcCompat="@drawable/header_default"
+                android:contentDescription="@string/imageViewDescription" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/editUserIconImageView"
@@ -163,7 +164,8 @@
                         android:layout_weight="1"
                         android:background="#00000000"
                         android:onClick="passVisibleButtonTapped"
-                        app:srcCompat="@drawable/pass_visible" />
+                        app:srcCompat="@drawable/pass_visible"
+                        android:contentDescription="@string/imageViewDescription" />
                 </LinearLayout>
 
                 <com.example.g015c1140.journey.FocusEditText

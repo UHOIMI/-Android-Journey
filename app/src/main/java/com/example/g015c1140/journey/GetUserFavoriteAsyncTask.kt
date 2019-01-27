@@ -17,7 +17,7 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
     //callBack用
     private var callbackGetUserFavoriteAsyncTask: CallbackGetUserFavoriteAsyncTask? = null
     private var result: String? = null
-    private val OFSET = offset
+    private val OFFSET = offset
 
     private val USER_ID = uId
 
@@ -35,7 +35,7 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
         }
 
         try {
-            val url = URL("${Setting().FAVORITE_GET_UID_URL}$USER_ID&offset=$OFSET")
+            val url = URL("${Setting().FAVORITE_GET_UID_URL}$USER_ID&offset=$OFFSET")
 
             connection = url.openConnection() as HttpURLConnection
             connection.connect()  //ここで指定したAPIを叩いてみてます。

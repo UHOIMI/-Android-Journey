@@ -18,7 +18,7 @@ class GetTimelineAsyncTask(area: String, offset: Int) : AsyncTask<String, String
     private var callbackGetTimelineAsyncTask: CallbackGetTimelineAsyncTask? = null
     private var result: String? = null
 
-    private val OFSET = offset
+    private val OFFSET = offset
     private val AREA = area
     private var timelineRecord: JSONArray? = null
 
@@ -39,7 +39,7 @@ class GetTimelineAsyncTask(area: String, offset: Int) : AsyncTask<String, String
         try {
 
             val url = if (AREA == "") {
-                var url = "${Setting().TIMELINE_GET_URL}$OFSET"
+                var url = "${Setting().TIMELINE_GET_URL}$OFFSET"
                 if (limit != null) {
                     url = "$url&limit=$limit"
                 }
@@ -48,7 +48,7 @@ class GetTimelineAsyncTask(area: String, offset: Int) : AsyncTask<String, String
                 }
                 URL(url)
             } else {
-                URL("${Setting().TIMELINE_GET_URL}$OFSET&$AREA")
+                URL("${Setting().TIMELINE_GET_URL}$OFFSET&$AREA")
             }
 
             connection = url.openConnection() as HttpURLConnection

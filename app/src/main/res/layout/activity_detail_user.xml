@@ -42,7 +42,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/header_default" />
+                app:srcCompat="@drawable/header_default"
+                android:contentDescription="@string/imageViewDescription" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/detailUserIconCircleView"
@@ -154,7 +155,8 @@
                     android:clickable="true"
                     android:onClick="detailUserLastPlanSpotTapped"
                     android:orientation="vertical"
-                    android:padding="4dp">
+                    android:padding="4dp"
+                    android:focusable="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,7 +173,8 @@
                             android:clickable="true"
                             android:onClick="detailUserLastPlanIconTapped"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/no_image" />
+                            android:src="@drawable/no_image"
+                            android:focusable="true" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -213,7 +216,8 @@
                             android:layout_weight="1"
                             android:background="#00000000"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/no_image" />
+                            app:srcCompat="@drawable/no_image"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -289,7 +293,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:scaleType="fitCenter"
-                                    app:srcCompat="@android:drawable/btn_star_big_on" />
+                                    app:srcCompat="@android:drawable/btn_star_big_on"
+                                    android:contentDescription="@string/imageViewDescription" />
 
                                 <TextView
                                     android:id="@+id/detailUserLastPlanFavoriteTextView"

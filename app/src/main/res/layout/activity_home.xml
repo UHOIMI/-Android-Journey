@@ -35,7 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/journey" />
+                app:srcCompat="@drawable/journey"
+                android:contentDescription="@string/imageViewDescription" />
 
             <ImageButton
                 android:id="@+id/imageButton"
@@ -44,7 +45,8 @@
                 android:layout_gravity="right"
                 android:background="#00000000"
                 android:onClick="planPostButtonTapped"
-                app:srcCompat="@android:drawable/ic_menu_edit" />
+                app:srcCompat="@android:drawable/ic_menu_edit"
+                android:contentDescription="@string/imageViewDescription" />
 
         </android.support.v7.widget.Toolbar>
 

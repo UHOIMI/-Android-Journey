@@ -1,5 +1,6 @@
 package com.example.g015c1140.journey
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -31,6 +32,7 @@ class SpotListActivity : AppCompatActivity() {
 
     var nowSort = "昇順"
 
+    @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spot_list)

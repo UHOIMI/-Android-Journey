@@ -49,14 +49,6 @@ class CropIconActivity : AppCompatActivity() {
             }
         }
 
-/*
-        cropImageView.setBackgroundColor(0x000000)
-        cropImageView.setOverlayColor(0x5BB2FD)
-        cropImageView.setFrameColor(R.color.colorPrimary)
-        cropImageView.setHandleColor(R.color.colorPrimary)
-        cropImageView.setGuideColor(R.color.colorPrimary)
-*/
-
         // トリミングしたい画像をセット
         cropImageView.imageBitmap = bitmap
 

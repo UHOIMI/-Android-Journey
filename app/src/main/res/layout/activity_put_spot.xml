@@ -144,7 +144,8 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/imageView1"
                             app:layout_constraintTop_toBottomOf="@+id/commentEditText"
-                            app:srcCompat="@drawable/select_image" />
+                            app:srcCompat="@drawable/select_image"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageView
                             android:id="@+id/imageView1"
@@ -156,7 +157,8 @@
                             app:layout_constraintEnd_toStartOf="@+id/imageView2"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/commentEditText"
-                            app:srcCompat="@drawable/select_image" />
+                            app:srcCompat="@drawable/select_image"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageView
                             android:id="@+id/imageView3"
@@ -170,7 +172,8 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/imageView2"
                             app:layout_constraintTop_toBottomOf="@+id/commentEditText"
-                            app:srcCompat="@drawable/select_image" />
+                            app:srcCompat="@drawable/select_image"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <TextView
                             android:id="@+id/textView13"

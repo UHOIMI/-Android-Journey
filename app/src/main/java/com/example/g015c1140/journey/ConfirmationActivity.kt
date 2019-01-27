@@ -55,7 +55,7 @@ class ConfirmationActivity : AppCompatActivity() {
         doneButton.isClickable = false
         //投稿
         if (userData[0] == "OK") {
-            userData[0] = seveAndLoadImage()
+            userData[0] = saveAndLoadImage()
         }
 
         userData[4] =
@@ -140,7 +140,7 @@ class ConfirmationActivity : AppCompatActivity() {
         puat.execute(userData)
     }
 
-    private fun seveAndLoadImage(): String{
+    private fun saveAndLoadImage(): String{
         var fileOut: FileOutputStream? = null
         var uri :Uri? = null
         val imageName = "Icon.jpg"

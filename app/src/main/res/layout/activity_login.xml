@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:srcCompat="@drawable/journey" />
+        app:srcCompat="@drawable/journey"
+        android:contentDescription="@string/imageViewDescription" />
 
     <EditText
         android:id="@+id/loginIdEditText"

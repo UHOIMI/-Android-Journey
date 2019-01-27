@@ -101,7 +101,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:contentDescription="TODO"
+                            android:contentDescription="@string/imageViewDescription"
                             android:onClick="onTransportationButtonTapped"
                             app:srcCompat="@drawable/s_walk_off" />
 
@@ -112,7 +112,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_bicycle_off" />
+                            app:srcCompat="@drawable/s_bicycle_off"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageButton
                             android:id="@+id/carImageButton"
@@ -121,7 +122,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_car_off" />
+                            app:srcCompat="@drawable/s_car_off"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageButton
                             android:id="@+id/busImageButton"
@@ -130,7 +132,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_bus_off" />
+                            app:srcCompat="@drawable/s_bus_off"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageButton
                             android:id="@+id/trainImageButton"
@@ -139,7 +142,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_train_off" />
+                            app:srcCompat="@drawable/s_train_off"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageButton
                             android:id="@+id/airplaneImageButton"
@@ -148,7 +152,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_airplane_off" />
+                            app:srcCompat="@drawable/s_airplane_off"
+                            android:contentDescription="@string/imageViewDescription" />
 
                         <ImageButton
                             android:id="@+id/boatImageButton"
@@ -157,7 +162,8 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:onClick="onTransportationButtonTapped"
-                            app:srcCompat="@drawable/s_boat_off" />
+                            app:srcCompat="@drawable/s_boat_off"
+                            android:contentDescription="@string/imageViewDescription" />
                     </LinearLayout>
 
                     <LinearLayout
