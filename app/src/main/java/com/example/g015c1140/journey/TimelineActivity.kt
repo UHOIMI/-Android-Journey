@@ -111,12 +111,6 @@ class TimelineActivity : AppCompatActivity() {
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         myApp = this.application as MyApplication
         AdjustmentBottomNavigation().disableShiftMode(navigation)
-        if (favoriteFlg) {
-            navigation.selectedItemId = R.id.navigation_favorite
-        } else {
-            navigation.selectedItemId = myApp!!.getBnp()
-        }
-        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         timelineListAdapter = TimelinePlanListAdapter(this, this)
 
@@ -158,9 +152,14 @@ class TimelineActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        navigation.setOnNavigationItemSelectedListener(null)
         if (favoriteFlg) {
             myApp!!.setBnp(R.id.navigation_favorite)
+            navigation.selectedItemId = R.id.navigation_favorite
+        } else {
+            navigation.selectedItemId = myApp!!.getBnp()
         }
+        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
     }
 
     @SuppressLint("InflateParams")

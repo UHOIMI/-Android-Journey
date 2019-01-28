@@ -60,12 +60,6 @@ class DetailUserActivity : AppCompatActivity() {
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         myApp = this.application as MyApplication
         AdjustmentBottomNavigation().disableShiftMode(navigation)
-        if (!anotherUserFlg) {
-            navigation.selectedItemId = R.id.navigation_setting
-        }else{
-            navigation.selectedItemId = myApp!!.getBnp()
-        }
-        navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         detailUserShowAllPlanButton.setOnClickListener {
             //perform your action here
@@ -81,8 +75,13 @@ class DetailUserActivity : AppCompatActivity() {
         detailUserShowAllPlanButton.visibility = View.INVISIBLE
         detailUserLastPlanText.visibility = View.GONE
 
+        navigation.setOnNavigationItemSelectedListener(null)
+
         if (!anotherUserFlg) {
             myApp!!.setBnp(R.id.navigation_setting)
+            navigation.selectedItemId = R.id.navigation_setting
+            navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+
 
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
@@ -142,6 +141,9 @@ class DetailUserActivity : AppCompatActivity() {
 
         } else {
             detailUserSpotListButton.visibility = View.GONE
+            navigation.selectedItemId = myApp!!.getBnp()
+            navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
+
             //他のユーザー情報
             val guaat = GetUserAccountAsyncTask(arrayListOf(intent.getStringExtra("USER_ID")))
             guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {

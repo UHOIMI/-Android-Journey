@@ -48,8 +48,6 @@ class HomeActivity : AppCompatActivity() {
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         myApp = this.application as MyApplication
         AdjustmentBottomNavigation().disableShiftMode(homeBottomNavigation)
-        homeBottomNavigation.selectedItemId = R.id.navigation_home
-        homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
@@ -131,7 +129,10 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        homeBottomNavigation.setOnNavigationItemSelectedListener(null)
         myApp!!.setBnp(R.id.navigation_home)
+        homeBottomNavigation.selectedItemId = R.id.navigation_home
+        homeBottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
     }
 
     private fun setPlanList(timelineRecordJsonArray: JSONArray, listFlg: Int) {
@@ -313,11 +314,11 @@ class HomeActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                startActivity(Intent(this,SearchPlanActivity::class.java))
+                startActivity(Intent(this, SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -330,21 +331,21 @@ class HomeActivity : AppCompatActivity() {
 
     private fun getAreaListData(): ArrayList<HomeAreaData> {
 
-        val hokkaidou = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.hokkaidou))
+        val hokkaidou = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.hokkaidou))
         hokkaidou.cornerRadius = 50f
-        val touhoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.touhoku))
+        val touhoku = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.touhoku))
         touhoku.cornerRadius = 50f
-        val kantou = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kantou))
+        val kantou = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.kantou))
         kantou.cornerRadius = 50f
-        val chuubu = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.chuubu))
+        val chuubu = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.chuubu))
         chuubu.cornerRadius = 50f
-        val kinki = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kinki))
+        val kinki = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.kinki))
         kinki.cornerRadius = 50f
-        val chuugoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.chuugoku))
+        val chuugoku = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.chuugoku))
         chuugoku.cornerRadius = 50f
-        val shikoku = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.shikoku))
+        val shikoku = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.shikoku))
         shikoku.cornerRadius = 50f
-        val kyuusyuu = RoundedBitmapDrawableFactory.create(resources,BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu))
+        val kyuusyuu = RoundedBitmapDrawableFactory.create(resources, BitmapFactory.decodeResource(resources, R.drawable.kyuusyuu))
         kyuusyuu.cornerRadius = 50f
 
         return arrayListOf(

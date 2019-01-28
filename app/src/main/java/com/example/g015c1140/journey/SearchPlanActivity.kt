@@ -50,8 +50,6 @@ class SearchPlanActivity : AppCompatActivity() {
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         myApp = this.application as MyApplication
         AdjustmentBottomNavigation().disableShiftMode(searchNavigation)
-        searchNavigation.selectedItemId = R.id.navigation_search
-        searchNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         // 項目をタップしたときの処理
         searchTextListView.setOnItemClickListener { _, _, position, _ ->
@@ -104,7 +102,10 @@ class SearchPlanActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        searchNavigation.setOnNavigationItemSelectedListener(null)
         myApp!!.setBnp(R.id.navigation_search)
+        searchNavigation.selectedItemId = R.id.navigation_search
+        searchNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
