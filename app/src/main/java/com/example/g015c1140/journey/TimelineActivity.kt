@@ -135,8 +135,14 @@ class TimelineActivity : AppCompatActivity() {
         //下のクルクル
         timelineListView.addFooterView(getProgFooter())
 
+        timelineListView.setOnItemLongClickListener { parent, view, position, id ->
+            Toast.makeText(this,"noianvban",Toast.LENGTH_SHORT).show()
+            true
+        }
+
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
+            val hogr = 0
             if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
                 Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 

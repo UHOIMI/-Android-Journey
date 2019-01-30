@@ -113,7 +113,12 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                     /************************************************/
                 }
             } else {
-                startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
+                if (spotList[position - 1].id != "tokenID") {
+                    startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
+                }else{
+                    startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]).putExtra("POST_LIST_FLG", true))
+                    post map detail plan map forcus first pin basyo
+                }
             }
         }
 
@@ -233,7 +238,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 //camera移動
                 val cameraPosition
                         : CameraPosition = CameraPosition.Builder()
-                        .target(LatLng(spotList[spotList.size - 1].latitude, spotList[spotList.size - 1].longitude))
+                        .target(LatLng(spotList[0].latitude, spotList[0].longitude))
                         .zoom(17f)
                         .build()
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))

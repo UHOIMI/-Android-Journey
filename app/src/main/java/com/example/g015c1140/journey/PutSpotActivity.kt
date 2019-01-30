@@ -54,7 +54,6 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -160,7 +159,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         //val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
 
         if (intent.getSerializableExtra("SPOT") != null) {
-            editFlag = true
+            editFlag = !intent.getBooleanExtra("POST_LIST_FLG",false)
             spot = intent.getSerializableExtra("SPOT") as SpotData
             spotNameTextView!!.setText(spot.title)
             commentTextView!!.setText(spot.comment)

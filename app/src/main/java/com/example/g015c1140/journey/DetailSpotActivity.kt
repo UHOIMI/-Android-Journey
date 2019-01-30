@@ -30,6 +30,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var spot: SpotData
     private var anotherSpotFlg = false
+    private var postListFlg = false
 
     companion object {
         private const val STORAGE_PERMISSION_REQUEST_CODE = 222
@@ -57,6 +58,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         bottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         anotherSpotFlg = intent.getBooleanExtra("ANOTHER-SPOT-FLG", false)
+        postListFlg = intent.getBooleanExtra("POST_LIST_FLG",false)
 
         if (anotherSpotFlg) {
             //スポット一覧からの遷移以外
@@ -227,6 +229,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         R.id.saveButton -> {
             val intent = Intent(this, PutSpotActivity::class.java)
             intent.putExtra("SPOT", spot)
+            intent.putExtra("POST_LIST_FLG",true)
             startActivity(intent)
             true
         }
