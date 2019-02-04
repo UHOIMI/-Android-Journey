@@ -48,6 +48,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //受け渡しスポットリスト用
     var spotList = mutableListOf<SpotData>()
+    private var tappedSpotPosition:Int? = null
 
     private lateinit var mRealm: Realm
 
@@ -62,6 +63,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val STORAGE_PERMISSION_REQUEST_CODE = 222
+        private const val DETAIL_SPOT_REQUEST_CODE = 555
     }
 
     private var storagePermissionFlg = false
@@ -113,11 +115,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                     /************************************************/
                 }
             } else {
+                tappedSpotPosition = position - 1
                 if (spotList[position - 1].id != "tokenID") {
-                    startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]))
+                    startActivityForResult(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]), DETAIL_SPOT_REQUEST_CODE)
                 }else{
-                    startActivity(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]).putExtra("POST_LIST_FLG", true))
-                    post map detail plan map forcus first pin basyo
+                    startActivityForResult(Intent(this, DetailSpotActivity::class.java).putExtra("SPOT", spotList[position - 1]).putExtra("POST_LIST_FLG", true), DETAIL_SPOT_REQUEST_CODE)
                 }
             }
         }
@@ -192,6 +194,14 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
             //Pin編集
             mapPinEdit()
+        }else if(resultCode == RESULT_OK && requestCode == DETAIL_SPOT_REQUEST_CODE && intent != null){
+
+            val spot = intent.getSerializableExtra("SPOT") as SpotData
+
+            spotList[tappedSpotPosition!!] = spot
+            spotNameList[tappedSpotPosition!! + 1] = "${tappedSpotPosition!! + 1}：${spot.title}"
+
+            spotListAdapter.notifyDataSetChanged()
         }
     }
 

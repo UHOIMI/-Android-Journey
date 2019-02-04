@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -34,6 +35,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val STORAGE_PERMISSION_REQUEST_CODE = 222
+        private const val EDIT_SPOT_REQUEST_CODE = 666
     }
 
 
@@ -58,7 +60,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         bottomNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
         anotherSpotFlg = intent.getBooleanExtra("ANOTHER-SPOT-FLG", false)
-        postListFlg = intent.getBooleanExtra("POST_LIST_FLG",false)
+        postListFlg = intent.getBooleanExtra("POST_LIST_FLG", false)
 
         if (anotherSpotFlg) {
             //スポット一覧からの遷移以外
@@ -229,14 +231,15 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         R.id.saveButton -> {
             val intent = Intent(this, PutSpotActivity::class.java)
             intent.putExtra("SPOT", spot)
-            intent.putExtra("POST_LIST_FLG",true)
-            startActivity(intent)
+            intent.putExtra("POST_LIST_FLG", postListFlg)
+            startActivityForResult(intent, EDIT_SPOT_REQUEST_CODE)
             true
         }
         //戻るボタンタップ時
         android.R.id.home -> {
             Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
-            finish()
+            resultSet()
+            finish ()
             true
         }
         else -> {
@@ -244,19 +247,41 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (resultCode == RESULT_OK && requestCode == EDIT_SPOT_REQUEST_CODE && intent != null) {
+
+            spot = intent.getSerializableExtra("SPOT") as SpotData
+
+            //Map呼び出し
+            val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
+            mapFragment.getMapAsync(this)
+
+            spotNameTextView.text = spot.title
+            Log.d("test", "com ${spot.comment}")
+            commentTextView.text = spot.comment
+
+            storagePermissionCheck()
+
+        } else {
+
+        }
+    }
+
+
     //ボトムバータップ時
     private val ON_NAVIGATION_ITEM_SELECTED_LISTENER = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                startActivity(Intent(this,HomeActivity::class.java))
+                startActivity(Intent(this, HomeActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                startActivity(Intent(this,SearchPlanActivity::class.java))
+                startActivity(Intent(this, SearchPlanActivity::class.java))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorite -> {
-                startActivity(Intent(this,TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
+                startActivity(Intent(this, TimelineActivity::class.java).putExtra("FAVORITE_FLG", true))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
@@ -267,5 +292,20 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         false
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 戻るボタンの処理
+            resultSet()
+            finish()
+            super.onKeyDown(keyCode, event)
+        } else {
+            super.onKeyDown(keyCode, event)
+        }
+    }
 
+    private fun resultSet() {
+        if (!anotherSpotFlg) {
+            setResult(RESULT_OK, Intent().putExtra("SPOT", spot))
+        }
+    }
 }

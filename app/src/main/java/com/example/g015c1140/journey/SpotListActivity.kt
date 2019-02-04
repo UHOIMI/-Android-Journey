@@ -32,6 +32,10 @@ class SpotListActivity : AppCompatActivity() {
 
     var nowSort = "昇順"
 
+    companion object {
+        private const val DETAIL_SPOT_REQUEST_CODE = 555
+    }
+
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,7 @@ class SpotListActivity : AppCompatActivity() {
                 .build()
         mRealm = Realm.getInstance(realmConfig)
 
-        var realmList = mRealm.where(TestRea::class.java).findAll()
+        val realmList = mRealm.where(TestRea::class.java).findAll()
 
         val df = SimpleDateFormat("yyyy/MM/dd hh:MM")
 
@@ -72,18 +76,28 @@ class SpotListActivity : AppCompatActivity() {
         adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
         listView.adapter = adapter
 
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, _, position, _ ->
+//            tappedListPosition = position
             val intent = Intent(this, DetailSpotActivity::class.java)
-            var tappedSpot = SpotData(spotDataList[position]!!.id, spotDataList[position]!!.name, spotDataList[position]!!.latitude, spotDataList[position]!!.longitude, spotDataList[position]!!.comment, spotDataList[position]!!.image_A, spotDataList[position]!!.image_B, spotDataList[position]!!.image_C, spotDataList[position]!!.datetime)
+            val tappedSpot = SpotData(
+                    spotDataList[position].id,
+                    spotDataList[position].name,
+                    spotDataList[position].latitude,
+                    spotDataList[position].longitude,
+                    spotDataList[position].comment,
+                    spotDataList[position].image_A,
+                    spotDataList[position].image_B,
+                    spotDataList[position].image_C,
+                    spotDataList[position].datetime)
             intent.putExtra("SPOT", tappedSpot)
-            startActivity(intent)
+            startActivityForResult(intent, DETAIL_SPOT_REQUEST_CODE)
         }
 
         listView.setOnItemLongClickListener { _, _, position, _ ->
             AlertDialog.Builder(this).apply {
                 setTitle("スポット削除")
                 setMessage("スポット:${dataList[position]} を削除しますか？")
-                setPositiveButton("削除", { _, _ ->
+                setPositiveButton("削除") { _, _ ->
                     mRealm.executeTransaction {
                         var delSpot = mRealm.where(TestRea::class.java).equalTo("id", spotDataList[position].id).findAll()
                         delSpot.deleteFromRealm(0)
@@ -95,7 +109,7 @@ class SpotListActivity : AppCompatActivity() {
                     //spotList.removeAt(position)
                     //削除した項目以下の連番更新
                     adapter.notifyDataSetChanged()
-                })
+                }
                 setNegativeButton("戻る", null)
                 show()
             }
@@ -121,6 +135,40 @@ class SpotListActivity : AppCompatActivity() {
             }
         }
     }
+
+    @SuppressLint("SimpleDateFormat")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (resultCode == RESULT_OK && requestCode == DETAIL_SPOT_REQUEST_CODE && intent != null) {
+
+/*
+            val spot = intent.getSerializableExtra("SPOTDATA") as TestRea
+
+            spotDataList[tappedListPosition!!] = spot
+            dataList[tappedListPosition!!] = (spot.name + "\n" + spot.datetime)
+*/
+
+            val realmList = mRealm.where(TestRea::class.java).findAll()
+            spotDataList.clear()
+            dataList.clear()
+
+            val df = SimpleDateFormat("yyyy/MM/dd hh:MM")
+            for (_sd in realmList) {
+                spotDataList.add(_sd)
+                dataList.add(_sd.name + "\n" + df.format(_sd.datetime))
+            }
+            adapter.notifyDataSetChanged()
+
+            val item = sort.selectedItem as String
+            if ("降順" == item) {
+                sortList()
+            }
+
+        }else{
+
+        }
+    }
+
 
     //ToolBarのボタン処理
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_put_spot.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -159,7 +160,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         //val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
 
         if (intent.getSerializableExtra("SPOT") != null) {
-            editFlag = !intent.getBooleanExtra("POST_LIST_FLG",false)
+            editFlag = true
+            title = "スポット編集"
             spot = intent.getSerializableExtra("SPOT") as SpotData
             spotNameTextView!!.setText(spot.title)
             commentTextView!!.setText(spot.comment)
@@ -526,23 +528,39 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         } else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
             //print(mRealm.where(RealmSpotData::class.java).findAll())
-            startActivity(Intent(this, SpotListActivity::class.java))
+
+            if (editFlag){
+                setResult(RESULT_OK, Intent().putExtra("SPOT", spot))
+            }else{
+                startActivity(Intent(this, SpotListActivity::class.java))
+            }
             finish()
         }
     }
 
     fun createSpot(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
 
-        if (editFlag == false) {
+        if (!editFlag) {
             create(name, latitude, longitude, comment, image_A, image_B, image_C)
         } else {
-            mRealm.executeTransaction {
-                var editSpot = mRealm.where(TestRea::class.java).equalTo("id", spot.id).findFirst()
-                editSpot!!.name = name
-                editSpot!!.comment = comment
-                editSpot!!.image_A = image_A
-                editSpot!!.image_B = image_B
-                editSpot!!.image_C = image_C
+
+            if (intent.getBooleanExtra("POST_LIST_FLG",false)){
+                create(name, spot.latitude, spot.longitude, comment, image_A, image_B, image_C)
+            }else {
+                mRealm.executeTransaction {
+                    val editSpot = mRealm.where(TestRea::class.java).equalTo("id", spot.id).findFirst()
+                    editSpot!!.name = name
+                    editSpot.comment = comment
+                    editSpot.image_A = image_A
+                    editSpot.image_B = image_B
+                    editSpot.image_C = image_C
+                }
+
+                spot.title = name
+                spot.comment = comment
+                spot.image_A = image_A
+                spot.image_B = image_B
+                spot.image_C = image_C
             }
         }
 
@@ -669,6 +687,10 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             trea.image_C = image_C
 
             mRealm.copyToRealm(trea)
+        }
+        val reDa = mRealm.where(TestRea::class.java).findAllSorted("datetime", Sort.DESCENDING).first()
+        if (reDa != null) {
+            spot = SpotData(reDa.id, reDa.name, reDa.latitude, reDa.longitude, reDa.comment, reDa.image_A, reDa.image_B, reDa.image_C, reDa.datetime)
         }
     }
 
