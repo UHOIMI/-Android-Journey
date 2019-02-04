@@ -254,6 +254,7 @@ class HomeActivity : AppCompatActivity() {
                                         newPlanRecyclerViewAdapter.notifyDataSetChanged()
                                         newPlanPageControlView.setRecyclerView(newPlanRecyclerView, LAYOUT_MANAGER[1])
                                     }
+                                    
                                     2 -> {
                                         generationPlanRecyclerViewAdapter.notifyDataSetChanged()
                                         userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, LAYOUT_MANAGER[2])
