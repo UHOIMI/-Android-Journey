@@ -41,12 +41,6 @@ class LoginActivity : AppCompatActivity() {
 
         if (!(loginpassEditText.text.toString().isEmpty())) {
             //文字ある
-/*
-            if (loginpassEditText.text.toString().length < 8) {
-                //7文字以下
-                result += "パスワードは8文字以上で入力してください\n"
-            }
-*/
         } else {
             result += "パスワードを入力してください\n"
         }
@@ -58,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
                 override fun callback(result: String, token: String) {
                     super.callback(result, token)
                     // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test LoginCallback", "非同期処理$result")
                     if (result == "RESULT-OK") {
                         //完了した関数呼び出し
                         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
@@ -68,13 +61,11 @@ class LoginActivity : AppCompatActivity() {
                         sharedPrefEditor.putString(Setting().USER_SHARED_PREF_PASSWORD, loginpassEditText.text.toString())
                         sharedPrefEditor.apply()
 
-                        /**************************/
                         val guaat = GetUserAccountAsyncTask(arrayListOf( sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "") ))
                         guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
                             override fun callback(resultUserAccountList: ArrayList<JSONObject>) {
                                 super.callback(resultUserAccountList)
                                 // ここからAsyncTask処理後の処理を記述します。
-                                Log.d("test GetUserAccCallback", "非同期処理${resultUserAccountList[resultUserAccountList.size - 1]}")
 
                                 if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
                                     //完了した関数呼び出し
@@ -102,7 +93,6 @@ class LoginActivity : AppCompatActivity() {
                         })
                         guaat.execute()
 
-                        /**************************/
                     } else {
                         AlertDialog.Builder(this@LoginActivity).apply {
                             setTitle("引継ぎに失敗しました")
@@ -124,6 +114,5 @@ class LoginActivity : AppCompatActivity() {
             }
             loginLoginButton.isClickable = true
         }
-        /********************/
     }
 }

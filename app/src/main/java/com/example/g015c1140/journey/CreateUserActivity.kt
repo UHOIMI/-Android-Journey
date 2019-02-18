@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.activity_create_user.*
 
 class CreateUserActivity : AppCompatActivity() {
 
-    var userIcon = ""
-    var userData = arrayListOf<String>()
+    private var userIcon = ""
+    private var userData = arrayListOf<String>()
 
 
     companion object {
@@ -75,7 +75,7 @@ class CreateUserActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, resultData)
 
         if (requestCode == RESULT_PICK_IMAGEFILE && resultCode == Activity.RESULT_OK) {
-            var uri: Uri? = null
+            val uri: Uri?
             if (resultData != null) {
                 uri = resultData.data
                 val intent = Intent(this, CropIconActivity::class.java)

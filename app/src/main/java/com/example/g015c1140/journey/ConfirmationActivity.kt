@@ -14,7 +14,6 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_confirmation.*
@@ -84,7 +83,6 @@ class ConfirmationActivity : AppCompatActivity() {
                 override fun callback(result: String, data: String) {
                     super.callback(result, data)
                     // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test UserImageCallback", "非同期処理$result　　URL $data")
                     if (result == "RESULT-OK") {
                         //完了した場合
                         userData[0] = "${Setting().USER_IMAGE_GET_URL}$data"
@@ -115,7 +113,6 @@ class ConfirmationActivity : AppCompatActivity() {
             override fun callback(result: String, token: String) {
                 super.callback(result, token)
                 // ここからAsyncTask処理後の処理を記述します。
-                Log.d("test UserCallback", "非同期処理$result")
                 if (result == "RESULT-OK") {
                     //完了
                     val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
@@ -159,38 +156,36 @@ class ConfirmationActivity : AppCompatActivity() {
     }
 
     private fun getPathFromUri(context: Context, uri: Uri): String {
-        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        val isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        Log.e("TAG", "uri:" + uri.authority);
         if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            if ("com.android.externalstorage.documents" == uri.authority) {// ExternalStorageProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                //if ("primary".equalsIgnoreCase(type)) {
-                return if ("primary" == type) {
-                    Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                } else {
-                    "/stroage/" + type + "/" + split[1]
+            when {
+                "com.android.externalstorage.documents" == uri.authority -> {// ExternalStorageProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val type: String = split[0]
+                    //if ("primary".equalsIgnoreCase(type)) {
+                    return if ("primary" == type) {
+                        Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                    } else {
+                        "/stroage/" + type + "/" + split[1]
+                    }
                 }
-            } else if ("com.android.providers.downloads.documents" == uri.authority) {// DownloadsProvider
-                var id: String = DocumentsContract.getDocumentId(uri)
-                var contentUri: Uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), id.toLong()
-                )
-                return getDataColumn(context, contentUri, null, null)
-            } else if ("com.android.providers.media.documents" == uri.authority) {// MediaProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                var contentUri: Uri? = null
-                contentUri = MediaStore.Files.getContentUri("external")
-                var selection = "_id=?"
-                /*var selectionArgs = {
-                        split[1]
-                }*/
-                var selectionArgs = arrayOf(split[1])
-                return getDataColumn(context, contentUri, selection, *selectionArgs)
+                "com.android.providers.downloads.documents" == uri.authority -> {// DownloadsProvider
+                    val id: String = DocumentsContract.getDocumentId(uri)
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), id.toLong()
+                    )
+                    return getDataColumn(context, contentUri, null, null)
+                }
+                "com.android.providers.media.documents" == uri.authority -> {// MediaProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val contentUri: Uri? = MediaStore.Files.getContentUri("external")
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+                    return getDataColumn(context, contentUri!!, selection, *selectionArgs)
+                }
             }
         } else if ("content" == uri.scheme) {//MediaStore
             return getDataColumn(context, uri, null, null)
@@ -202,14 +197,14 @@ class ConfirmationActivity : AppCompatActivity() {
 
     private fun getDataColumn(context: Context, uri: Uri, selection: String?, vararg selectionArgs: String?/*[]*/): String {
         var cursor: Cursor? = null
-        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         try {
             cursor = context.contentResolver.query(
                     uri, projection, selection, selectionArgs, null
             )
             if (cursor != null && cursor.moveToFirst()) {
-                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
-                return cursor.getString(cindex);
+                val cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex)
             }
         } finally {
             cursor?.close()
