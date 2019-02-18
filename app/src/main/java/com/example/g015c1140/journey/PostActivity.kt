@@ -2,10 +2,19 @@ package com.example.g015c1140.journey
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -31,6 +40,8 @@ import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_post.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.FileOutputStream
+import java.io.IOException
 
 class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -48,6 +59,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //受け渡しスポットリスト用
     var spotList = mutableListOf<SpotData>()
+    private var imageDeleteNameList :ArrayList<String>? = arrayListOf()
     private var tappedSpotPosition:Int? = null
 
     private lateinit var mRealm: Realm
@@ -102,7 +114,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         spotNameList = mutableListOf("スポット追加＋")
         spotListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spotNameList)
         // ListViewにArrayAdapterを設定する
-        val spotListView: ListView = findViewById(R.id.spotListView)
+//        val spotListView: ListView = findViewById(R.id.spotListView)
         spotListView.adapter = spotListAdapter
 
         // 項目をタップしたときの処理
@@ -380,12 +392,14 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (checkData() && storagePermissionFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-            val imageList = arrayListOf<String>()
+            var imageList = arrayListOf<String>()
             spotList.forEach {
                 imageList.add(it.image_A)
                 imageList.add(it.image_B)
                 imageList.add(it.image_C)
             }
+
+            imageList = saveAndLoadImage(imageList)
 
             /********************/
             //imageを投稿
@@ -562,6 +576,93 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun saveAndLoadImage(imageList: ArrayList<String>) : ArrayList<String>{
+
+        var fileOut: FileOutputStream? = null
+        var bmpImg:Bitmap
+
+        for (_imgCnt in 0 until imageList.size){
+
+            if (imageList[_imgCnt] != "") {
+                bmpImg = BitmapFactory.decodeFile(imageList[_imgCnt])
+                imageDeleteNameList!!.add("${imageList[_imgCnt].substringAfterLast("/").substringBefore(".")}.jpg")
+                try {
+                    // openFileOutputはContextのメソッドなのでActivity内ならばthisでOK
+                    fileOut = this.openFileOutput("${imageDeleteNameList!![imageDeleteNameList!!.size -1]}", Context.MODE_PRIVATE)
+                    bmpImg.compress(Bitmap.CompressFormat.JPEG, 50/*100*/, fileOut)
+
+                    bmpImg.recycle()
+                    imageList[_imgCnt] = getPathFromUri(this, Uri.fromFile(getFileStreamPath("${imageDeleteNameList!![imageDeleteNameList!!.size -1]}")))
+
+                } catch (e: IOException) {
+                    failedAsyncTask()
+                } finally {
+                    fileOut?.close()
+                }
+            }
+        }
+        return imageList
+    }
+
+    private fun getPathFromUri(context: Context, uri: Uri): String {
+        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        // DocumentProvider
+        Log.e("TAG", "uri:" + uri.authority);
+        if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            if ("com.android.externalstorage.documents" == uri.authority) {// ExternalStorageProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
+                var split = docId.split(":")
+                var type: String = split[0]
+                //if ("primary".equalsIgnoreCase(type)) {
+                return if ("primary" == type) {
+                    Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                } else {
+                    "/stroage/" + type + "/" + split[1]
+                }
+            } else if ("com.android.providers.downloads.documents" == uri.authority) {// DownloadsProvider
+                var id: String = DocumentsContract.getDocumentId(uri)
+                var contentUri: Uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), id.toLong()
+                )
+                return getDataColumn(context, contentUri, null, null)
+            } else if ("com.android.providers.media.documents" == uri.authority) {// MediaProvider
+                var docId: String = DocumentsContract.getDocumentId(uri)
+                var split = docId.split(":")
+                var type: String = split[0]
+                var contentUri: Uri? = null
+                contentUri = MediaStore.Files.getContentUri("external")
+                var selection = "_id=?"
+                /*var selectionArgs = {
+                        split[1]
+                }*/
+                var selectionArgs = arrayOf(split[1])
+                return getDataColumn(context, contentUri, selection, *selectionArgs)
+            }
+        } else if ("content" == uri.scheme) {//MediaStore
+            return getDataColumn(context, uri, null, null)
+        } else if ("file" == uri.scheme) {// File
+            return uri.path
+        }
+        return ""
+    }
+
+    private fun getDataColumn(context: Context, uri: Uri, selection: String?, vararg selectionArgs: String?/*[]*/): String {
+        var cursor: Cursor? = null
+        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        try {
+            cursor = context.contentResolver.query(
+                    uri, projection, selection, selectionArgs, null
+            )
+            if (cursor != null && cursor.moveToFirst()) {
+                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex);
+            }
+        } finally {
+            cursor?.close()
+        }
+        return ""
+    }
+
     private fun completePostAsyncTask() {
         Toast.makeText(this, "投稿が完了しました", Toast.LENGTH_SHORT).show()
 
@@ -596,7 +697,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 */
-
+        imageDeleteNameList!!.forEach {
+            this.deleteFile(it)
+        }
+        imageDeleteNameList = null
         finish()
     }
 

@@ -141,10 +141,10 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             storagePermissionCheck(1)
         }
         spotImageView2.setOnClickListener {
-            storagePermissionCheck(1)
+            storagePermissionCheck(2)
         }
         spotImageView3.setOnClickListener {
-            storagePermissionCheck(1)
+            storagePermissionCheck(3)
         }
 
 
