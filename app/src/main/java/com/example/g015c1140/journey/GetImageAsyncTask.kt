@@ -37,7 +37,6 @@ class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayLis
     private fun downloadImage(imageNameList: ArrayList<ArrayList<String>>): ArrayList<ArrayList<Bitmap?>> {
         val bmpList = arrayListOf<ArrayList<Bitmap?>>()
         var nameList:ArrayList<Bitmap?>
-        var bmp:Bitmap? = null
         var urlConnection: HttpURLConnection? = null
 
         imageNameList.forEach { name ->
@@ -73,9 +72,18 @@ class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayLis
                                 var `is`: InputStream? = null
                                 try {
                                     `is` = urlConnection!!.inputStream
-                                    bmp = BitmapFactory.decodeStream(`is`)
+
+//                                    val metrics = resources.displayMetrics
+//                                    var scale: Float
+
+                                    Bitmap.createScaledBitmap((BitmapFactory.decodeStream(`is`)),
+                                            210,
+                                            210,
+                                            true)
+
+                                    nameList.add( (BitmapFactory.decodeStream(`is`)) )
                                     `is`!!.close()
-                                    nameList.add(bmp!!)
+
                                 } catch (e: IOException) {
                                     e.printStackTrace()
                                 } finally {

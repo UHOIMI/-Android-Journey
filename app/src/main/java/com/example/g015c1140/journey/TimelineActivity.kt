@@ -210,8 +210,8 @@ class TimelineActivity : AppCompatActivity() {
     private fun setTimeline(offset: Int, refreshFlg: Boolean) {
 
         if (!searchFlg && !favoriteFlg) {
-            val gtat = GetTimelineAsyncTask(areaApiString, offset)
-            gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
+            var gtat: GetTimelineAsyncTask? = GetTimelineAsyncTask(areaApiString, offset)
+            gtat!!.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
                 override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                     super.callback(result, timelineRecordJsonArray)
                     when (result) {
@@ -219,12 +219,14 @@ class TimelineActivity : AppCompatActivity() {
                         "RESULT-404" -> deleteFooterProgress()
                         else -> Toast.makeText(this@TimelineActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                     }
+                    gtat = null
                 }
             })
-            gtat.execute(null, postedUserId)
+            gtat!!.execute(null, postedUserId)
+
         } else if (searchFlg) {
-            val gsat = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation, offset)
-            gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
+            var gsat: GetSearchAsyncTask? = GetSearchAsyncTask(searchValueKeyword, searchValueGeneration, searchValueArea, searchValuePrice, searchValueTransportation, offset)
+            gsat!!.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
                 override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                     super.callback(result, searchRecordJsonArray)
                     when (result) {
@@ -232,13 +234,14 @@ class TimelineActivity : AppCompatActivity() {
                         "RESULT-404" -> deleteFooterProgress()
                         else -> Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                     }
+                    gsat = null
                 }
             })
-            gsat.execute()
+            gsat!!.execute()
         } else if (favoriteFlg) {
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
-            val gufat = GetUserFavoriteAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, ""), offset)
-            gufat.setOnCallback(object : GetUserFavoriteAsyncTask.CallbackGetUserFavoriteAsyncTask() {
+            var gufat: GetUserFavoriteAsyncTask? = GetUserFavoriteAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, ""), offset)
+            gufat!!.setOnCallback(object : GetUserFavoriteAsyncTask.CallbackGetUserFavoriteAsyncTask() {
                 override fun callback(result: String, favoriteRecordJSONArray: JSONArray?) {
                     super.callback(result, favoriteRecordJSONArray)
                     if (result != "RESULT-NG") {
@@ -249,8 +252,8 @@ class TimelineActivity : AppCompatActivity() {
                                 postUserIdList.add( favoriteRecordJSONArray.getJSONObject(_timelineCnt).getString("user_id") )
                             }
 
-                            val guaat = GetUserAccountAsyncTask(postUserIdList)
-                            guaat.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
+                            var guaat: GetUserAccountAsyncTask? = GetUserAccountAsyncTask(postUserIdList)
+                            guaat!!.setOnCallback(object : GetUserAccountAsyncTask.CallbackGetUserAccountAsyncTask() {
                                 override fun callback(resultUserAccountList: ArrayList<JSONObject>) {
                                     super.callback(resultUserAccountList)
                                     // ここからAsyncTask処理後の処理を記述します。
@@ -269,18 +272,20 @@ class TimelineActivity : AppCompatActivity() {
                                     } else {
                                         Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                                     }
+                                    guaat = null
                                 }
                             })
-                            guaat.execute()
+                            guaat!!.execute()
                         } else {
                             deleteFooterProgress()
                         }
+                        gufat = null
                     } else {
                         Toast.makeText(this@TimelineActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
-            gufat.execute()
+            gufat!!.execute()
         }
     }
 
@@ -367,8 +372,8 @@ class TimelineActivity : AppCompatActivity() {
             }
 
             //favorite
-            val gpfat = GetPlanFavoriteAsyncTask(planIdList, "")
-            gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+            var gpfat: GetPlanFavoriteAsyncTask? = GetPlanFavoriteAsyncTask(planIdList, "")
+            gpfat!!.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
                 override fun callback(resultFavoriteArrayList: ArrayList<String>) {
                     super.callback(resultFavoriteArrayList)
                     if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
@@ -377,11 +382,14 @@ class TimelineActivity : AppCompatActivity() {
 
                         /****************/
                         //画像
-                        val giat = GetImageAsyncTask()
-                        giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                        var giat: GetImageAsyncTask? = GetImageAsyncTask()
+                        giat!!.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                             override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                 if (resultBmpString == "RESULT-OK") {
                                     /****************/
+
+                                    val metrics = resources.displayMetrics
+                                    var scale: Float
 
                                     var timelinePlanData: TimelinePlanData
                                     for (_timelineCnt in 0 until resultRecordJsonArray.length()) {
@@ -391,11 +399,25 @@ class TimelineActivity : AppCompatActivity() {
                                         timelinePlanData.planId = timelineData.getLong("plan_id")
                                         if (resultBmpList!![_timelineCnt].isNotEmpty()) {
                                             if (resultBmpList[_timelineCnt][0] != null) {
+
+                                                scale = 80f * metrics.density
+                                                resultBmpList[_timelineCnt][0] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][0],
+                                                        scale.toInt(),
+                                                        scale.toInt(),
+                                                        true)
+
                                                 timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
                                             } else {
                                                 timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                             }
                                             if (resultBmpList[_timelineCnt][1] != null) {
+
+                                                scale = 90f * metrics.density
+                                                resultBmpList[_timelineCnt][1] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][1],
+                                                        scale.toInt(),
+                                                        scale.toInt(),
+                                                        true)
+
                                                 timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
                                             } else {
                                                 timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
@@ -440,16 +462,18 @@ class TimelineActivity : AppCompatActivity() {
                                     failedAsyncTask()
                                     return
                                 }
+                                giat = null
                             }
                         })
-                        giat.execute(bmpList)
+                        giat!!.execute(bmpList)
                     } else {
                         failedAsyncTask()
                         return
                     }
+                    gpfat = null
                 }
             })
-            gpfat.execute()
+            gpfat!!.execute()
 
         } else {
             if (timelineSwipeRefresh.isRefreshing)

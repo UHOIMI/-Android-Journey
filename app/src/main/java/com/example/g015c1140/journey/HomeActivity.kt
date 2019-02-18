@@ -58,17 +58,32 @@ class HomeActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").contains("http")) {
-            val giat = GetImageAsyncTask()
-            giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+            var giat: GetImageAsyncTask? = GetImageAsyncTask()
+            giat!!.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
-                        homeUserIconButton.setImageBitmap(resultBmpList!![0][0])
+
+//                        val resizeScale = if (beforeResizeBitmap.getWidth() >= beforeResizeBitmap.getHeight()) {
+//                            findViewById(R.id.homeUserIconButton).get as Double / beforeResizeBitmap.getWidth()
+//                        } else {
+//                            viewHeight as Double / beforeResizeBitmap.getHeight()
+//                        }// 縦長画像の場合
+
+                        val metrics = resources.displayMetrics
+                        val scale = 80f * metrics.density
+                        resultBmpList!![0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                scale.toInt(),
+                                scale.toInt(),
+                                true)
+                        homeUserIconButton.setImageBitmap(resultBmpList[0][0])
+
                     } else {
                         Toast.makeText(this@HomeActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
                     }
+                    giat = null
                 }
             })
-            giat.execute(arrayListOf(arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, ""))))
+            giat!!.execute(arrayListOf(arrayListOf(sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, ""))))
         }
 
         homeFab.setOnClickListener {
@@ -100,8 +115,8 @@ class HomeActivity : AppCompatActivity() {
         newPlanRecyclerView.adapter = newPlanRecyclerViewAdapter
         userGenerationPlanRecyclerView.adapter = generationPlanRecyclerViewAdapter
 
-        val gtat = GetTimelineAsyncTask("", 0)
-        gtat.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
+        var gtat: GetTimelineAsyncTask? = GetTimelineAsyncTask("", 0)
+        gtat!!.setOnCallback(object : GetTimelineAsyncTask.CallbackGetTimelineAsyncTask() {
             override fun callback(result: String, timelineRecordJsonArray: JSONArray?) {
                 super.callback(result, timelineRecordJsonArray)
                 when (result) {
@@ -109,12 +124,13 @@ class HomeActivity : AppCompatActivity() {
                     "RESULT-404" -> Toast.makeText(this@HomeActivity, "新着3件はありません", Toast.LENGTH_SHORT).show()
                     else -> Toast.makeText(this@HomeActivity, "timeline取得失敗", Toast.LENGTH_SHORT).show()
                 }
+                gtat = null
             }
         })
-        gtat.execute("3")
+        gtat!!.execute("3")
 
-        val gsat = GetSearchAsyncTask("", generation, "", "", "",0)
-        gsat.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
+        var gsat: GetSearchAsyncTask? = GetSearchAsyncTask("", generation, "", "", "",0)
+        gsat!!.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
             override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                 super.callback(result, searchRecordJsonArray)
                 when (result) {
@@ -122,9 +138,10 @@ class HomeActivity : AppCompatActivity() {
                     "RESULT-404" -> Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
                     else -> Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                 }
+                gsat = null
             }
         })
-        gsat.execute("3")
+        gsat!!.execute("3")
     }
 
     override fun onResume() {
@@ -195,8 +212,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         //favorite
-        val gpfat = GetPlanFavoriteAsyncTask(planIdList, "")
-        gpfat.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
+        var gpfat: GetPlanFavoriteAsyncTask? = GetPlanFavoriteAsyncTask(planIdList, "")
+        gpfat!!.setOnCallback(object : GetPlanFavoriteAsyncTask.CallbackGetPlanFavoriteAsyncTask() {
             override fun callback(resultFavoriteArrayList: ArrayList<String>) {
                 super.callback(resultFavoriteArrayList)
                 if (resultFavoriteArrayList[resultFavoriteArrayList.size - 1] == "RESULT-OK") {
@@ -205,11 +222,14 @@ class HomeActivity : AppCompatActivity() {
 
                     /****************/
                     //画像
-                    val giat = GetImageAsyncTask()
-                    giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
+                    var giat: GetImageAsyncTask? = GetImageAsyncTask()
+                    giat!!.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                         override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                             if (resultBmpString == "RESULT-OK") {
                                 /****************/
+
+                                val metrics = resources.displayMetrics
+                                var scale: Float
 
                                 var timelinePlanData: TimelinePlanData
                                 for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
@@ -219,12 +239,28 @@ class HomeActivity : AppCompatActivity() {
                                     timelinePlanData.planId = timelineData.getLong("plan_id")
                                     if (resultBmpList!![_timelineCnt].isNotEmpty()) {
                                         if (resultBmpList[_timelineCnt][0] != null) {
+
+                                            scale = 80f * metrics.density
+                                            resultBmpList[_timelineCnt][0] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][0],
+                                                    scale.toInt(),
+                                                    scale.toInt(),
+                                                    true)
+
                                             timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
+
                                         } else {
                                             timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                         }
                                         if (resultBmpList[_timelineCnt][1] != null) {
+
+                                            scale = 90f * metrics.density
+                                            resultBmpList[_timelineCnt][1] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][1],
+                                                    scale.toInt(),
+                                                    scale.toInt(),
+                                                    true)
+
                                             timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
+
                                         } else {
                                             timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                         }
@@ -254,7 +290,7 @@ class HomeActivity : AppCompatActivity() {
                                         newPlanRecyclerViewAdapter.notifyDataSetChanged()
                                         newPlanPageControlView.setRecyclerView(newPlanRecyclerView, LAYOUT_MANAGER[1])
                                     }
-                                    
+
                                     2 -> {
                                         generationPlanRecyclerViewAdapter.notifyDataSetChanged()
                                         userGenerationPlanPageControlView.setRecyclerView(userGenerationPlanRecyclerView, LAYOUT_MANAGER[2])
@@ -266,16 +302,18 @@ class HomeActivity : AppCompatActivity() {
                                 failedAsyncTask()
                                 return
                             }
+                            giat = null
                         }
                     })
-                    giat.execute(bmpList)
+                    giat!!.execute(bmpList)
                 } else {
                     failedAsyncTask()
                     return
                 }
+                gpfat = null
             }
         })
-        gpfat.execute()
+        gpfat!!.execute()
     }
 
     private fun failedAsyncTask() {
