@@ -17,16 +17,12 @@ import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_spot_list.*
 import java.text.SimpleDateFormat
 
-//import sun.misc.MessageUtils.where
-
-
 class SpotListActivity : AppCompatActivity() {
 
     private lateinit var mRealm: Realm
-    var dataList = ArrayList<String>()
-    var spotDataList = ArrayList<TestRea>()
+    private var dataList = ArrayList<String>()
+    private var spotDataList = ArrayList<TestRea>()
 
-    //private lateinit var spotDataList : RealmResults<TestRea>
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
 
@@ -72,12 +68,11 @@ class SpotListActivity : AppCompatActivity() {
             dataList.add(_sd.name + "\n" + df.format(_sd.datetime))
         }
 
-        listView = findViewById(R.id.spotList) as ListView
-        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
+        listView = findViewById(R.id.spotList)
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, dataList)
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
-//            tappedListPosition = position
             val intent = Intent(this, DetailSpotActivity::class.java)
             val tappedSpot = SpotData(
                     spotDataList[position].id,
@@ -99,14 +94,12 @@ class SpotListActivity : AppCompatActivity() {
                 setMessage("スポット:${dataList[position]} を削除しますか？")
                 setPositiveButton("削除") { _, _ ->
                     mRealm.executeTransaction {
-                        var delSpot = mRealm.where(TestRea::class.java).equalTo("id", spotDataList[position].id).findAll()
+                        val delSpot = mRealm.where(TestRea::class.java).equalTo("id", spotDataList[position].id).findAll()
                         delSpot.deleteFromRealm(0)
                     }
                     // 削除をタップしたときの処理
-                    //spotListAdapter.remove(spotListAdapter.getItem(position))
                     dataList.removeAt(position)
                     spotDataList.removeAt(position)
-                    //spotList.removeAt(position)
                     //削除した項目以下の連番更新
                     adapter.notifyDataSetChanged()
                 }
@@ -116,8 +109,8 @@ class SpotListActivity : AppCompatActivity() {
             return@setOnItemLongClickListener true
         }
 
-        val spinner = findViewById<Spinner>(R.id.sort)
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val sortSpinner = findViewById<Spinner>(R.id.sort)
+        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             //　アイテムが選択された時
             override fun onItemSelected(parent: AdapterView<*>,
                                         view: View, position: Int, id: Long) {
@@ -131,7 +124,6 @@ class SpotListActivity : AppCompatActivity() {
 
             //　アイテムが選択されなかった
             override fun onNothingSelected(parent: AdapterView<*>) {
-                //
             }
         }
     }
@@ -140,13 +132,6 @@ class SpotListActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == RESULT_OK && requestCode == DETAIL_SPOT_REQUEST_CODE && intent != null) {
-
-/*
-            val spot = intent.getSerializableExtra("SPOTDATA") as TestRea
-
-            spotDataList[tappedListPosition!!] = spot
-            dataList[tappedListPosition!!] = (spot.name + "\n" + spot.datetime)
-*/
 
             val realmList = mRealm.where(TestRea::class.java).findAll()
             spotDataList.clear()
@@ -209,7 +194,5 @@ class SpotListActivity : AppCompatActivity() {
         spotDataList.reverse()
         dataList.reverse()
         adapter.notifyDataSetChanged()
-        //val userSpotAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList)
-        //listView.adapter = userSpotAdapter
     }
 }

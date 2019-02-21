@@ -10,7 +10,6 @@ import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -78,7 +77,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
             detailPlanDeleteButton.visibility = View.GONE
         }
 
-        /************************************/
         val fab = findViewById<FloatingActionButton>(R.id.detailPlanFab)
 
         //favorite
@@ -103,7 +101,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                 override fun callback(resultFavoriteString: String) {
                                     super.callback(resultFavoriteString)
                                     // ここからAsyncTask処理後の処理を記述します。
-                                    Log.d("test favoriteCallback", "非同期処理$resultFavoriteString")
                                     if (resultFavoriteString == "RESULT-OK") {
                                         //完了
                                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_off)
@@ -130,7 +127,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                 override fun callback(result: String) {
                                     super.callback(result)
                                     // ここからAsyncTask処理後の処理を記述します。
-                                    Log.d("test favoriteCallback", "非同期処理$result")
                                     if (result == "RESULT-OK") {
                                         //完了
                                         detailPlanFab.setImageResource(android.R.drawable.btn_star_big_on)
@@ -158,7 +154,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
         gpfat.execute()
-        /************************************/
 
         detailPlanSpotListAdapter = DetailPlanSpotListAdapter(this)
         detailPlanSpotListAdapter.setDetailPlanSpotList(SPOT_LIST)
@@ -175,7 +170,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                 super.callback(resultPlanJson)
                 if (resultPlanJson.getString("result") == "RESULT-OK") {
                     //完了
-                    /****************/
                     detailPlanTitleTextView.text = resultPlanJson.getString("plan_title")
                     detailPlanPrefecturesTextView.text = resultPlanJson.getString("area")
                     detailPlanPriceTextView.text = resultPlanJson.getString("price").replace("~", "～")
@@ -236,13 +230,11 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                     SPOT_ADDRESS.add(address)
                                 }
 
-                                /****************/
                                 val giat = GetImageAsyncTask()
                                 giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                                     override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                         super.callback(resultBmpString, resultBmpList)
                                         if (resultBmpString == "RESULT-OK") {
-                                            /****************/
                                             var detailPlanSpotData: DetailPlanSpotData
                                             for (_SpotCnt in 0 until resultSpotJsonList.size) {
                                                 detailPlanSpotData = DetailPlanSpotData()
@@ -265,14 +257,12 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                     }
                                 })
                                 giat.execute(arrayListOf(bmp))
-                                /****************/
                             } else {
                                 failedAsyncTask()
                             }
                         }
                     })
                     gsat.execute()
-                    /****************/
                 } else {
                     failedAsyncTask()
                 }
@@ -299,73 +289,77 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     fun detailPlanDeleteButtonTapped(view: View) {
         detailPlanDeleteButton.isClickable = false
 
-        val imgList = arrayListOf<String>()
+        AlertDialog.Builder(this).apply {
+            setTitle("このプランを完全に削除します")
+            setMessage("本当によろしいですか？")
+            setPositiveButton("はい") { _, _ ->
+                // OKをタップしたときの処理
 
-        for (_spotCnt in 0 until spotJsonList!!.size) {
+                val imgList = arrayListOf<String>()
 
-            if (spotJsonList!![_spotCnt].getString("spot_image_a").contains("http"))
-                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_a").substringAfterLast("/"))
+                for (_spotCnt in 0 until spotJsonList!!.size) {
 
-            if (spotJsonList!![_spotCnt].getString("spot_image_b").contains("http"))
-                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_b").substringAfterLast("/"))
+                    if (spotJsonList!![_spotCnt].getString("spot_image_a").contains("http"))
+                        imgList.add(spotJsonList!![_spotCnt].getString("spot_image_a").substringAfterLast("/"))
 
-            if (spotJsonList!![_spotCnt].getString("spot_image_c").contains("http"))
-                imgList.add(spotJsonList!![_spotCnt].getString("spot_image_c").substringAfterLast("/"))
-        }
+                    if (spotJsonList!![_spotCnt].getString("spot_image_b").contains("http"))
+                        imgList.add(spotJsonList!![_spotCnt].getString("spot_image_b").substringAfterLast("/"))
 
-        /********************/
-        //spotを削除
-        val dsat = DeleteSpotAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
-        dsat.setOnCallback(object : DeleteSpotAsyncTask.CallbackDeleteSpotAsyncTask() {
-            override fun callback(resultDeleteSpotString: String) {
-                super.callback(resultDeleteSpotString)
-                // ここからAsyncTask処理後の処理を記述します。
-                Log.d("test SpotCallback", "非同期処理結果：$resultDeleteSpotString")
-                if (resultDeleteSpotString == "RESULT-OK") {
-                    /********************/
-                    //Planを削除
-                    val dpat = DeletePlanAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
-                    dpat.setOnCallback(object : DeletePlanAsyncTask.CallbackDeletePlanAsyncTask() {
-                        override fun callback(resultDeletePlanString: String) {
-                            super.callback(resultDeletePlanString)
-                            // ここからAsyncTask処理後の処理を記述します。
-                            Log.d("test PlanCallback", "非同期処理$resultDeletePlanString")
-                            if (resultDeletePlanString == "RESULT-OK") {
-                                /********************/
-                                //imageを削除
-                                val diat = DeleteImageAsyncTask(imgList)
-                                diat.setOnCallback(object : DeleteImageAsyncTask.CallbackDeleteImageAsyncTask() {
-                                    override fun callback(resultDeleteImageString: String) {
-                                        super.callback(resultDeleteImageString)
-                                        // ここからAsyncTask処理後の処理を記述します。
-                                        Log.d("test ImageCallback", "非同期処理$resultDeleteImageString")
-                                        if (resultDeleteImageString == "RESULT-OK") {
-                                            //完了した場合
-                                            finishAffinity()
-                                            startActivity(Intent(this@DetailPlanActivity, DetailUserActivity::class.java))
-                                        } else {
-                                            failedDeleteAsyncTask()
-                                        }
-                                    }
-                                })
-                                diat.execute()
-
-                                /********************/
-                            }else{
-                                failedDeleteAsyncTask()
-                            }
-                        }
-                    })
-                    dpat.execute()
-                    /********************/
-
-                } else {
-                    failedDeleteAsyncTask()
+                    if (spotJsonList!![_spotCnt].getString("spot_image_c").contains("http"))
+                        imgList.add(spotJsonList!![_spotCnt].getString("spot_image_c").substringAfterLast("/"))
                 }
+
+                //spotを削除
+                val dsat = DeleteSpotAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                dsat.setOnCallback(object : DeleteSpotAsyncTask.CallbackDeleteSpotAsyncTask() {
+                    override fun callback(resultDeleteSpotString: String) {
+                        super.callback(resultDeleteSpotString)
+                        // ここからAsyncTask処理後の処理を記述します。
+                        if (resultDeleteSpotString == "RESULT-OK") {
+                            //Planを削除
+                            val dpat = DeletePlanAsyncTask(planId, sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
+                            dpat.setOnCallback(object : DeletePlanAsyncTask.CallbackDeletePlanAsyncTask() {
+                                override fun callback(resultDeletePlanString: String) {
+                                    super.callback(resultDeletePlanString)
+                                    // ここからAsyncTask処理後の処理を記述します。
+                                    if (resultDeletePlanString == "RESULT-OK") {
+                                        //imageを削除
+                                        val diat = DeleteImageAsyncTask(imgList)
+                                        diat.setOnCallback(object : DeleteImageAsyncTask.CallbackDeleteImageAsyncTask() {
+                                            override fun callback(resultDeleteImageString: String) {
+                                                super.callback(resultDeleteImageString)
+                                                // ここからAsyncTask処理後の処理を記述します。
+                                                if (resultDeleteImageString == "RESULT-OK") {
+                                                    //完了した場合
+                                                    finishAffinity()
+                                                    startActivity(Intent(this@DetailPlanActivity, DetailUserActivity::class.java))
+                                                } else {
+                                                    failedDeleteAsyncTask()
+                                                }
+                                            }
+                                        })
+                                        diat.execute()
+
+                                    }else{
+                                        failedDeleteAsyncTask()
+                                    }
+                                }
+                            })
+                            dpat.execute()
+
+                        } else {
+                            failedDeleteAsyncTask()
+                        }
+                    }
+                })
+                dsat.execute()
+
             }
-        })
-        dsat.execute()
-        /********************/
+            setNegativeButton("いいえ") { _, _ ->
+                detailPlanDeleteButton.isClickable = true
+            }
+            show()
+        }
     }
 
     private fun failedDeleteAsyncTask() {

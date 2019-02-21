@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import java.io.*
 import java.net.HttpURLConnection
@@ -11,7 +10,7 @@ class PostImageAsyncTask : AsyncTask<MutableList<String>, Void, String>() {
 
     //callBack用
     private var callbackPostImageAsyncTask: CallbackPostImageAsyncTask? = null
-    lateinit var imageList: MutableList<String>
+    private lateinit var imageList: MutableList<String>
 
     override fun doInBackground(vararg parameter: MutableList<String>): String {
 
@@ -55,15 +54,13 @@ class PostImageAsyncTask : AsyncTask<MutableList<String>, Void, String>() {
                             flush()
 
                             val fis = FileInputStream(file)
-                            Log.d("test", file.name)
+
                             val buffer = ByteArray(4096)
-                            var bytesRead = -1
+                            var bytesRead: Int
                             while (true) {
                                 bytesRead = fis.read(buffer)
                                 if (bytesRead != -1) {
                                     write(buffer, 0, bytesRead)
-                                    Log.d("test", buffer.toString())
-                                    Log.d("test", bytesRead.toString())
                                 } else {
                                     break
                                 }
@@ -127,17 +124,14 @@ class PostImageAsyncTask : AsyncTask<MutableList<String>, Void, String>() {
 
     public override fun onPostExecute(result: String) {
         super.onPostExecute(result)
-        Log.d("test PostImage", result)
 
         when (result) {
             "HTTP-OK:IMAGE送信OK" -> {
-                Log.d("test PostImage", "HTTP-OK")
                 callbackPostImageAsyncTask!!.callback("RESULT-OK", imageList.toString())
                 return
             }
 
             else -> {
-                Log.d("test PostImage", "HTTP-NG")
                 callbackPostImageAsyncTask!!.callback("RESULT-NG", "")
                 return
             }

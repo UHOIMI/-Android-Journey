@@ -42,8 +42,6 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_user)
 
-        //spot = intent.getSerializableExtra("SPOT") as SpotData
-
         //ツールバーセット
         title = "ユーザ詳細"
 
@@ -82,7 +80,6 @@ class DetailUserActivity : AppCompatActivity() {
             navigation.selectedItemId = R.id.navigation_setting
             navigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-
             val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
 
             mUserId = sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "")
@@ -97,48 +94,6 @@ class DetailUserActivity : AppCompatActivity() {
                     sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "")
             )
 
-            /*            val headerString =
-            if (headerString != "") {
-                val giat = GetImageAsyncTask()
-                giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                    override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
-                        if (resultBmpString == "RESULT-OK") {
-                            detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
-                            headerFlg = IMAGE_OK
-                        } else {
-                            Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                })
-                giat.execute(arrayListOf(arrayListOf(headerString)))
-            }
-
-            val iconString =
-            if (iconString != "") {
-                val giat = GetImageAsyncTask()
-                giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
-                    override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
-                        if (resultBmpString == "RESULT-OK") {
-                            detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
-                            iconFlg = IMAGE_OK
-                        } else {
-                            Toast.makeText(this@DetailUserActivity, "アイコン取得失敗", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                })
-                giat.execute(arrayListOf(arrayListOf(iconString)))
-            }
-
-            detailUserNameTextView.text =
-            detailUserGenderTextView.text =
-            val generation =
-            detailUserGenerationTextView.text = when (generation) {
-                "10" -> "10歳以下"
-                "100" -> "100歳以上"
-                else -> "$generation 代"
-            }
-            detailUserCommentTextView.text = */
-
         } else {
             detailUserSpotListButton.visibility = View.GONE
             navigation.selectedItemId = myApp!!.getBnp()
@@ -152,7 +107,6 @@ class DetailUserActivity : AppCompatActivity() {
                     if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
                         resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                         //完了
-                        /****************/
                         mUserId = resultUserAccountList[0].getString("user_id")
                         mUserName = resultUserAccountList[0].getString("user_name")
 
@@ -165,7 +119,6 @@ class DetailUserActivity : AppCompatActivity() {
                                 resultUserAccountList[0].getString("user_icon")
                         )
 
-                        /****************/
                     } else {
 
                         AlertDialog.Builder(this@DetailUserActivity).apply {
@@ -269,9 +222,8 @@ class DetailUserActivity : AppCompatActivity() {
                     val bmpList = arrayListOf<String>()
 
                     //spotTitle
-                    var spotTitleValue: ArrayList<String> = arrayListOf()
+                    val spotTitleValue: ArrayList<String> = arrayListOf()
 
-//                        for (_jsonCnt in 0 until timelineRecordJsonArray!!.length()) {
                     //favorite用
                     mPlanId = timelineRecordJsonArray!!.getJSONObject(0).getString("plan_id")
 
@@ -311,7 +263,6 @@ class DetailUserActivity : AppCompatActivity() {
                         for (_addCnt in spotTitleValue.size..3)
                             spotTitleValue.add("")
                     }
-//                        }
 
                     //favorite
                     val gpfat = GetPlanFavoriteAsyncTask(arrayListOf(mPlanId), "")
@@ -322,16 +273,12 @@ class DetailUserActivity : AppCompatActivity() {
                                 resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
                                 //完了
 
-                                /****************/
                                 //画像
                                 val giat = GetImageAsyncTask()
                                 giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                                     override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                         if (resultBmpString == "RESULT-OK") {
-                                            /****************/
 
-//                                            var timelinePlanData = TimelinePlanData()
-//                                                for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
                                             val timelineData = timelineRecordJsonArray.getJSONObject(0)
 
                                             if (resultBmpList!![0].isNotEmpty()) {

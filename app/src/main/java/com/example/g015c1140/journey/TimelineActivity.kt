@@ -9,20 +9,17 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AbsListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_timeline.*
-import layout.TimelinePlanListAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 class TimelineActivity : AppCompatActivity() {
 
-    /*********/
     //searchかhomeの年代から遷移したか確認する用
     private var searchFlg = false
     private var searchValueKeyword = ""
@@ -40,7 +37,6 @@ class TimelineActivity : AppCompatActivity() {
 
     private var postedFlag = false
     private var postedUserId = ""
-    /*********/
 
     // 1ページ辺りの項目数
     private var timelineCnt: Int = 0
@@ -254,7 +250,6 @@ class TimelineActivity : AppCompatActivity() {
                                 override fun callback(resultUserAccountList: ArrayList<JSONObject>) {
                                     super.callback(resultUserAccountList)
                                     // ここからAsyncTask処理後の処理を記述します。
-                                    Log.d("test GetUserAccCallback", "非同期処理${resultUserAccountList[resultUserAccountList.size - 1]}")
                                     if (resultUserAccountList[resultUserAccountList.size - 1].getString("result") == "RESULT-OK") {
                                         resultUserAccountList.removeAt(resultUserAccountList.size - 1)
                                         var jsonUser: JSONObject
@@ -349,10 +344,8 @@ class TimelineActivity : AppCompatActivity() {
                 spotTitleValue = arrayListOf()
                 for (_spotTitleCnt in 0 until spotJsonList.length()) {
                     if (spotTitleValue.size < 2) {
-                        /************/
                         //タイムラインエリアにはspotTitleがない
                         spotTitleValue.add(spotJsonList.getJSONObject(_spotTitleCnt).getString("spot_title"))
-                        /************/
 
                     } else if (spotTitleValue.size == 2) {
                         spotTitleValue.add("他 ${spotJsonList.length() - 2}件")
@@ -375,13 +368,11 @@ class TimelineActivity : AppCompatActivity() {
                         resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
                         //完了
 
-                        /****************/
                         //画像
                         val giat = GetImageAsyncTask()
                         giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                             override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                 if (resultBmpString == "RESULT-OK") {
-                                    /****************/
 
                                     var timelinePlanData: TimelinePlanData
                                     for (_timelineCnt in 0 until resultRecordJsonArray.length()) {
@@ -414,7 +405,6 @@ class TimelineActivity : AppCompatActivity() {
                                         timelinePlanData.userId = timelineData.getString("user_id")
                                         addTimelineList.add(timelinePlanData)
                                     }
-                                    /****************/
 
                                     if (refreshFlg) {
                                         TIMELINE_LIST.addAll(0, addTimelineList)
@@ -462,19 +452,14 @@ class TimelineActivity : AppCompatActivity() {
         timelineListView.setOnScrollListener(object : AbsListView.OnScrollListener {
             // スクロール中の処理
             override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-
-                Log.d("xxx", String.format("onScroll firstVisibleItem=%d  visibleItemCount=%d  TIMELINE_LIST.size=%d", firstVisibleItem, visibleItemCount, TIMELINE_LIST.size))
                 scrollFlg = TIMELINE_LIST.size + 1 == firstVisibleItem + visibleItemCount
             }
 
             // ListViewがスクロール中かどうか状態を返すメソッドです
             override fun onScrollStateChanged(list: AbsListView, state: Int) {
-                Log.d("xxx", String.format("onScrollStateChanged scrollState=%d firstVisiblePos=%d", state, list.firstVisiblePosition))
                 if (scrollFlg && state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-
                     if (bottomRefreshFlg) {
                         bottomRefreshFlg = false
-                        Log.d("xxx", "あああああああああああああああああああああああああああああああああああああ")
                         setTimeline(timelineCnt, false)
                     }
                 }

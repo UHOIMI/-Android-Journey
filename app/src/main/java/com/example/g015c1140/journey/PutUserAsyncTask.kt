@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -58,7 +57,6 @@ class PutUserAsyncTask : AsyncTask<MutableList<MutableList<String>>, String, Str
                             out.write( ( "${dataList[0]}=${dataList[1]}" ).toByteArray() )
                 }
                 out.flush()
-                Log.d("test", "flush")
 
                 val `is` = connection.inputStream
                 val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
@@ -98,16 +96,13 @@ class PutUserAsyncTask : AsyncTask<MutableList<MutableList<String>>, String, Str
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PostSpot", "onPostEx: $result")
         when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
                 callbackPutUserAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
             else -> {
-                Log.d("test PostSpot", "HTTP-NG")
                 callbackPutUserAsyncTask!!.callback("RESULT-NG")
                 return
             }
@@ -121,5 +116,4 @@ class PutUserAsyncTask : AsyncTask<MutableList<MutableList<String>>, String, Str
     open class CallbackPutUserAsyncTask {
         open fun callback(result: String) {}
     }
-
 }

@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -48,7 +47,6 @@ class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>() {
                 )
 
                 out.flush()
-                Log.d("debug", "flush")
 
                 val `is` = connection.inputStream
                 val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
@@ -96,16 +94,13 @@ class PostLoginAsyncTask : AsyncTask<ArrayList<String>, Void, String>() {
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PlanSpot", "onPostEx: $result")
         when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
                 callbackPostLoginAsyncTask!!.callback("RESULT-OK", token)
                 return
             }
 
             else -> {
-                Log.d("test PostSpot", "HTTP-NG")
                 callbackPostLoginAsyncTask!!.callback("RESULT-NG", "")
                 return
             }

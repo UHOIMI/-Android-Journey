@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -26,7 +25,6 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
 
         for (id in USER_ID_LIST) {
             if (id == "") {
-                Log.d("test", "USERID-Error")
                 return result
             }
         }
@@ -55,8 +53,8 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
 
                     ACCOUNT_LIST.add( jsonObject.getJSONArray("record").getJSONObject(0) )
 
-                    Log.d("test GUDAT", "${ACCOUNT_LIST[ACCOUNT_LIST.size -1 ]}             ${sb.length}")
                     result = it
+
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -82,13 +80,11 @@ class GetUserAccountAsyncTask(idList: ArrayList<String>) : AsyncTask<Void, Strin
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetUserIdTask", "return null")
             callbackGetUserAccountAsyncTask!!.callback(arrayListOf( JSONObject().put("result", "RESULT-NG") ))
             return
         }
 
         ACCOUNT_LIST.add( JSONObject().put("result", "RESULT-OK") )
-        Log.d("test GetUserIdTask", "result：$result")
         callbackGetUserAccountAsyncTask!!.callback(ACCOUNT_LIST)
     }
 

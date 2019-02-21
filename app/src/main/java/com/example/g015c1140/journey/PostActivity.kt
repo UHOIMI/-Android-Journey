@@ -20,12 +20,10 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
-import android.widget.ListView
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -64,14 +62,12 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mRealm: Realm
 
-    /******************/
     //SelectSpotActivity用
     private val RESULT_CODE = 1123
 
     //MapPinAdd用
     private lateinit var mMap: GoogleMap
     private val MARKER_LIST = mutableListOf<Marker>()
-    /******************/
 
     companion object {
         private const val STORAGE_PERMISSION_REQUEST_CODE = 222
@@ -114,7 +110,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         spotNameList = mutableListOf("スポット追加＋")
         spotListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spotNameList)
         // ListViewにArrayAdapterを設定する
-//        val spotListView: ListView = findViewById(R.id.spotListView)
         spotListView.adapter = spotListAdapter
 
         // 項目をタップしたときの処理
@@ -122,9 +117,7 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
             // 一番上の項目をタップしたら
             if (position == 0) {
                 if (spotList.size < 20) {
-                    /************************************************/
                     startActivityForResult(Intent(this, SelectSpotActivity::class.java).putExtra("SPOTCNT", spotList.size), RESULT_CODE)
-                    /************************************************/
                 }
             } else {
                 tappedSpotPosition = position - 1
@@ -149,7 +142,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                         setMessage("スポット:${spotNameList[position]} を削除しますか？")
                         setPositiveButton("削除") { _, _ ->
                             // 削除をタップしたときの処理
-                            //spotListAdapter.remove(spotListAdapter.getItem(position))
                             spotNameList.removeAt(position)
                             spotList.removeAt(position - 1)
                             //削除した項目以下の連番更新
@@ -178,16 +170,13 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
         planDetailEditText.onFocusChangeListener = View.OnFocusChangeListener { _, focus ->
             if (focus) {
-//                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
                 navigation.visibility = View.INVISIBLE
             } else {
-//                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
                 navigation.visibility = View.VISIBLE
             }
         }
     }
 
-    /************************************************/
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == RESULT_OK && requestCode == RESULT_CODE && intent != null) {
@@ -217,18 +206,10 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    /************************************************/
-
     //GoogleMap 設定
     override fun onMapReady(googleMap: GoogleMap) {
         //val
         mMap = googleMap
-
-/*
-         Add a marker in Sydney and move the camera
-        val skyTree = LatLng(35.710063, 139.8107)
-        mMap.addMarker(MarkerOptions().position(skyTree).title("東京スカイツリー"))
-*/
 
         val cameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(LatLng(35.710063, 139.8107))
@@ -401,14 +382,12 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
             imageList = saveAndLoadImage(imageList)
 
-            /********************/
             //imageを投稿
             val piat = PostImageAsyncTask()
             piat.setOnCallback(object : PostImageAsyncTask.CallbackPostImageAsyncTask() {
                 override fun callback(result: String, data: String) {
                     super.callback(result, data)
                     // ここからAsyncTask処理後の処理を記述します。
-                    Log.d("test ImageCallback", "非同期処理$result　　URL $data")
                     if (result == "RESULT-OK") {
                         //完了した場合
                         val imageJson = JSONArray(data)
@@ -437,16 +416,13 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         }
 
-                        /********************/
                         //Planを投稿
                         val ppat = PostPlanAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"))
                         ppat.setOnCallback(object : PostPlanAsyncTask.CallbackPostPlanAsyncTask() {
                             override fun callback(result: String) {
                                 super.callback(result)
                                 // ここからAsyncTask処理後の処理を記述します。
-                                Log.d("test PlanCallback", "非同期処理$result")
                                 if (result == "RESULT-OK") {
-                                    /********************/
 
                                     //plan取得
                                     val gpat = GetPlanAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), false)
@@ -454,17 +430,14 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                                         override fun callback(resultPlanJson: JSONObject) {
                                             super.callback(resultPlanJson)
                                             // ここからAsyncTask処理後の処理を記述します。
-                                            Log.d("test GetSpotCallback", "非同期処理$result")
                                             if (resultPlanJson.getString("result") == "RESULT-OK") {
 
-                                                /********************/
                                                 //spotを投稿
                                                 val psat = PostSpotAsyncTask(sharedPreferences.getString(Setting().USER_SHARED_PREF_ID, "none"), sharedPreferences.getString(Setting().USER_SHARED_PREF_TOKEN, "none"), resultPlanJson.getString("plan_id"))
                                                 psat.setOnCallback(object : PostSpotAsyncTask.CallbackPostSpotAsyncTask() {
                                                     override fun callback(result: String) {
                                                         super.callback(result)
                                                         // ここからAsyncTask処理後の処理を記述します。
-                                                        Log.d("test SpotCallback", "非同期処理結果：$result")
                                                         if (result == "RESULT-OK") {
                                                             completePostAsyncTask()
                                                         } else {
@@ -473,7 +446,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                                                     }
                                                 })
                                                 psat.execute(spotList)
-                                                /********************/
 
                                             } else {
                                                 failedAsyncTask()
@@ -481,7 +453,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                                         }
                                     })
                                     gpat.execute()
-                                    /********************/
                                 } else {
                                     failedAsyncTask()
                                 }
@@ -494,7 +465,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                                 planMoneySpinner.selectedItem.toString(),
                                 planPrefecturesSpinner.selectedItem.toString()
                         )
-                        /********************/
                     } else {
                         failedAsyncTask()
                     }
@@ -560,7 +530,6 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
         // 自分のコード以外がrequestPermissionsしているかもしれないので、requestCodeをチェックします。
         if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -588,11 +557,11 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
                 imageDeleteNameList!!.add("${imageList[_imgCnt].substringAfterLast("/").substringBefore(".")}.jpg")
                 try {
                     // openFileOutputはContextのメソッドなのでActivity内ならばthisでOK
-                    fileOut = this.openFileOutput("${imageDeleteNameList!![imageDeleteNameList!!.size -1]}", Context.MODE_PRIVATE)
+                    fileOut = this.openFileOutput(imageDeleteNameList!![imageDeleteNameList!!.size -1], Context.MODE_PRIVATE)
                     bmpImg.compress(Bitmap.CompressFormat.JPEG, 50/*100*/, fileOut)
 
                     bmpImg.recycle()
-                    imageList[_imgCnt] = getPathFromUri(this, Uri.fromFile(getFileStreamPath("${imageDeleteNameList!![imageDeleteNameList!!.size -1]}")))
+                    imageList[_imgCnt] = getPathFromUri(this, Uri.fromFile(getFileStreamPath(imageDeleteNameList!![imageDeleteNameList!!.size -1])))
 
                 } catch (e: IOException) {
                     failedAsyncTask()
@@ -605,38 +574,35 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getPathFromUri(context: Context, uri: Uri): String {
-        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        val isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        Log.e("TAG", "uri:" + uri.authority);
         if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            if ("com.android.externalstorage.documents" == uri.authority) {// ExternalStorageProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                //if ("primary".equalsIgnoreCase(type)) {
-                return if ("primary" == type) {
-                    Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                } else {
-                    "/stroage/" + type + "/" + split[1]
+            when {
+                "com.android.externalstorage.documents" == uri.authority -> {// ExternalStorageProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val type: String = split[0]
+                    return if ("primary" == type) {
+                        Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                    } else {
+                        "/stroage/" + type + "/" + split[1]
+                    }
                 }
-            } else if ("com.android.providers.downloads.documents" == uri.authority) {// DownloadsProvider
-                var id: String = DocumentsContract.getDocumentId(uri)
-                var contentUri: Uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), id.toLong()
-                )
-                return getDataColumn(context, contentUri, null, null)
-            } else if ("com.android.providers.media.documents" == uri.authority) {// MediaProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                var contentUri: Uri? = null
-                contentUri = MediaStore.Files.getContentUri("external")
-                var selection = "_id=?"
-                /*var selectionArgs = {
-                        split[1]
-                }*/
-                var selectionArgs = arrayOf(split[1])
-                return getDataColumn(context, contentUri, selection, *selectionArgs)
+                "com.android.providers.downloads.documents" == uri.authority -> {// DownloadsProvider
+                    val id: String = DocumentsContract.getDocumentId(uri)
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), id.toLong()
+                    )
+                    return getDataColumn(context, contentUri, null, null)
+                }
+                "com.android.providers.media.documents" == uri.authority -> {// MediaProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val contentUri: Uri? = MediaStore.Files.getContentUri("external")
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+                    return getDataColumn(context, contentUri!!, selection, *selectionArgs)
+                }
             }
         } else if ("content" == uri.scheme) {//MediaStore
             return getDataColumn(context, uri, null, null)
@@ -648,14 +614,14 @@ class PostActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun getDataColumn(context: Context, uri: Uri, selection: String?, vararg selectionArgs: String?/*[]*/): String {
         var cursor: Cursor? = null
-        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         try {
             cursor = context.contentResolver.query(
                     uri, projection, selection, selectionArgs, null
             )
             if (cursor != null && cursor.moveToFirst()) {
-                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
-                return cursor.getString(cindex);
+                val cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex)
             }
         } finally {
             cursor?.close()

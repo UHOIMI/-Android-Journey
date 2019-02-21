@@ -21,20 +21,10 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         this.layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
 
-    // [7]
     override fun getItemCount(): Int {
         return timelinePlanDataList.size
     }
 
-//    fun getItem(position: Int): Any {
-//        return timelinePlanDataList[position]
-//    }
-//
-//    override fun getItemId(position: Int): Long {
-//        return super.getItemId(position)
-//    }
-
-    // [5]
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanPageControlRecyclerViewAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.timeline_row, parent, false)
         val holder = ViewHolder(view)
@@ -50,7 +40,6 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         return holder
     }
 
-    // [3]
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val planUserIconCircleImage = (view.findViewById(R.id.planUserIconCircleImage) as ImageView)
         val planUserNameTextView = (view.findViewById(R.id.planUserNameTextView) as TextView)
@@ -63,7 +52,6 @@ class PlanPageControlRecyclerViewAdapter(context: Context, activity: Activity, t
         val planFavoriteTextView = (view.findViewById(R.id.planFavoriteTextView) as TextView)
     }
 
-    // [6]
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.planUserIconCircleImage.setImageBitmap(timelinePlanDataList[position].planUserIconImage)
         holder.planUserIconCircleImage.tag = timelinePlanDataList[position].userId

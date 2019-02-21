@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -27,7 +26,6 @@ class GetPlanFavoriteAsyncTask(pIdList: ArrayList<String>, uId: String) : AsyncT
 
         for (id in PLAN_ID_LIST) {
             if (id == "") {
-                Log.d("test", "PLAN_ID-Error")
                 return result
             }
         }
@@ -99,12 +97,10 @@ class GetPlanFavoriteAsyncTask(pIdList: ArrayList<String>, uId: String) : AsyncT
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetUserIdTask", "return null")
             callbackGetPlanFavoriteAsyncTask!!.callback(arrayListOf("RESULT-NG"))
             return
         }
 
-        Log.d("test GetUserIdTask", "result：$result")
         FAVORITE_LIST.add("RESULT-OK")
         callbackGetPlanFavoriteAsyncTask!!.callback(FAVORITE_LIST)
     }

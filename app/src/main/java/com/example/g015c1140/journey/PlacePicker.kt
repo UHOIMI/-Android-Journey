@@ -21,7 +21,6 @@ class PlacePicker : AppCompatActivity() {
 
         val builder = com.google.android.gms.location.places.ui.PlacePicker.IntentBuilder()
 
-        val context = applicationContext
         try {
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST)
         } catch (e: GooglePlayServicesRepairableException) {
@@ -37,13 +36,11 @@ class PlacePicker : AppCompatActivity() {
 
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                val place = com.google.android.gms.location.places.ui.PlacePicker.getPlace(data, this)
-                /*String toastMsg = String.format( "Place: %s/%s", place.getName(), place.getAddress() );
-                Toast.makeText( this, toastMsg, Toast.LENGTH_LONG ).show();*/
+                val place = com.google.android.gms.location.places.ui.PlacePicker.getPlace(this,data)
                 val intent = Intent(application, SelectSpotActivity::class.java)
                 var LatLng = place.latLng.toString().substring(9)
                 LatLng = LatLng.replace("[()]".toRegex(), "")
-                val LatLngArray = LatLng.split(",".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                val LatLngArray = LatLng.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 intent.putExtra("LatLngX", LatLngArray[0])
                 intent.putExtra("LatLngY", LatLngArray[1])
                 intent.putExtra("NAME", place.name)

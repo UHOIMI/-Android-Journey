@@ -1,10 +1,8 @@
 package com.example.g015c1140.journey
 
-//import io.realm.kotlin.createObject
 import android.Manifest
 import android.content.ContentUris
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -15,7 +13,6 @@ import android.location.Location
 import android.location.LocationManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -47,50 +44,35 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_put_spot.*
-import org.json.JSONArray
-import org.json.JSONException
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 import java.util.*
-
 
 class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private val m_uri: Uri? = null
     private var tappedImageNum: Int = 0
 
-    //data class spotData(val name : String, val latitude : Double, val longitude : Double)
-    //val spotList: MutableList<SpotData> = mutableListOf()
-    val spotList = arrayListOf<SpotData>()
-    var spotNameTextView: EditText? = null
-    var commentTextView: EditText? = null
-    lateinit var spotImageView1: ImageView
-    lateinit var spotImageView2: ImageView
-    lateinit var spotImageView3: ImageView
-    var longitude: Double = 0.0
-    var latitude: Double = 0.0
-    var image_A: String = ""
-    var image_B: String = ""
-    var image_C: String = ""
+    private val spotList = arrayListOf<SpotData>()
+    private var spotNameTextView: EditText? = null
+    private var commentTextView: EditText? = null
+    private lateinit var spotImageView1: ImageView
+    private lateinit var spotImageView2: ImageView
+    private lateinit var spotImageView3: ImageView
+    private var longitude: Double = 0.0
+    private var latitude: Double = 0.0
+    private var image_A: String = ""
+    private var image_B: String = ""
+    private var image_C: String = ""
 
-    var imageIntent = intent
+    private var imageIntent = intent
     private lateinit var mRealm: Realm
-    var editFlag: Boolean = false
+    private var editFlag: Boolean = false
 
-//    val df = SimpleDateFormat("yyyyMMddHHmmssSSS")
-    var errorMessage = ""
+    private var errorMessage = ""
 
-    val RESULT_SUBACTIVITY = 1000
-    var JsonArray = JSONArray()
-
-    lateinit private var spot: SpotData
+    private lateinit var spot: SpotData
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 111
@@ -100,7 +82,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("test", "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_put_spot)
 
@@ -120,8 +101,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         putSpotNavigation.selectedItemId = myApp.getBnp()
         putSpotNavigation.setOnNavigationItemSelectedListener(ON_NAVIGATION_ITEM_SELECTED_LISTENER)
 
-        spotNameTextView = findViewById(R.id.nameText) as EditText
-        commentTextView = findViewById(R.id.commentEditText) as EditText
+        spotNameTextView = findViewById(R.id.nameText)
+        commentTextView = findViewById(R.id.commentEditText)
 
         val saveButton = findViewById<Button>(R.id.saveButton)
         saveButton.setOnClickListener {
@@ -149,15 +130,10 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
 
         Realm.init(this)
-        //val config = RealmConfiguration.Builder().build()
-        //Realm.setDefaultConfiguration(config)
         val realmConfig = RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build()
         mRealm = Realm.getInstance(realmConfig)
-        //mRealm = Realm.getDefaultInstance()
-
-        //val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
 
         if (intent.getSerializableExtra("SPOT") != null) {
             editFlag = true
@@ -165,17 +141,17 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             spot = intent.getSerializableExtra("SPOT") as SpotData
             spotNameTextView!!.setText(spot.title)
             commentTextView!!.setText(spot.comment)
-            if (!spot.image_A.equals("")) {
+            if (spot.image_A != "") {
                 image_A = spot.image_A
                 val bmImg = BitmapFactory.decodeFile(spot.image_A)
                 spotImageView1.setImageBitmap(bmImg)
             }
-            if (!spot.image_B.equals("")) {
+            if (spot.image_B != "") {
                 image_B = spot.image_B
                 val bmImg = BitmapFactory.decodeFile(spot.image_B)
                 spotImageView2.setImageBitmap(bmImg)
             }
-            if (!spot.image_C.equals("")) {
+            if (spot.image_C != "") {
                 image_C = spot.image_C
                 val bmImg = BitmapFactory.decodeFile(spot.image_C)
                 spotImageView3.setImageBitmap(bmImg)
@@ -185,34 +161,11 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         val mapFragment = fragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
         mapFragment.getMapAsync(this)
 
-        //val mapFragment2 = getSupportFragmentManager().findFragmentById(R.id.mapFragment) as SupportMapFragment
-        //mMap = mapFragment2.getMapAsync(this)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (intent.getSerializableExtra("SPOT") == null) {
-            PinButtonTapped()
-            /*spot = intent.getSerializableExtra("SPOT") as SpotData
-            if (!spot.image_A.equals("")){
-                val bmImg = BitmapFactory.decodeFile(spot.image_A)
-                spotImageView1.setImageBitmap(bmImg)
-            }
-            if (!spot.image_B.equals("")){
-                val bmImg = BitmapFactory.decodeFile(spot.image_B)
-                spotImageView2.setImageBitmap(bmImg)
-            }
-            if (!spot.image_C.equals("")){
-                val bmImg = BitmapFactory.decodeFile(spot.image_C)
-                spotImageView3.setImageBitmap(bmImg)
-            }
-            Log.d("editFlag","エディットフラグ")*/
-            //editFlag = true
-            //placeMarkerOnMap(LatLng(spot.latitude, spot.longitude))
-        } else {
-            //PinButtonTapped()
+            pinButtonTapped()
         }
-
-        //PinButtonTapped()
     }
 
     //ToolBarのボタン処理
@@ -257,8 +210,8 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     // マーカーをタップすると呼び出される
     override fun onMarkerClick(p0: Marker?) = false
 
-    fun PinButtonTapped() {
-        var lm = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun pinButtonTapped() {
+        val lm = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         if (!gpsEnabled) {
@@ -280,25 +233,14 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.d("ttttttttttttttttttttttt", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
 
-        if (editFlag == false) {
+        if (!editFlag) {
             //　位置情報権限確認
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 //　権限がない場合
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
 
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-//
-//                } else {
-//                    val toast = Toast.makeText(this, "許可されないとアプリが実行できません", Toast.LENGTH_SHORT)
-//                    toast.show()
-//
-//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-//
-//                }
                 mMap = googleMap
                 return
             }
@@ -315,7 +257,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     }
 
-    fun storagePermissionCheck(num: Int) {
+    private fun storagePermissionCheck(num: Int) {
         tappedImageNum = num
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -331,14 +273,12 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
         // 自分のコード以外がrequestPermissionsしているかもしれないので、requestCodeをチェックします。
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
 
             if (grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
                 // リクエストを蹴られた場合はどうしましょ？　今回は、単純にActivityを終了させます。
-                Log.d("check", "許可しない")
                 finish()
                 return
             } else {
@@ -363,7 +303,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RESULT_PICK_IMAGEFILE) {
 
@@ -372,24 +312,17 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 return
             }
 
-            var resultUri: Uri? = if (data != null) data.getData() else m_uri
-
-            if (resultUri == null) {
-                // 取得失敗
-                return
-            }
+            val resultUri: Uri = data.data
+                    ?: // 取得失敗
+                    return
 
             // ギャラリーへスキャンを促す
             MediaScannerConnection.scanFile(
                     this,
-                    arrayOf(resultUri.getPath()),
+                    arrayOf(resultUri.path),
                     arrayOf("image/jpeg"),
                     null
             )
-
-            Log.d("URI", resultUri.toString())
-            Log.d("URI2", resultUri.getPath())
-            Log.d("URI3", getPathFromUri(this, resultUri))
 
             when (tappedImageNum) {
                 1 -> {
@@ -409,43 +342,32 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         }
     }
 
-    fun onClickImage() {
+    private fun onClickImage() {
         // イメージ画像がクリックされたときに実行される処理
-        startActivityForResult(imageIntent, RESULT_PICK_IMAGEFILE);
+        startActivityForResult(imageIntent, RESULT_PICK_IMAGEFILE)
     }
 
     private fun setUpMap() {
-        Log.d("test", "setUpMap")
 
         //　位置情報権限確認
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             //　権限がない場合
-            //////ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            //ActivityCompat.requestPermissions()
             return
         }
-
-        Log.d("test", "setUpMapの２")
 
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             //最後に既知の場所を取得します。 まれな状況では、これはヌルになる可能性があります。
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                latitude = location.latitude.toDouble()
-                Log.d("座ひょー", location.latitude.toString())
-                Log.d("座ひょー2", location.latitude.toLong().toString())
-                longitude = location.longitude.toDouble()
+                latitude = location.latitude
+                longitude = location.longitude
 
-                spotList.add(SpotData("tokenID", spotNameTextView!!.getText().toString(), location.latitude, location.longitude, "", "", "", "", Date()))
-
-                Log.d("テスト", spotList.get(0).title)
+                spotList.add(SpotData("tokenID", spotNameTextView!!.text.toString(), location.latitude, location.longitude, "", "", "", "", Date()))
 
                 placeMarkerOnMap(currentLatLng)
 
-            } else {
-                Log.d("ヌルチェッカー", "null")
             }
         }
     }
@@ -453,7 +375,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
     //　現在位置にマーカー設置
     private fun placeMarkerOnMap(location: LatLng) {
 
-        Log.d("test", "place marker")
         mMap.clear()
 
         //　マーカー作成
@@ -461,15 +382,13 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
         //　文字列設定
         val titleStr = getAddress(location)
-        Log.d("test", "アドレス")
-        Log.d("test", titleStr)
 
         markerOptions.title(titleStr)
 
         //　マーカー設置
         mMap.addMarker(markerOptions)
 
-        var cameraPosition: CameraPosition = CameraPosition.Builder()
+        val cameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(location)
                 .zoom(15f)
                 .build()
@@ -478,8 +397,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
 
     //　住所表示
     private fun getAddress(latLng: LatLng): String {
-
-        Log.d("test", "getAddress")
 
         val geocoder = Geocoder(this)
         val addresses: List<Address>?
@@ -497,13 +414,12 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             }
         } catch (e: IOException) {
             Log.d("test", "アドレスエラー")
-            Log.e("MapsActivity", e.localizedMessage)
         }
 
         return addressText
     }
 
-    fun saveSpot() {
+    private fun saveSpot() {
         if (spotNameTextView!!.text.count() <= 0) {
             errorMessage = "スポット名を入力してください。\n"
         } else if (spotNameTextView!!.text.count() > 20) {
@@ -514,20 +430,19 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             errorMessage += "スポット説明の文字数が140文字を超えています。\n"
         }
 
-        if (!errorMessage.equals("")) {
+        if (errorMessage != "") {
             AlertDialog.Builder(this).apply {
                 setTitle("エラー")
                 setMessage(errorMessage)
-                setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                setPositiveButton("OK") { _, _ ->
                     // OKをタップしたときの処理
                     errorMessage = ""
-                })
+                }
                 show()
             }
             saveButton.isClickable = true
         } else {
             createSpot(spotNameTextView!!.text.toString(), latitude, longitude, commentTextView!!.text.toString(), image_A, image_B, image_C)
-            //print(mRealm.where(RealmSpotData::class.java).findAll())
 
             if (editFlag){
                 setResult(RESULT_OK, Intent().putExtra("SPOT", spot))
@@ -538,7 +453,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         }
     }
 
-    fun createSpot(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
+    private fun createSpot(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
 
         if (!editFlag) {
             create(name, latitude, longitude, comment, image_A, image_B, image_C)
@@ -563,49 +478,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
                 spot.image_C = image_C
             }
         }
-
-        Log.d("Realm", mRealm.where(TestRea::class.java).findAll().toString())
-
-        /*mRealm!!.beginTransaction()
-
-        var RspotData = mRealm!!.createObject(RealmSpotData::class.java)
-        //var RspotData = RealmSpotData()
-        RspotData.id = 73824902
-        RspotData.name = name
-        RspotData.latitude = latitude
-        RspotData.longitude = longitude
-        RspotData.comment = ""
-        RspotData.datetime = Date()
-        RspotData.image_A = image_A
-        RspotData.image_B = image_B
-        RspotData.image_C = image_C
-        //mRealm!!.insert(RspotData)
-        mRealm!!.copyToRealm(RspotData)
-
-        mRealm!!.commitTransaction()
-
-
-        mRealm!!.executeTransaction {
-            //var RspotData = mRealm!!.createObject(RealmSpotData::class.java)
-            //var RspotData = RealmSpotData(df.format(Date()).toInt(),name,latitude,longitude,"",Date(),"","","")
-            //var RspotData = RealmSpotData(783927482,"",0.0,0.0,"",Date(),"","","")
-            var RspotData = mRealm!!.createObject(TestRea::class.java)
-            //var RspotData = RealmSpotData()
-            RspotData.id = 73824902
-            RspotData.name = name
-            RspotData.latitude = latitude
-            RspotData.longitude = longitude
-            RspotData.comment = ""
-            RspotData.datetime = Date()
-            RspotData.image_A = image_A
-            RspotData.image_B = image_B
-            RspotData.image_C = image_C
-            //mRealm!!.insert(RspotData)
-            mRealm!!.copyToRealm(RspotData)
-            //mRealm!!.insert(RealmSpotData(1,"first",1,1,"",Date(),"","",""))
-        }
-        print( mRealm!!.where(RealmSpotData::class.java).findAll())
-        Log.d("Realm", mRealm!!.where(RealmSpotData::class.java).findAll().toString())*/
     }
 
     override fun onDestroy() {
@@ -613,69 +485,63 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         mRealm.close()
     }
 
-    fun getPathFromUri(context: Context, uri: Uri): String {
-        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+    private fun getPathFromUri(context: Context, uri: Uri): String {
+        val isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        Log.e("TAG", "uri:" + uri.getAuthority());
         if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            if ("com.android.externalstorage.documents".equals(
-                            uri.getAuthority())) {// ExternalStorageProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                //if ("primary".equalsIgnoreCase(type)) {
-                if ("primary".equals(type)) {
-                    return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                } else {
-                    return "/stroage/" + type + "/" + split[1]
+            when {
+                "com.android.externalstorage.documents" == uri.authority -> {// ExternalStorageProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val type: String = split[0]
+                    //if ("primary".equalsIgnoreCase(type)) {
+                    return if ("primary" == type) {
+                        Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                    } else {
+                        "/stroage/" + type + "/" + split[1]
+                    }
                 }
-            } else if ("com.android.providers.downloads.documents".equals(
-                            uri.getAuthority())) {// DownloadsProvider
-                var id: String = DocumentsContract.getDocumentId(uri)
-                var contentUri: Uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), id.toLong())
-                return getDataColumn(context, contentUri, null, null)
-            } else if ("com.android.providers.media.documents".equals(
-                            uri.getAuthority())) {// MediaProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                var contentUri: Uri? = null
-                contentUri = MediaStore.Files.getContentUri("external")
-                var selection: String = "_id=?"
-                /*var selectionArgs = {
-                        split[1]
-                }*/
-                var selectionArgs = arrayOf(split[1])
-                return getDataColumn(context, contentUri, selection, *selectionArgs)
+                "com.android.providers.downloads.documents" == uri.authority -> {// DownloadsProvider
+                    val id: String = DocumentsContract.getDocumentId(uri)
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), id.toLong())
+                    return getDataColumn(context, contentUri, null, null)
+                }
+                "com.android.providers.media.documents" == uri.authority -> {// MediaProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val contentUri: Uri? = MediaStore.Files.getContentUri("external")
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+                    return getDataColumn(context, contentUri!!, selection, *selectionArgs)
+                }
             }
-        } else if ("content".equals(uri.getScheme())) {//MediaStore
+        } else if ("content" == uri.scheme) {//MediaStore
             return getDataColumn(context, uri, null, null)
-        } else if ("file".equals(uri.getScheme())) {// File
-            return uri.getPath()
+        } else if ("file" == uri.scheme) {// File
+            return uri.path
         }
         return ""
     }
 
-    fun getDataColumn(context: Context, uri: Uri, selection: String?,
-                      vararg selectionArgs: String?/*[]*/): String {
+    private fun getDataColumn(context: Context, uri: Uri, selection: String?,
+                              vararg selectionArgs: String?/*[]*/): String {
         var cursor: Cursor? = null
-        var projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         try {
-            cursor = context.getContentResolver().query(
-                    uri, projection, selection, selectionArgs, null);
+            cursor = context.contentResolver.query(
+                    uri, projection, selection, selectionArgs, null)
             if (cursor != null && cursor.moveToFirst()) {
-                var cindex: Int = cursor.getColumnIndexOrThrow(projection[0]);
-                return cursor.getString(cindex);
+                val cindex: Int = cursor.getColumnIndexOrThrow(projection[0])
+                return cursor.getString(cindex)
             }
         } finally {
-            if (cursor != null)
-                cursor.close()
+            cursor?.close()
         }
         return ""
     }
 
-    fun create(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
+    private fun create(name: String, latitude: Double, longitude: Double, comment: String, image_A: String, image_B: String, image_C: String) {
         mRealm.executeTransaction {
             val trea = mRealm.createObject(TestRea::class.java, UUID.randomUUID().toString())
             trea.name = name
@@ -691,55 +557,6 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
         val reDa = mRealm.where(TestRea::class.java).findAllSorted("datetime", Sort.DESCENDING).first()
         if (reDa != null) {
             spot = SpotData(reDa.id, reDa.name, reDa.latitude, reDa.longitude, reDa.comment, reDa.image_A, reDa.image_B, reDa.image_C, reDa.datetime)
-        }
-    }
-
-    inner class GetAllMemoTask : AsyncTask<String, String, String>() {
-
-        override fun doInBackground(vararg params: String?): String? {
-            var connection: HttpURLConnection? = null
-            var reader: BufferedReader? = null
-
-            try {
-                val url = URL("http://172.16.89.158:3000/api/v1/spot/find?user_id=1")
-                connection = url.openConnection() as HttpURLConnection
-                connection.connect()
-
-                val br = BufferedReader(InputStreamReader(connection.inputStream))
-                val sb = StringBuilder()
-                for (line in br.readLines()) {
-                    line.run { sb.append(line) }
-                }
-
-                val titleArrayList = ArrayList<String>()
-
-                try {
-                    JsonArray = JSONArray(sb.toString())
-                    for (i in 0 until JsonArray.length()) {
-                        println("array.getJSONObject(i):${JsonArray.getJSONObject(i)}")
-                        titleArrayList.add(JsonArray.getJSONObject(i).getString("title"))
-                    }
-                } catch (e: JSONException) {
-                    println("error")
-                }
-                br.close()
-                return titleArrayList.toString()
-
-            } catch (e: MalformedURLException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            } finally {
-                connection?.disconnect()
-                try {
-                    reader?.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-            return null
         }
     }
 }

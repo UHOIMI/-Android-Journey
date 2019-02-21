@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -43,12 +42,12 @@ class GetUserIdAsyncTask : AsyncTask<String, String, String>() {
                 val jsonObject = JSONObject(sb.toString())
                 val jsonArray = jsonObject.getJSONArray("record")
 
-                Log.d("test GUIAT", "${jsonArray.length()}             ${sb.length}")
                 for (i in 0 until jsonArray.length()) {
-                    Log.d("test", "array.getJSONObject(i): ${jsonArray.getJSONObject(i)}")
                     userIdList.add(jsonArray.getJSONObject(i).getString("user_id"))
                 }
+
                 result = userIdList.toString()
+
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -73,13 +72,11 @@ class GetUserIdAsyncTask : AsyncTask<String, String, String>() {
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetUserIdTask", "return null")
             callbackGetUserIdAsyncTask!!.callback(arrayListOf("RESULT-NG"))
             return
         }
 
         val resultJSONArray = JSONArray(result)
-        Log.d("test GetUserIdTask", "result：$result")
 
         val userIdList = arrayListOf("RESULT-OK")
         for (_jsonCnt in 0 until resultJSONArray.length()) {

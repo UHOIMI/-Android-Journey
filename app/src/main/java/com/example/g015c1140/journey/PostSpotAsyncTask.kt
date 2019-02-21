@@ -2,7 +2,6 @@ package com.example.g015c1140.journey
 
 import android.annotation.SuppressLint
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -66,7 +65,6 @@ class PostSpotAsyncTask(ui:String, t: String, pi: String) : AsyncTask<MutableLis
                             ).toByteArray()
                     )
                     out.flush()
-                    Log.d("test", "flush")
 
                     val `is` = connection!!.inputStream
                     val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
@@ -108,16 +106,13 @@ class PostSpotAsyncTask(ui:String, t: String, pi: String) : AsyncTask<MutableLis
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        Log.d("test PostSpot", "onPostEx: $result")
         when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
                 callbackPostSpotAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
             else -> {
-                Log.d("test PostSpot", "HTTP-NG")
                 callbackPostSpotAsyncTask!!.callback("RESULT-NG")
                 return
             }

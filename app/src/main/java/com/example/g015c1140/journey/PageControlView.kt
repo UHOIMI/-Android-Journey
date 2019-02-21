@@ -29,19 +29,17 @@ class PageControlView : LinearLayout {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val position = layoutManager.findLastVisibleItemPosition()
-                val scrollItemCount = layoutManager.itemCount
+                layoutManager.itemCount
 
-                if (scrollItemCount != null){
-                    for (i in 0 until itemCount) {
-                        imageViews[i].setImageResource(R.drawable.shape_page_control_default)
-                    }
-                    imageViews[position].setImageResource(R.drawable.shape_page_control_selected)
+                for (i in 0 until itemCount) {
+                    imageViews[i].setImageResource(R.drawable.shape_page_control_default)
                 }
+                imageViews[position].setImageResource(R.drawable.shape_page_control_selected)
             }
         })
     }
 
-    fun createPageControl (itemCount : Int) {
+    private fun createPageControl (itemCount : Int) {
 
         for (i in 0 until itemCount){
             imageViews.add(ImageView(context))

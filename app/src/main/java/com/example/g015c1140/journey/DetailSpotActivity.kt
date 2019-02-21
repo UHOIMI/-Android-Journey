@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -64,7 +63,6 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (anotherSpotFlg) {
             //スポット一覧からの遷移以外
-            /***********/
             val gsat = GetSpotAsyncTask(intent.getStringExtra("ANOTHER-SPOT-ID"), false)
             gsat.setOnCallback(object : GetSpotAsyncTask.CallbackGetSpotAsyncTask() {
                 override fun callback(resultSpotJsonList: ArrayList<JSONObject>?, resultIdFlg: Boolean) {
@@ -82,13 +80,11 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
                                 spotJson.getString("spot_image_c")
                         )
 
-                        /****************/
                         val giat = GetImageAsyncTask()
                         giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                             override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                                 super.callback(resultBmpString, resultBmpList)
                                 if (resultBmpString == "RESULT-OK") {
-                                    /****************/
 
                                     spot = SpotData(
                                             spotJson.getString("spot_id"),
@@ -107,7 +103,6 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
                                     mapFragment.getMapAsync(this@DetailSpotActivity)
 
                                     spotNameTextView.text = spot.title
-                                    Log.d("test", "com ${spot.comment}")
                                     commentTextView.text = spot.comment
 
 
@@ -136,14 +131,12 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         })
                         giat.execute(arrayListOf(bmp))
-                        /****************/
                     } else {
                         failedAsyncTask()
                     }
                 }
             })
             gsat.execute()
-            /***********/
 
         } else {
             //スポット一覧からの遷移
@@ -154,7 +147,6 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
             mapFragment.getMapAsync(this)
 
             spotNameTextView.text = spot.title
-            Log.d("test", "com ${spot.comment}")
             commentTextView.text = spot.comment
 
             storagePermissionCheck()
@@ -175,7 +167,6 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        Log.d("vvvvvvvvvvvvvvvvvvvvvv", "あああああああああああああああいいいいいいいいいいいいいいいいいいいいいい")
         // 自分のコード以外がrequestPermissionsしているかもしれないので、requestCodeをチェックします。
         if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -258,7 +249,6 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
             mapFragment.getMapAsync(this)
 
             spotNameTextView.text = spot.title
-            Log.d("test", "com ${spot.comment}")
             commentTextView.text = spot.comment
 
             storagePermissionCheck()

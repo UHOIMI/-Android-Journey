@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import java.io.*
 import java.net.HttpURLConnection
@@ -20,7 +19,7 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
             val lineEnd = "\r\n"
             val twoHyphens = "--"
             val boundary = "wwwwwwwboundarywwwwwww"
-            var postResult = ""
+            var postResult: String
             var httpResult = ""
             val url = URL(Setting().SERVER_IMAGE_POST_URL)
 
@@ -51,15 +50,12 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
                     flush()
 
                     val fis = FileInputStream(file)
-                    Log.d("test", file.name)
                     val buffer = ByteArray(4096)
-                    var bytesRead = -1
+                    var bytesRead: Int
                     while (true) {
                         bytesRead = fis.read(buffer)
                         if (bytesRead != -1) {
                             write(buffer, 0, bytesRead)
-                            Log.d("test", buffer.toString())
-                            Log.d("test", bytesRead.toString())
                         } else {
                             break
                         }
@@ -110,23 +106,19 @@ class PostUserIconAsyncTask : AsyncTask<String, Void, String>() {
 
     public override fun onPostExecute(result: String) {
         super.onPostExecute(result)
-        Log.d("test PostImage", result)
 
         when (result) {
             "HTTP-OK:IMAGE送信OK" -> {
-                Log.d("test PostImage", "HTTP-OK")
                 callbackPostUserIconAsyncTask!!.callback("RESULT-OK", imageUrl)
                 return
             }
 
             "NO-IMAGE" -> {
-                Log.d("test PostImage", "NO-IMAGE")
                 callbackPostUserIconAsyncTask!!.callback("NO-IMAGE", "")
                 return
             }
 
             else -> {
-                Log.d("test PostImage", "HTTP-NG")
                 callbackPostUserIconAsyncTask!!.callback("RESULT-NG", "")
                 return
             }

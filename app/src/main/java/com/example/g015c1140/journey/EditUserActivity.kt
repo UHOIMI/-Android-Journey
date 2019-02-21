@@ -30,11 +30,11 @@ import java.io.IOException
 class EditUserActivity : AppCompatActivity() {
 
     var sharedPreferences: SharedPreferences? = null
-    var imageFlg = 0
-    var headerFlg = 0
-    var iconFlg = 0
+    private var imageFlg = 0
+    private var headerFlg = 0
+    private var iconFlg = 0
 
-    val IMAGE_EDIT = 200
+    private val IMAGE_EDIT = 200
 
     companion object {
         private const val RESULT_PICK_IMAGEFILE = 1001
@@ -65,7 +65,6 @@ class EditUserActivity : AppCompatActivity() {
 
         headerFlg = intent.getIntExtra("headerFlg", -1)
         if (headerFlg == 100) {
-            val myApp: MyApplication = this.application as MyApplication
             val bmp = myApp.getBmp_1()
             myApp.clearBmp_1()
             editUserHeaderImageButton.setImageBitmap(bmp)
@@ -73,7 +72,6 @@ class EditUserActivity : AppCompatActivity() {
 
         iconFlg = intent.getIntExtra("iconFlg", -1)
         if (iconFlg == 100) {
-            val myApp: MyApplication = this.application as MyApplication
             val bmp = myApp.getBmp_2()
             myApp.clearBmp_2()
             editUserIconImageView.setImageBitmap(bmp)
@@ -278,7 +276,7 @@ class EditUserActivity : AppCompatActivity() {
         editUserSaveButton.isClickable = false
         //APIにPOST
         var result = ""
-        var generation = ""
+        val generation: String
         if (editUserNameEditText.text.toString().trim().isEmpty()) {
             result += "ユーザー名を入力してください\n"
         }
@@ -459,38 +457,37 @@ class EditUserActivity : AppCompatActivity() {
     }
 
     private fun getPathFromUri(context: Context, uri: Uri): String {
-        var isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        val isAfterKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        Log.e("TAG", "uri:" + uri.authority);
+        Log.e("TAG", "uri:" + uri.authority)
         if (isAfterKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            if ("com.android.externalstorage.documents" == uri.authority) {// ExternalStorageProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                //if ("primary".equalsIgnoreCase(type)) {
-                return if ("primary" == type) {
-                    Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                } else {
-                    "/stroage/" + type + "/" + split[1]
+            when {
+                "com.android.externalstorage.documents" == uri.authority -> {// ExternalStorageProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val type: String = split[0]
+                    //if ("primary".equalsIgnoreCase(type)) {
+                    return if ("primary" == type) {
+                        Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                    } else {
+                        "/stroage/" + type + "/" + split[1]
+                    }
                 }
-            } else if ("com.android.providers.downloads.documents" == uri.authority) {// DownloadsProvider
-                var id: String = DocumentsContract.getDocumentId(uri)
-                var contentUri: Uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), id.toLong()
-                )
-                return getDataColumn(context, contentUri, null, null)
-            } else if ("com.android.providers.media.documents" == uri.authority) {// MediaProvider
-                var docId: String = DocumentsContract.getDocumentId(uri)
-                var split = docId.split(":")
-                var type: String = split[0]
-                var contentUri: Uri? = null
-                contentUri = MediaStore.Files.getContentUri("external")
-                var selection = "_id=?"
-                /*var selectionArgs = {
-                        split[1]
-                }*/
-                var selectionArgs = arrayOf(split[1])
-                return getDataColumn(context, contentUri, selection, *selectionArgs)
+                "com.android.providers.downloads.documents" == uri.authority -> {// DownloadsProvider
+                    val id: String = DocumentsContract.getDocumentId(uri)
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), id.toLong()
+                    )
+                    return getDataColumn(context, contentUri, null, null)
+                }
+                "com.android.providers.media.documents" == uri.authority -> {// MediaProvider
+                    val docId: String = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":")
+                    val contentUri: Uri? = MediaStore.Files.getContentUri("external")
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+                    return getDataColumn(context, contentUri!!, selection, *selectionArgs)
+                }
             }
         } else if ("content" == uri.scheme) {//MediaStore
             return getDataColumn(context, uri, null, null)

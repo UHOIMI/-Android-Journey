@@ -3,7 +3,6 @@ package com.example.g015c1140.journey
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
-import android.util.Log
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -23,12 +22,10 @@ class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayLis
         super.onPostExecute(resultBmpList)
 
         if (resultBmpList == null) {
-            Log.d("test GetUserIdTask", "return null")
             callbackGetImageAsyncTask!!.callback("RESULT-NG",null)
             return
         }
 
-        Log.d("test GetImage", "onPostEx: $resultBmpList")
         callbackGetImageAsyncTask!!.callback("RESULT-OK",resultBmpList)
         return
     }
@@ -37,7 +34,7 @@ class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayLis
     private fun downloadImage(imageNameList: ArrayList<ArrayList<String>>): ArrayList<ArrayList<Bitmap?>> {
         val bmpList = arrayListOf<ArrayList<Bitmap?>>()
         var nameList:ArrayList<Bitmap?>
-        var bmp:Bitmap? = null
+        var bmp: Bitmap?
         var urlConnection: HttpURLConnection? = null
 
         imageNameList.forEach { name ->
@@ -88,7 +85,6 @@ class GetImageAsyncTask : AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayLis
                             }
                         }
                     } catch (e: Exception) {
-                        Log.d("test", "GetImage error")
                         e.printStackTrace()
                     } finally {
                         urlConnection?.disconnect()

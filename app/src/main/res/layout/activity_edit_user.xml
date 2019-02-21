@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -97,7 +96,8 @@
                         android:hint="ユーザー名"
                         android:inputType="textPersonName"
                         android:maxLength="20"
-                        android:padding="8dp" />
+                        android:padding="8dp"
+                        tools:ignore="Autofill" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -195,7 +195,8 @@
                         android:onClick="cancelButtonTapped"
                         android:text="キャンセル"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="ButtonStyle" />
 
                     <Button
                         android:id="@+id/editUserSaveButton"
@@ -207,7 +208,9 @@
                         android:onClick="saveButtonTapped"
                         android:text="保存"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="ButtonStyle" />
+
                 </LinearLayout>
 
                 <TextView

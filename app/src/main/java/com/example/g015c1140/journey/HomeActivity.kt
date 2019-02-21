@@ -19,8 +19,6 @@ import org.json.JSONArray
 import java.text.SimpleDateFormat
 
 
-
-
 class HomeActivity : AppCompatActivity() {
 
     private val LAYOUT_MANAGER = arrayListOf<LinearLayoutManager>()
@@ -203,13 +201,11 @@ class HomeActivity : AppCompatActivity() {
                     resultFavoriteArrayList.removeAt(resultFavoriteArrayList.size - 1)
                     //完了
 
-                    /****************/
                     //画像
                     val giat = GetImageAsyncTask()
                     giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                         override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                             if (resultBmpString == "RESULT-OK") {
-                                /****************/
 
                                 var timelinePlanData: TimelinePlanData
                                 for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
@@ -241,14 +237,11 @@ class HomeActivity : AppCompatActivity() {
                                     timelinePlanData.planFavorite = resultFavoriteArrayList[_timelineCnt]
                                     timelinePlanData.userId = timelineData.getString("user_id")
 
-                                    /****/
                                     when (listFlg) {
                                         1 -> NEW_PLAN_LIST.add(timelinePlanData)
                                         2 -> GENERATION_PLAN_LIST.add(timelinePlanData)
                                     }
-                                    /***/
                                 }
-                                /****/
                                 when (listFlg) {
                                     1 -> {
                                         newPlanRecyclerViewAdapter.notifyDataSetChanged()
@@ -261,7 +254,6 @@ class HomeActivity : AppCompatActivity() {
                                     }
 
                                 }
-                                /***/
                             } else {
                                 failedAsyncTask()
                                 return

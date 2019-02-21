@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import io.realm.RealmObject
-import java.io.Serializable
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
 import java.util.*

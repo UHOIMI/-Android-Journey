@@ -7,8 +7,9 @@
     android:background="@drawable/round_corners"
     android:orientation="vertical"
     android:paddingTop="8dp"
-    android:paddingRight="8dp"
-    android:paddingBottom="8dp">
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp"
+    tools:ignore="RtlSymmetry">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +25,8 @@
             android:background="#00000000"
             android:clickable="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/no_image"/>
+            android:src="@drawable/no_image"
+            tools:ignore="KeyboardInaccessibleWidget" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,8 +37,7 @@
                 android:id="@+id/planUserNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="ああああああああああああああああああああ"
+                android:layout_marginStart="8dp"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -44,11 +45,10 @@
                 android:id="@+id/planTitleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="１２３４５６７８９０１２３４５６７８９０"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -74,7 +74,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -87,8 +87,8 @@
                 android:ellipsize="end"
                 android:maxWidth="100dp"
                 android:maxLines="1"
-                android:text="TextView"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:ignore="NestedWeights" />
 
             <TextView
                 android:id="@+id/planSpotName2TextView"
@@ -99,7 +99,6 @@
                 android:ellipsize="end"
                 android:maxWidth="100dp"
                 android:maxLines="1"
-                android:text="TextView"
                 android:textSize="14sp" />
 
             <TextView
@@ -111,15 +110,14 @@
                 android:ellipsize="end"
                 android:maxWidth="100dp"
                 android:maxLines="1"
-                android:text="TextView"
                 android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_marginLeft="8dp"
+            android:layout_gravity="end"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -128,10 +126,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="〇月〇日"
                 android:textAlignment="textEnd"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="NestedWeights" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -154,7 +152,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="1000"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
                     android:textStyle="bold" />

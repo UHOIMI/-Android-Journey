@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -87,13 +86,11 @@ class DeleteSpotAsyncTask(pId: String, t: String) : AsyncTask<Void, String, Stri
 
         when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
                 callbackDeleteSpotAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
             else -> {
-                Log.d("test PostSpot", "HTTP-NG")
                 callbackDeleteSpotAsyncTask!!.callback("RESULT-NG")
                 return
             }

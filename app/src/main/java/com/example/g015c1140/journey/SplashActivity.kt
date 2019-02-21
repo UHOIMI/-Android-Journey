@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
 
 class SplashActivity : AppCompatActivity() {
@@ -31,7 +30,6 @@ class SplashActivity : AppCompatActivity() {
                     override fun callback(result: String, token: String) {
                         super.callback(result,token)
                         // ここからAsyncTask処理後の処理を記述します。
-                        Log.d("test LoginCallback", "非同期処理$result")
                         if (result == "RESULT-OK") {
                             //完了した関数呼び出し
                             val sharedPrefEditor = sharedPreferences.edit()
@@ -56,10 +54,7 @@ class SplashActivity : AppCompatActivity() {
                     }
                 })
                 plat.execute( arrayListOf( sharedPreferences.getString(Setting().USER_SHARED_PREF_ID,"none"),sharedPreferences.getString(Setting().USER_SHARED_PREF_PASSWORD,"none") ) )
-                /********************/
-                /********************/
             }else {
-
                 if (!isFinishing) {
                     startActivity(Intent(this@SplashActivity, IndexActivity::class.java))
                     finish()
@@ -67,7 +62,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
 
-        HANDLER.postDelayed(run,1500)// 2000ミリ秒後（2秒後）に実行
+        HANDLER.postDelayed(run,500)// 2000ミリ秒後（2秒後）に実行
     }
 
     override fun onPause() {

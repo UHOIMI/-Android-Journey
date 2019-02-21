@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -24,7 +23,6 @@ class GetPlanAsyncTask(id: String, flg: Boolean) : AsyncTask<String, String, Str
     override fun doInBackground(vararg params: String?): String? {
 
         if (ID == "") {
-            Log.d("test", "GSAT ID-Error")
             return result
         }
 
@@ -59,8 +57,6 @@ class GetPlanAsyncTask(id: String, flg: Boolean) : AsyncTask<String, String, Str
 
                 val jsonArray = jsonObject.getJSONArray("record")
 
-                Log.d("test GSAT", "${jsonArray.length()}             ${sb.length}")
-                Log.d("test", "array.getJSONObject(0): ${jsonArray.getJSONObject(0)}")
                 result = "OK"
 
                 resultJson = if (FLG) {
@@ -94,13 +90,11 @@ class GetPlanAsyncTask(id: String, flg: Boolean) : AsyncTask<String, String, Str
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetPlanTask", "return null")
             callbackGetPlanAsyncTask!!.callback(JSONObject().put("result", "RESULT-NG"))
             return
         }
 
         resultJson!!.put("result", "RESULT-OK")
-        Log.d("test GetPlanTask", "result：$result")
         callbackGetPlanAsyncTask!!.callback(resultJson!!)
     }
 

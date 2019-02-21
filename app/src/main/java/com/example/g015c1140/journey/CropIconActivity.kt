@@ -9,9 +9,6 @@ import android.view.View
 import android.widget.Button
 import com.isseiaoki.simplecropview.CropImageView
 
-
-
-
 class CropIconActivity : AppCompatActivity() {
 
     lateinit var cropImageView: CropImageView

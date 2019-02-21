@@ -11,9 +11,9 @@ import android.widget.TextView
 import java.util.*
 
 class SpotListAdapter(internal var context: Context) : BaseAdapter() {
-    internal var layoutInflater: LayoutInflater? = null
+    private var layoutInflater: LayoutInflater? = null
     internal lateinit var spotList: ArrayList<ListSpot>
-    var grayFlagList = arrayListOf<Boolean>()
+    private var grayFlagList = arrayListOf<Boolean>()
 
     init {
         this.layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -59,27 +59,21 @@ class SpotListAdapter(internal var context: Context) : BaseAdapter() {
 
         if (view == null) {
             view = layoutInflater!!.inflate(R.layout.spot_row, parent, false)
-            (view.findViewById(R.id.title) as TextView).setText(spotList[position].name)
-            (view.findViewById(R.id.datetime) as TextView).setText(spotList[position].datetime)
+            (view.findViewById(R.id.title) as TextView).text = spotList[position].name
+            (view.findViewById(R.id.datetime) as TextView).text = spotList[position].datetime
             //view.setBackgroundColor(Color.GRAY)
         } else if (obj != null) {
-            if (grayFlagList[position] == true) {
+            if (grayFlagList[position]) {
                 view.setBackgroundColor(Color.GRAY)
                 view.isEnabled = false
             } else {
                 view.setBackgroundColor(Color.WHITE)
                 view.isEnabled = true
             }
-            //val text = view.findViewById(R.id.text) as TextView
-            (view.findViewById(R.id.title) as TextView).setText(spotList[position].name)
-            (view.findViewById(R.id.datetime) as TextView).setText(spotList[position].datetime)
+            (view.findViewById(R.id.title) as TextView).text = spotList[position].name
+            (view.findViewById(R.id.datetime) as TextView).text = spotList[position].datetime
         }
 
         return view!!
     }
-
-    /*override fun isEnabled(position: Int): Boolean {
-        return !super.isEnabled(position)
-    }*/
-
 }

@@ -43,7 +43,7 @@
 
                 <com.example.g015c1140.journey.FocusEditText
                     android:id="@+id/searchTextEditText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/round_corners"
@@ -81,7 +81,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
                         android:text="交通手段"
                         android:textColor="@color/colorPrimaryText"

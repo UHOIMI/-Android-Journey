@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -83,7 +82,6 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
                     searchRecord = JSONArray()
                     return result
                 } else if (jsonObject.getString("status").toString() != "200") {
-                    Log.d("test", "Timeline error")
                     result = null
                     return result
                 }
@@ -114,7 +112,6 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetSearchTask", "return null")
             callbackGetSearchAsyncTask!!.callback("RESULT-NG", null)
             return
         }
@@ -124,7 +121,6 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
             return
         }
 
-        Log.d("test GetSearchTask", "result：$result")
         callbackGetSearchAsyncTask!!.callback("RESULT-OK", searchRecord)
     }
 

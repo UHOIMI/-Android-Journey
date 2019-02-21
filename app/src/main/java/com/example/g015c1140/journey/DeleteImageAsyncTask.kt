@@ -1,8 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
-import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -51,7 +49,6 @@ class DeleteImageAsyncTask(imgStrList: ArrayList<String>) : AsyncTask<Void, Stri
                         )
 
                         out.flush()
-                        Log.d("debug", "flush")
 
                         val `is` = connection.inputStream
                         val bReader = BufferedReader(InputStreamReader(`is`, "UTF-8"))
@@ -108,7 +105,6 @@ class DeleteImageAsyncTask(imgStrList: ArrayList<String>) : AsyncTask<Void, Stri
                     }
                 }
 
-                Log.d("test DeleteImage", "HTTP-OK")
                 callbackDeleteImageAsyncTask!!.callback("RESULT-OK")
                 return
             }
@@ -121,7 +117,6 @@ class DeleteImageAsyncTask(imgStrList: ArrayList<String>) : AsyncTask<Void, Stri
     }
 
     private fun checkFailed() {
-        Log.d("test DeleteImage", "HTTP-NG")
         callbackDeleteImageAsyncTask!!.callback("RESULT-NG")
     }
 

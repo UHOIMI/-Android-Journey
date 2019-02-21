@@ -9,7 +9,6 @@ class MyApplication : Application() {
     private var bmp_2: Bitmap? = null
     private var bnp:Int = 0
 
-
     fun setBmp_1(bmp: Bitmap) {
         this.bmp_1 = bmp
     }

@@ -1,6 +1,5 @@
 package com.example.g015c1140.journey
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,12 @@ class DetailPlanSpotListAdapter(internal var context: Context) : BaseAdapter() {
 
     private var layoutInflater: LayoutInflater? = null
     private lateinit var detailPlanSpotList: ArrayList<DetailPlanSpotData>
+
+    internal class ViewHolder {
+        var sTitle: TextView? = null
+        var sImg: ImageView? = null
+        var sComme: TextView? = null
+    }
 
     init {
         this.layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -34,13 +39,25 @@ class DetailPlanSpotListAdapter(internal var context: Context) : BaseAdapter() {
         return detailPlanSpotList[position].spotId
     }
 
-    @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var view: View? = convertView
-        view = layoutInflater!!.inflate(R.layout.detail_plan_spot_row, parent, false)
-        (view.findViewById(R.id.detailPlanSpotTitleTextView) as TextView).text = (detailPlanSpotList[position].spotTitle)
-        (view.findViewById(R.id.detailPlanSpotImageView) as ImageView).setImageBitmap( detailPlanSpotList[position].spotImage )
-        (view.findViewById(R.id.detailPlanSpotCommentTextView) as TextView).text = detailPlanSpotList[position].spotComment
-        return view!!
+
+        val (viewHolder, view) = when (convertView) {
+            null -> {
+                val view = layoutInflater!!.inflate(R.layout.detail_plan_spot_row, parent, false)
+                val viewHolder = ViewHolder()
+                viewHolder.sTitle = view.findViewById(R.id.detailPlanSpotTitleTextView)
+                viewHolder.sImg = view.findViewById(R.id.detailPlanSpotImageView)
+                viewHolder.sComme = view.findViewById(R.id.detailPlanSpotCommentTextView)
+
+                view.tag = viewHolder
+                viewHolder to view
+            }
+            else -> convertView.tag as ViewHolder to convertView
+        }
+
+        viewHolder.sTitle!!.text = detailPlanSpotList[position].spotTitle
+        viewHolder.sImg!!.setImageBitmap(detailPlanSpotList[position].spotImage)
+        viewHolder.sComme!!.text = detailPlanSpotList[position].spotComment
+        return view
     }
 }

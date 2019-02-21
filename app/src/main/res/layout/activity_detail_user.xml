@@ -72,7 +72,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_corners"
                     android:padding="4dp"
-                    android:text="ユーザ名"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -83,10 +82,10 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/round_corners"
                     android:padding="4dp"
-                    android:paddingLeft="16dp"
-                    android:text="性別"
+                    android:paddingStart="16dp"
                     android:textAlignment="textStart"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/detailUserGenerationTextView"
@@ -95,9 +94,9 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/round_corners"
                     android:padding="4dp"
-                    android:paddingLeft="16dp"
-                    android:text="年代"
-                    android:textSize="20sp" />
+                    android:paddingStart="16dp"
+                    android:textSize="20sp"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/detailUserCommentTextView"
@@ -106,9 +105,10 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/round_corners"
                     android:padding="4dp"
-                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
                     android:text="コメント"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    tools:ignore="RtlSymmetry" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -185,7 +185,7 @@
                                 android:id="@+id/detailUserLastPlanNameTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -193,7 +193,7 @@
                                 android:id="@+id/detailUserLastPlanTitleTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
                                 android:layout_marginTop="16dp"
                                 android:ellipsize="end"
                                 android:maxLines="2"
@@ -222,7 +222,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -235,8 +235,8 @@
                                 android:ellipsize="end"
                                 android:maxWidth="100dp"
                                 android:maxLines="1"
-                                android:text="TextView"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                tools:ignore="NestedWeights" />
 
                             <TextView
                                 android:id="@+id/detailUserLastPlanSpotName2TextView"
@@ -247,7 +247,6 @@
                                 android:ellipsize="end"
                                 android:maxWidth="100dp"
                                 android:maxLines="1"
-                                android:text="TextView"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -259,7 +258,6 @@
                                 android:ellipsize="end"
                                 android:maxWidth="100dp"
                                 android:maxLines="1"
-                                android:text="TextView"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
@@ -267,9 +265,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="right"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            tools:ignore="RtlHardcoded">
 
                             <TextView
                                 android:id="@+id/detailUserLastPlanTimeTextView"
@@ -278,7 +277,8 @@
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:ignore="NestedWeights" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"

@@ -6,6 +6,7 @@
     <string name="title_favorite">Favorite</string>
     <string name="title_setting">Setting</string>
     <string name="imageViewDescription">imageViewValue</string>
+    <string name="hint" />
 
     <string-array name="generationList">
         <item>年代を選択してください</item>

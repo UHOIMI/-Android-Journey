@@ -33,7 +33,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute" />
 
     <EditText
         android:id="@+id/loginpassEditText"
@@ -51,7 +52,8 @@
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginIdEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/loginIdEditText"
+        tools:ignore="UnusedAttribute" />
 
     <Button
         android:id="@+id/loginLoginButton"

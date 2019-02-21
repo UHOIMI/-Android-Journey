@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -24,7 +23,6 @@ class GetSpotAsyncTask(id: String, idFlg: Boolean) : AsyncTask<String, String, S
     override fun doInBackground(vararg params: String?): String? {
 
         if (ID == "") {
-            Log.d("test", "GSAT ID-Error")
             return result
         }
 
@@ -59,9 +57,7 @@ class GetSpotAsyncTask(id: String, idFlg: Boolean) : AsyncTask<String, String, S
 
                 val jsonArray = jsonObject.getJSONArray("record")
 
-                Log.d("test GSAT", "${jsonArray.length()}             ${sb.length}")
                 for (_spotCnt in 0 until jsonArray.length()) {
-                    Log.d("test", "array.getJSONObject(cnt): ${jsonArray.getJSONObject(_spotCnt)}")
                     RESULT_LIST.add(jsonArray.getJSONObject(_spotCnt))
                 }
                 result = "OK"
@@ -90,52 +86,12 @@ class GetSpotAsyncTask(id: String, idFlg: Boolean) : AsyncTask<String, String, S
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
         if (result == null) {
-            Log.d("test GetSpotTask", "return null")
             callbackGetSpotAsyncTask!!.callback(arrayListOf(JSONObject().put("result", "RESULT-NG")), SPOT_ID_FLG)
             return
         }
 
         RESULT_LIST.add(JSONObject().put("result", "RESULT-OK"))
-        Log.d("test GetSpotTask", "result：$result")
         callbackGetSpotAsyncTask!!.callback(RESULT_LIST, SPOT_ID_FLG)
-
-/*        if (SPOT_ID_FLG) {
-
-            if (result == null) {
-                Log.d("test GetSpotTask", "return null")
-                callbackGetSpotAsyncTask!!.callback(arrayListOf(arrayListOf(JSONObject().put("result", "RESULT-NG"))), null, SPOT_ID_FLG)
-                return
-            }
-
-            SPOT_LIST.add(arrayListOf(JSONObject().put("result", "RESULT-OK")))
-            Log.d("test GetSpotTask", "result：$result")
-            callbackGetSpotAsyncTask!!.callback(SPOT_LIST, null, SPOT_ID_FLG)
-
-        } else {
-
-            if (result == null) {
-                Log.d("test GetSpotTask", "return null")
-                callbackGetSpotAsyncTask!!.callback(null, arrayListOf("RESULT-NG"), SPOT_ID_FLG)
-                return
-            }
-
-            Log.d("test GetSpotTask", "result：$result")
-            val apiSpotIdList = arrayListOf<String>()
-            SPOT_LIST.forEach {
-                it.forEach { value ->
-                    apiSpotIdList.add(value.getString("spot_id"))
-                }
-            }
-
-            val spotIdList = arrayListOf<String>()
-            spotIdList.add("RESULT-OK")
-
-            for (backCnt in (apiSpotIdList.size - SPOT_LIST_CNT) until apiSpotIdList.size) {
-                spotIdList.add(apiSpotIdList[backCnt])
-            }
-
-            callbackGetSpotAsyncTask!!.callback(null, spotIdList, SPOT_ID_FLG)
-        }*/
     }
 
     fun setOnCallback(cb: CallbackGetSpotAsyncTask) {
@@ -145,5 +101,4 @@ class GetSpotAsyncTask(id: String, idFlg: Boolean) : AsyncTask<String, String, S
     open class CallbackGetSpotAsyncTask {
         open fun callback(resultSpotJsonList: ArrayList<JSONObject>?, resultIdFlg: Boolean) {}
     }
-
 }

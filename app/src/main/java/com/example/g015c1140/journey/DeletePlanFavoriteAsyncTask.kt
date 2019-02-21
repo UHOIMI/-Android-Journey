@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -14,7 +13,6 @@ class DeletePlanFavoriteAsyncTask(pId: String, tkn:String) : AsyncTask<Void, Str
 
     //callBack用
     private var callbackDeletePlanFavoriteAsyncTask: CallbackDeletePlanFavoriteAsyncTask? = null
-    private var result: String? = null
     private val PLAN_ID = pId
     private val TOKEN = tkn
 
@@ -87,13 +85,11 @@ class DeletePlanFavoriteAsyncTask(pId: String, tkn:String) : AsyncTask<Void, Str
 
         when (result) {
             "HTTP-OK:200" -> {
-                Log.d("test PostSpot", "HTTP-OK")
                 callbackDeletePlanFavoriteAsyncTask!!.callback("RESULT-OK")
                 return
             }
 
             else -> {
-                Log.d("test PostSpot", "HTTP-NG")
                 callbackDeletePlanFavoriteAsyncTask!!.callback("RESULT-NG")
                 return
             }

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,9 +21,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-//import sun.util.locale.provider.LocaleProviderAdapter.getAdapter
-
 class SelectSpotActivity : AppCompatActivity() {
 
     private lateinit var mRealm: Realm
@@ -34,7 +30,6 @@ class SelectSpotActivity : AppCompatActivity() {
 
     //インテントするリスト用
     private var newIntentSpotList = arrayListOf<SpotData>()
-
 
     @SuppressLint("SimpleDateFormat")
     private val DF = SimpleDateFormat("yyyy/MM/dd hh:MM")
@@ -53,16 +48,13 @@ class SelectSpotActivity : AppCompatActivity() {
     //選択した用
     private lateinit var selectSpotListView: ListView
 
-    /****************/
     private lateinit var userSpotAdapter: SpotListAdapter
     private lateinit var selectSpotAdapter: ArrayAdapter<String>
-    /******************/
 
-    /****************/
     //インテント用スポットカウント
     private var spotCnt = 0
-    /****************/
-    var nowSort = "昇順"
+
+    private var nowSort = "昇順"
 
     private val RESULT_SUBACTIVITY = 1000
 
@@ -95,9 +87,7 @@ class SelectSpotActivity : AppCompatActivity() {
         userSpotAdapter.setSpotList(realmSpotList)
         userSpotListView.adapter = userSpotAdapter
 
-        /****************/
         spotCnt = intent.getIntExtra("SPOTCNT", 100)
-        /****************/
 
         val spinner = findViewById<Spinner>(R.id.sort)
 
@@ -127,14 +117,12 @@ class SelectSpotActivity : AppCompatActivity() {
             }
         }
 
-        selectSpotListView.setOnItemLongClickListener { _, view, position, _ ->
+        selectSpotListView.setOnItemLongClickListener { _, _, position, _ ->
             AlertDialog.Builder(this).apply {
                 setTitle("スポット削除")
                 setMessage("スポット:${newSpotNameList[position]} を削除しますか？")
                 setPositiveButton("削除") { _, _ ->
                     // 削除をタップしたときの処理
-                    //spotListAdapter.remove(spotListAdapter.getItem(position))
-//                    newSpotNameList.removeAt(position)
                     if (newSpotRealmPositionList[position] != -10L) {
                         loop@for(_rlc in 0 until realmSpotList.size){
                             if (realmSpotList[_rlc].id == newSpotRealmPositionList[position]) {
@@ -179,7 +167,6 @@ class SelectSpotActivity : AppCompatActivity() {
 
             //　アイテムが選択されなかった
             override fun onNothingSelected(parent: AdapterView<*>) {
-                //
             }
         }
 
@@ -193,16 +180,13 @@ class SelectSpotActivity : AppCompatActivity() {
             }
         }
 
-        /************/
         //toolbar設定
         setSupportActionBar(toolbar)
         title = "スポット追加"
         //戻るボタンセット
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
-        /************/
 
-        /************/
         //ボトムバー設定
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
         AdjustmentBottomNavigation().disableShiftMode(navigation)
@@ -210,20 +194,15 @@ class SelectSpotActivity : AppCompatActivity() {
         val myApp = this.application as MyApplication
         navigation.selectedItemId = myApp.getBnp()
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        /****************/
-
     }
 
-    /****************/
     //toolbar設置
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_selectspot, menu)
         return true
     }
-    /****************/
 
-    /****************/
     //toolbarタップ時
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //登録ボタンタップ時
@@ -241,9 +220,7 @@ class SelectSpotActivity : AppCompatActivity() {
         }
         else -> false
     }
-    /****************/
 
-    /****************/
     //ボトムバータップ時
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -271,15 +248,10 @@ class SelectSpotActivity : AppCompatActivity() {
         false
     }
 
-    /****************/
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
         if (resultCode == Activity.RESULT_OK && requestCode == RESULT_SUBACTIVITY && null != intent) {
-            Log.d("エックス", intent.getStringExtra("LatLngX"))
-            Log.d("ワイ", intent.getStringExtra("LatLngY"))
-            Log.d("名前", intent.getStringExtra("NAME"))
 
             selectSpotAdapter.add((spotCnt + 1).toString() + "．" + intent.getStringExtra("NAME"))
             newIntentSpotList.add(SpotData("tokenID", intent.getStringExtra("NAME"), parseDouble(intent.getStringExtra("LatLngX")), parseDouble(intent.getStringExtra("LatLngY")), "", "", "", "", Date()))
@@ -300,7 +272,6 @@ class SelectSpotActivity : AppCompatActivity() {
         realmSavedSpotList.reverse()
         realmSpotNameList.reverse()
         realmSpotList.reverse()
-//        newSpotRealmPositionList.reverse()
         userSpotAdapter.reverseColor()
         userSpotAdapter.notifyDataSetChanged()
     }

@@ -14,7 +14,6 @@
         android:id="@+id/detailPlanSpotTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -41,7 +40,6 @@
             android:gravity="center_vertical"
             android:maxWidth="100dp"
             android:maxLines="2"
-            android:text="１２３４５６７８９０－９８７６５４３２１ｈｇちゅいｋｊｈｇｆちゅいｋｊｈｇfruhikjndfbguyfkcdjnhfeuikcdnjbhesurisfknjdeuhrifskcdljfresuik"
             android:textSize="18sp" />
 
     </LinearLayout>

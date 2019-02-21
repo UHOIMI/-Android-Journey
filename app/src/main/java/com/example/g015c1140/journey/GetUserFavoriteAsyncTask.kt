@@ -1,7 +1,6 @@
 package com.example.g015c1140.journey
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -21,8 +20,8 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
 
     private val USER_ID = uId
 
-    val CONVERT_JSON_ARRAY = JSONArray()
-    lateinit var convertJsonObject: JSONObject
+    private val CONVERT_JSON_ARRAY = JSONArray()
+    private lateinit var convertJsonObject: JSONObject
 
     override fun doInBackground(vararg void: Void): String? {
 
@@ -30,7 +29,6 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
         var connection: HttpURLConnection? = null
 
         if (USER_ID == "") {
-            Log.d("test", "USER_ID-Error")
             return result
         }
 
@@ -115,12 +113,9 @@ class GetUserFavoriteAsyncTask(uId: String, offset: Int) : AsyncTask<Void, Strin
         super.onPostExecute(result)
 
         if (result == null) {
-            Log.d("test GetUserIdTask", "return null")
             callbackGetUserFavoriteAsyncTask!!.callback("RESULT-NG",null)
             return
         }
-
-        Log.d("test GetUserIdTask", "result：$result")
 
         if (result == "favorite-yes"){
             callbackGetUserFavoriteAsyncTask!!.callback("RESULT-OK", CONVERT_JSON_ARRAY)
