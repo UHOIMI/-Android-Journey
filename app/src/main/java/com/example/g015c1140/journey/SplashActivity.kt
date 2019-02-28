@@ -37,7 +37,7 @@ class SplashActivity : AppCompatActivity() {
                             val sharedPrefEditor = sharedPreferences.edit()
                             sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
                             sharedPrefEditor.apply()
-                            Toast.makeText(this@SplashActivity,"ログイン情報あり\nToken取得完了", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this@SplashActivity,"ログイン情報あり\nToken取得完了", Toast.LENGTH_SHORT).show()
 
                             if(!isFinishing) {
                                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))

@@ -102,10 +102,10 @@ class EditUserActivity : AppCompatActivity() {
 
         editUserCommentEditText.onFocusChangeListener = View.OnFocusChangeListener { _, focus ->
             if (focus) {
-                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
                 userEditNavigation.visibility = View.INVISIBLE
             } else {
-                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
                 userEditNavigation.visibility = View.VISIBLE
             }
         }

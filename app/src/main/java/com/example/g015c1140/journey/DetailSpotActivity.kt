@@ -110,21 +110,62 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
                                     Log.d("test", "com ${spot.comment}")
                                     commentTextView.text = spot.comment
 
+                                    val metrics = resources.displayMetrics
+                                    val scale= 80f * metrics.density
 
                                     if (resultBmpList!![0][0] != null) {
+
+                                        val resizeScale = if (resultBmpList[0][0]!!.width >= resultBmpList[0][0]!!.height) {
+                                            scale / resultBmpList[0][0]!!.width
+                                        } else {// 縦長画像の場合
+                                            scale / resultBmpList[0][0]!!.height
+                                        }
+
+                                        resultBmpList[0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                                (resultBmpList[0][0]!!.width * resizeScale).toInt(),
+                                                (resultBmpList[0][0]!!.height * resizeScale).toInt(),
+                                                true)
+
                                         imageView1.setImageBitmap(resultBmpList[0][0])
+
                                     } else {
                                         imageView1.setImageResource(R.drawable.no_image)
                                     }
 
                                     if (resultBmpList[0][1] != null) {
+
+                                        val resizeScale = if (resultBmpList[0][1]!!.width >= resultBmpList[0][1]!!.height) {
+                                            scale / resultBmpList[0][1]!!.width
+                                        } else {// 縦長画像の場合
+                                            scale / resultBmpList[0][1]!!.height
+                                        }
+
+                                        resultBmpList[0][1] = Bitmap.createScaledBitmap(resultBmpList[0][1],
+                                                (resultBmpList[0][1]!!.width * resizeScale).toInt(),
+                                                (resultBmpList[0][1]!!.height * resizeScale).toInt(),
+                                                true)
+
                                         imageView2.setImageBitmap(resultBmpList[0][1])
+
                                     } else {
                                         imageView2.setImageResource(R.drawable.no_image)
                                     }
 
                                     if (resultBmpList[0][2] != null) {
+
+                                        val resizeScale = if (resultBmpList[0][2]!!.width >= resultBmpList[0][2]!!.height) {
+                                            scale / resultBmpList[0][2]!!.width
+                                        } else {// 縦長画像の場合
+                                            scale / resultBmpList[0][2]!!.height
+                                        }
+
+                                        resultBmpList[0][2] = Bitmap.createScaledBitmap(resultBmpList[0][2],
+                                                (resultBmpList[0][2]!!.width * resizeScale).toInt(),
+                                                (resultBmpList[0][2]!!.height * resizeScale).toInt(),
+                                                true)
+
                                         imageView3.setImageBitmap(resultBmpList[0][2])
+
                                     } else {
                                         imageView3.setImageResource(R.drawable.no_image)
                                     }
@@ -166,7 +207,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
             // Android 6.0 のみ、該当パーミッションが許可されていない場合
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST_CODE)
         } else {
-            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
             // 許可済みの場合、もしくはAndroid 6.0以前
             // パーミッションが必要な処理
             setImage()
@@ -237,7 +278,7 @@ class DetailSpotActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         //戻るボタンタップ時
         android.R.id.home -> {
-            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
             resultSet()
             finish ()
             true

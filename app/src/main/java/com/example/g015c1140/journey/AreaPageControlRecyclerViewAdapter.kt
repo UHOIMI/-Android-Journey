@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 
 class AreaPageControlRecyclerViewAdapter(context: Context, activity: Activity, areaList: ArrayList<HomeAreaData>) : RecyclerView.Adapter<AreaPageControlRecyclerViewAdapter.ViewHolder>() {
 
@@ -32,7 +31,6 @@ class AreaPageControlRecyclerViewAdapter(context: Context, activity: Activity, a
             val position = holder.adapterPosition // positionを取得
             // 何かの処理をします
             ACTIVITY.startActivity(Intent(CONTEXT,TimelineActivity::class.java).putExtra("AREA_FLG",true).putExtra("AREA_NAME",areaDataList[position].areaName).putExtra("AREA_STRING",areaDataList[position].areaApiString))
-            Toast.makeText(CONTEXT, "areaたっぷ ${areaDataList[position].areaApiString}", Toast.LENGTH_SHORT).show()
         }
         return holder
     }

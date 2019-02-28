@@ -228,14 +228,14 @@ class SelectSpotActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //登録ボタンタップ時
         R.id.saveButton -> {
-            Toast.makeText(this, "登録ボタン", Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, "登録ボタン", Toast.LENGTH_LONG).show()
             setResult(RESULT_OK, Intent().putExtra("SPOTDATA", newIntentSpotList))
             finish()
             true
         }
         //戻るボタンタップ時
         android.R.id.home -> {
-            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
             finish()
             true
         }

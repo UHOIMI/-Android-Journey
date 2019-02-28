@@ -138,7 +138,6 @@ class TimelineActivity : AppCompatActivity() {
         timelineListView.setOnItemClickListener { _, _, position, _ ->
             // 項目をタップしたら
             if (!(TIMELINE_LIST.isEmpty() || (TIMELINE_LIST.size == position))) {
-                Toast.makeText(this, "list tapped", Toast.LENGTH_SHORT).show()
 
                 myApp!!.setBmp_1((TIMELINE_LIST[position].planUserIconImage!!))
 
@@ -389,7 +388,7 @@ class TimelineActivity : AppCompatActivity() {
                                     /****************/
 
                                     val metrics = resources.displayMetrics
-                                    var scale: Float
+                                    val scale= 80f * metrics.density
 
                                     var timelinePlanData: TimelinePlanData
                                     for (_timelineCnt in 0 until resultRecordJsonArray.length()) {
@@ -400,25 +399,37 @@ class TimelineActivity : AppCompatActivity() {
                                         if (resultBmpList!![_timelineCnt].isNotEmpty()) {
                                             if (resultBmpList[_timelineCnt][0] != null) {
 
-                                                scale = 80f * metrics.density
+                                                val resizeScale = if (resultBmpList[_timelineCnt][0]!!.width >= resultBmpList[_timelineCnt][0]!!.height) {
+                                                    scale / resultBmpList[_timelineCnt][0]!!.width
+                                                } else {// 縦長画像の場合
+                                                    scale / resultBmpList[_timelineCnt][0]!!.height
+                                                }
+
                                                 resultBmpList[_timelineCnt][0] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][0],
-                                                        scale.toInt(),
-                                                        scale.toInt(),
+                                                        (resultBmpList[_timelineCnt][0]!!.width * resizeScale).toInt(),
+                                                        (resultBmpList[_timelineCnt][0]!!.height * resizeScale).toInt(),
                                                         true)
 
                                                 timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
+
                                             } else {
                                                 timelinePlanData.planUserIconImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                             }
                                             if (resultBmpList[_timelineCnt][1] != null) {
 
-                                                scale = 90f * metrics.density
+                                                val resizeScale = if (resultBmpList[_timelineCnt][1]!!.width >= resultBmpList[_timelineCnt][1]!!.height) {
+                                                    scale / resultBmpList[_timelineCnt][1]!!.width
+                                                } else {// 縦長画像の場合
+                                                    scale / resultBmpList[_timelineCnt][1]!!.height
+                                                }
+
                                                 resultBmpList[_timelineCnt][1] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][1],
-                                                        scale.toInt(),
-                                                        scale.toInt(),
+                                                        (resultBmpList[_timelineCnt][1]!!.width * resizeScale).toInt(),
+                                                        (resultBmpList[_timelineCnt][1]!!.height * resizeScale).toInt(),
                                                         true)
 
                                                 timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
+
                                             } else {
                                                 timelinePlanData.planSpotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                             }

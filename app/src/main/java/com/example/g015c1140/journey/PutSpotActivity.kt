@@ -322,7 +322,7 @@ class PutSpotActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMar
             // Android 6.0 のみ、該当パーミッションが許可されていない場合
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST_CODE)
         } else {
-            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "permission OK", Toast.LENGTH_SHORT).show()
             // 許可済みの場合、もしくはAndroid 6.0以前
             // パーミッションが必要な処理
             onClickImage()

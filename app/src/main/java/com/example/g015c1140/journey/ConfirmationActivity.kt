@@ -123,7 +123,7 @@ class ConfirmationActivity : AppCompatActivity() {
                     sharedPrefEditor.putString(Setting().USER_SHARED_PREF_TOKEN, token)
                     sharedPrefEditor.apply()
                     Toast.makeText(this@ConfirmationActivity, "登録が完了しました", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@ConfirmationActivity, "Token = 「$token」", Toast.LENGTH_SHORT).show()
                     finishAffinity()
                     startActivity(Intent(this@ConfirmationActivity,HomeActivity::class.java))
                 } else {

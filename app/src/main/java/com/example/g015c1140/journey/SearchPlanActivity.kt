@@ -85,12 +85,12 @@ class SearchPlanActivity : AppCompatActivity() {
 
         searchTextEditText.onFocusChangeListener = OnFocusChangeListener { _, focus ->
             if (focus) {
-                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Got the focus", Toast.LENGTH_LONG).show()
                 setSearchKeyword()
                 searchDetailLinear.visibility = View.INVISIBLE
                 searchListLinear.visibility = View.VISIBLE
             } else {
-                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Lost the focus", Toast.LENGTH_LONG).show()
                 searchDetailLinear.visibility = View.VISIBLE
                 searchListLinear.visibility = View.INVISIBLE
             }
@@ -111,7 +111,7 @@ class SearchPlanActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //戻るボタンタップ時
         android.R.id.home -> {
-            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
             finish()
             true
         }

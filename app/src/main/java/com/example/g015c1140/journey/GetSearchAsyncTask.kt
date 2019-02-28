@@ -11,6 +11,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
+import java.net.URLEncoder
 
 class GetSearchAsyncTask(keyword: String, generation: String, area: String, price: String, transportation: String, ofs: Int) : AsyncTask<String, String, String>() {
 
@@ -43,16 +44,22 @@ class GetSearchAsyncTask(keyword: String, generation: String, area: String, pric
             var urlString = Setting().SEARCH_GET_URL
 
             if (KEYWORD != "") {
-                urlString += "keyword=$KEYWORD&"
+                urlString += "keyword="
+                urlString += URLEncoder.encode(KEYWORD, "UTF-8")
+                urlString += "&"
             }
             if (GENERATION != "") {
                 urlString += "generation=$GENERATION&"
             }
             if (AREA != "") {
-                urlString += "area=$AREA&"
+                urlString += "area="
+                urlString += URLEncoder.encode(AREA, "UTF-8")
+                urlString += "&"
             }
             if (PRICE != "") {
-                urlString += "price=$PRICE&"
+                urlString += "price="
+                urlString += URLEncoder.encode(PRICE, "UTF-8")
+                urlString += "&"
             }
             if (TRANSPOTTATION != "") {
                 urlString += "transportation=$TRANSPOTTATION&"

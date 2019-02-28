@@ -63,7 +63,7 @@ class DetailUserActivity : AppCompatActivity() {
 
         detailUserShowAllPlanButton.setOnClickListener {
             //perform your action here
-            Toast.makeText(this, "すべて表示タップ", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "すべて表示タップ", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, TimelineActivity::class.java).putExtra("POSTED_FLG", true).putExtra("USER_ID", mUserId))
         }
     }
@@ -190,7 +190,7 @@ class DetailUserActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         R.id.saveButton -> {
-            Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, "編集ボタン", Toast.LENGTH_LONG).show()
 
             val myApp = this.application as MyApplication
             if (headerFlg == IMAGE_OK) {
@@ -205,7 +205,7 @@ class DetailUserActivity : AppCompatActivity() {
         }
         //戻るボタンタップ時
         android.R.id.home -> {
-            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
             finish()
             true
         }
@@ -224,7 +224,23 @@ class DetailUserActivity : AppCompatActivity() {
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
-                        detailUserHeaderImageView.setImageBitmap(resultBmpList!![0][0])
+
+                        val metrics = resources.displayMetrics
+                        val scale= 400f * metrics.density
+
+                        val resizeScale = if (resultBmpList!![0][0]!!.width >= resultBmpList[0][0]!!.height) {
+                            scale / resultBmpList[0][0]!!.width
+                        } else {// 縦長画像の場合
+                            scale / resultBmpList[0][0]!!.height
+                        }
+
+                        resultBmpList[0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                (resultBmpList[0][0]!!.width * resizeScale).toInt(),
+                                (resultBmpList[0][0]!!.height * resizeScale).toInt(),
+                                true)
+
+                        detailUserHeaderImageView.setImageBitmap(resultBmpList[0][0])
+
                         headerFlg = IMAGE_OK
                     } else {
                         Toast.makeText(this@DetailUserActivity, "ヘッダー取得失敗", Toast.LENGTH_SHORT).show()
@@ -239,7 +255,23 @@ class DetailUserActivity : AppCompatActivity() {
             giat.setOnCallback(object : GetImageAsyncTask.CallbackGetImageAsyncTask() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
-                        detailUserIconCircleView.setImageBitmap(resultBmpList!![0][0])
+
+                        val metrics = resources.displayMetrics
+                        val scale= 100f * metrics.density
+
+                        val resizeScale = if (resultBmpList!![0][0]!!.width >= resultBmpList[0][0]!!.height) {
+                            scale / resultBmpList[0][0]!!.width
+                        } else {// 縦長画像の場合
+                            scale / resultBmpList[0][0]!!.height
+                        }
+
+                        resultBmpList[0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                (resultBmpList[0][0]!!.width * resizeScale).toInt(),
+                                (resultBmpList[0][0]!!.height * resizeScale).toInt(),
+                                true)
+
+                        detailUserIconCircleView.setImageBitmap(resultBmpList[0][0])
+
                         iconFlg = IMAGE_OK
                     } else {
                         Toast.makeText(this@DetailUserActivity, "アイコン取得失敗", Toast.LENGTH_SHORT).show()
@@ -333,15 +365,44 @@ class DetailUserActivity : AppCompatActivity() {
 //                                            var timelinePlanData = TimelinePlanData()
 //                                                for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
                                             val timelineData = timelineRecordJsonArray.getJSONObject(0)
+                                            val metrics = resources.displayMetrics
+                                            val scale= 80f * metrics.density
 
                                             if (resultBmpList!![0].isNotEmpty()) {
                                                 if (resultBmpList[0][0] != null) {
+
+
+                                                    val resizeScale = if (resultBmpList[0][0]!!.width >= resultBmpList[0][0]!!.height) {
+                                                        scale / resultBmpList[0][0]!!.width
+                                                    } else {// 縦長画像の場合
+                                                        scale / resultBmpList[0][0]!!.height
+                                                    }
+
+                                                    resultBmpList[0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                                            (resultBmpList[0][0]!!.width * resizeScale).toInt(),
+                                                            (resultBmpList[0][0]!!.height * resizeScale).toInt(),
+                                                            true)
+
                                                     detailUserLastPlanIconCircleImage.setImageBitmap(resultBmpList[0][0])
+
                                                 } else {
                                                     detailUserLastPlanIconCircleImage.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
                                                 }
                                                 if (resultBmpList[0][1] != null) {
+
+                                                    val resizeScale = if (resultBmpList[0][1]!!.width >= resultBmpList[0][1]!!.height) {
+                                                        scale / resultBmpList[0][1]!!.width
+                                                    } else {// 縦長画像の場合
+                                                        scale / resultBmpList[0][1]!!.height
+                                                    }
+
+                                                    resultBmpList[0][1] = Bitmap.createScaledBitmap(resultBmpList[0][1],
+                                                            (resultBmpList[0][1]!!.width * resizeScale).toInt(),
+                                                            (resultBmpList[0][1]!!.height * resizeScale).toInt(),
+                                                            true)
+
                                                     detailUserLastPlanSpotImageView.setImageBitmap(resultBmpList[0][1])
+
                                                 } else {
                                                     detailUserLastPlanSpotImageView.setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.no_image))
 

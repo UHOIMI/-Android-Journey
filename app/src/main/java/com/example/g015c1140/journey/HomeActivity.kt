@@ -12,13 +12,13 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONArray
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
-
-
 
 
 class HomeActivity : AppCompatActivity() {
@@ -38,11 +38,19 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private val DATE_FORMAT_OUT = SimpleDateFormat("MM月dd日")
 
-    private var myApp:MyApplication? = null
+    private lateinit var metrics: DisplayMetrics
+    private var scale: Double = 0.0
+
+
+    private var myApp: MyApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        metrics = resources.displayMetrics
+        scale = (80f * metrics.density).toDouble()
+
 
         //ボトムバー設定
         // BottomNavigationViewHelperでアイテムのサイズ、アニメーションを調整
@@ -51,10 +59,14 @@ class HomeActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences(Setting().USER_SHARED_PREF, Context.MODE_PRIVATE)
         generation = sharedPreferences.getString(Setting().USER_SHARED_PREF_GENERATION, "none")
-        homeUserGenerationTextView.text  = when(generation) {
+        homeUserGenerationTextView.text = when (generation) {
             "0" -> "10歳以下"
             "100" -> "100歳以上"
             else -> "${generation}代"
+        }
+
+        homeUserIconButton.setOnClickListener {
+            userIconViewButtonTapped()
         }
 
         if (sharedPreferences.getString(Setting().USER_SHARED_PREF_ICONIMAGE, "").contains("http")) {
@@ -63,17 +75,15 @@ class HomeActivity : AppCompatActivity() {
                 override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                     if (resultBmpString == "RESULT-OK") {
 
-//                        val resizeScale = if (beforeResizeBitmap.getWidth() >= beforeResizeBitmap.getHeight()) {
-//                            findViewById(R.id.homeUserIconButton).get as Double / beforeResizeBitmap.getWidth()
-//                        } else {
-//                            viewHeight as Double / beforeResizeBitmap.getHeight()
-//                        }// 縦長画像の場合
+                        val resizeScale = if (resultBmpList!![0][0]!!.width >= resultBmpList[0][0]!!.height) {
+                            scale / resultBmpList[0][0]!!.width
+                        } else {// 縦長画像の場合
+                            scale / resultBmpList[0][0]!!.height
+                        }
 
-                        val metrics = resources.displayMetrics
-                        val scale = 80f * metrics.density
-                        resultBmpList!![0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
-                                scale.toInt(),
-                                scale.toInt(),
+                        resultBmpList[0][0] = Bitmap.createScaledBitmap(resultBmpList[0][0],
+                                (resultBmpList[0][0]!!.width * resizeScale).toInt(),
+                                (resultBmpList[0][0]!!.height * resizeScale).toInt(),
                                 true)
                         homeUserIconButton.setImageBitmap(resultBmpList[0][0])
 
@@ -129,12 +139,12 @@ class HomeActivity : AppCompatActivity() {
         })
         gtat!!.execute("3")
 
-        var gsat: GetSearchAsyncTask? = GetSearchAsyncTask("", generation, "", "", "",0)
+        var gsat: GetSearchAsyncTask? = GetSearchAsyncTask("", generation, "", "", "", 0)
         gsat!!.setOnCallback(object : GetSearchAsyncTask.CallbackGetSearchAsyncTask() {
             override fun callback(result: String, searchRecordJsonArray: JSONArray?) {
                 super.callback(result, searchRecordJsonArray)
                 when (result) {
-                    "RESULT-OK" -> setPlanList(searchRecordJsonArray!!,2)
+                    "RESULT-OK" -> setPlanList(searchRecordJsonArray!!, 2)
                     "RESULT-404" -> Toast.makeText(this@HomeActivity, "${homeUserGenerationTextView.text}の新着はありません", Toast.LENGTH_SHORT).show()
                     else -> Toast.makeText(this@HomeActivity, "search取得失敗", Toast.LENGTH_SHORT).show()
                 }
@@ -227,10 +237,6 @@ class HomeActivity : AppCompatActivity() {
                         override fun callback(resultBmpString: String, resultBmpList: ArrayList<ArrayList<Bitmap?>>?) {
                             if (resultBmpString == "RESULT-OK") {
                                 /****************/
-
-                                val metrics = resources.displayMetrics
-                                var scale: Float
-
                                 var timelinePlanData: TimelinePlanData
                                 for (_timelineCnt in 0 until timelineRecordJsonArray.length()) {
                                     val timelineData = timelineRecordJsonArray.getJSONObject(_timelineCnt)
@@ -240,12 +246,16 @@ class HomeActivity : AppCompatActivity() {
                                     if (resultBmpList!![_timelineCnt].isNotEmpty()) {
                                         if (resultBmpList[_timelineCnt][0] != null) {
 
-                                            scale = 80f * metrics.density
-                                            resultBmpList[_timelineCnt][0] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][0],
-                                                    scale.toInt(),
-                                                    scale.toInt(),
-                                                    true)
+                                            val resizeScale = if (resultBmpList[_timelineCnt][0]!!.width >= resultBmpList[_timelineCnt][0]!!.height) {
+                                                scale / resultBmpList[_timelineCnt][0]!!.width
+                                            } else {// 縦長画像の場合
+                                                scale / resultBmpList[_timelineCnt][0]!!.height
+                                            }
 
+                                            resultBmpList[_timelineCnt][0] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][0],
+                                                    (resultBmpList[_timelineCnt][0]!!.width * resizeScale).toInt(),
+                                                    (resultBmpList[_timelineCnt][0]!!.height * resizeScale).toInt(),
+                                                    true)
                                             timelinePlanData.planUserIconImage = resultBmpList[_timelineCnt][0]
 
                                         } else {
@@ -253,10 +263,15 @@ class HomeActivity : AppCompatActivity() {
                                         }
                                         if (resultBmpList[_timelineCnt][1] != null) {
 
-                                            scale = 90f * metrics.density
+                                            val resizeScale = if (resultBmpList[_timelineCnt][1]!!.width >= resultBmpList[_timelineCnt][1]!!.height) {
+                                                scale / resultBmpList[_timelineCnt][1]!!.width
+                                            } else {// 縦長画像の場合
+                                                scale / resultBmpList[_timelineCnt][1]!!.height
+                                            }
+
                                             resultBmpList[_timelineCnt][1] = Bitmap.createScaledBitmap(resultBmpList[_timelineCnt][1],
-                                                    scale.toInt(),
-                                                    scale.toInt(),
+                                                    (resultBmpList[_timelineCnt][1]!!.width * resizeScale).toInt(),
+                                                    (resultBmpList[_timelineCnt][1]!!.height * resizeScale).toInt(),
                                                     true)
 
                                             timelinePlanData.planSpotImage = resultBmpList[_timelineCnt][1]
@@ -324,7 +339,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    fun userIconButtonTapped(view: View) {
+    private fun userIconViewButtonTapped() {
         startActivity(Intent(this, DetailUserActivity::class.java))
     }
 
@@ -336,14 +351,14 @@ class HomeActivity : AppCompatActivity() {
         startActivity(Intent(this, TimelineActivity::class.java))
     }
 
-    fun userGenerationPlanButtonTapped(view: View){
-        startActivity(Intent(this,TimelineActivity::class.java)
-                .putExtra("SEARCH_FLG",true)
-                .putExtra("SEARCH_VALUE_KEYWORD","")
-                .putExtra("SEARCH_VALUE_GENERATION",generation)
-                .putExtra("SEARCH_VALUE_AREA","")
-                .putExtra("SEARCH_VALUE_PRICE","")
-                .putExtra("SEARCH_VALUE_TRANSPORTATION",""))
+    fun userGenerationPlanButtonTapped(view: View) {
+        startActivity(Intent(this, TimelineActivity::class.java)
+                .putExtra("SEARCH_FLG", true)
+                .putExtra("SEARCH_VALUE_KEYWORD", "")
+                .putExtra("SEARCH_VALUE_GENERATION", generation)
+                .putExtra("SEARCH_VALUE_AREA", "")
+                .putExtra("SEARCH_VALUE_PRICE", "")
+                .putExtra("SEARCH_VALUE_TRANSPORTATION", ""))
     }
 
     //BottomBarのボタン処理
@@ -388,14 +403,14 @@ class HomeActivity : AppCompatActivity() {
         kyuusyuu.cornerRadius = 50f
 
         return arrayListOf(
-                HomeAreaData("北海道地方のプラン", hokkaidou, "area=北海道"),
-                HomeAreaData("東北地方のプラン", touhoku, "area=青森県&area=岩手県&area=秋田県&area=宮城県&area=山形県&area=福島県"),
-                HomeAreaData("関東地方のプラン", kantou, "area=茨城県&area=栃木県&area=群馬県&area=埼玉県&area=千葉県&area=東京都&area=神奈川県"),
-                HomeAreaData("中部地方のプラン", chuubu, "area=山梨県&area=長野県&area=新潟県&area=富山県&area=石川県&area=福井県&area=静岡県&area=愛知県&area=岐阜県"),
-                HomeAreaData("近畿地方のプラン", kinki, "area=三重県&area=滋賀県&area=京都府&area=大阪府&area=兵庫県&area=奈良県&area=和歌山県"),
-                HomeAreaData("中国地方のプラン", chuugoku, "area=鳥取県&area=島根県&area=岡山県&area=広島県&area=山口県"),
-                HomeAreaData("四国地方のプラン", shikoku, "area=香川県&area=愛媛県&area=徳島県&area=高知県"),
-                HomeAreaData("九州地方のプラン", kyuusyuu, "area=福島県&area=佐賀県&area=長崎県&area=熊本県&area=大分県&area=宮崎県&area=鹿児島県&area=沖縄県")
+                HomeAreaData("北海道地方のプラン", hokkaidou, "area=${URLEncoder.encode("北海道", "UTF-8")}"),
+                HomeAreaData("東北地方のプラン", touhoku, "area=${URLEncoder.encode("青森県", "UTF-8")}&area=${URLEncoder.encode("岩手県", "UTF-8")}&area=${URLEncoder.encode("秋田県", "UTF-8")}&area=${URLEncoder.encode("宮城県", "UTF-8")}&area=${URLEncoder.encode("山形県", "UTF-8")}&area=${URLEncoder.encode("福島県", "UTF-8")}"),
+                HomeAreaData("関東地方のプラン", kantou, "area=${URLEncoder.encode("茨城県", "UTF-8")}&area=${URLEncoder.encode("栃木県", "UTF-8")}&area=${URLEncoder.encode("群馬県", "UTF-8")}&area=${URLEncoder.encode("埼玉県", "UTF-8")}&area=${URLEncoder.encode("千葉県", "UTF-8")}&area=${URLEncoder.encode("東京都", "UTF-8")}&area=${URLEncoder.encode("神奈川県", "UTF-8")}"),
+                HomeAreaData("中部地方のプラン", chuubu, "area=${URLEncoder.encode("山梨県", "UTF-8")}&area=${URLEncoder.encode("長野県", "UTF-8")}&area=${URLEncoder.encode("新潟県", "UTF-8")}&area=${URLEncoder.encode("富山県", "UTF-8")}&area=${URLEncoder.encode("石川県", "UTF-8")}&area=${URLEncoder.encode("福井県", "UTF-8")}&area=${URLEncoder.encode("静岡県", "UTF-8")}&area=${URLEncoder.encode("愛知県", "UTF-8")}&area=${URLEncoder.encode("岐阜県", "UTF-8")}"),
+                HomeAreaData("近畿地方のプラン", kinki, "area=${URLEncoder.encode("三重県", "UTF-8")}&area=${URLEncoder.encode("滋賀県", "UTF-8")}&area=${URLEncoder.encode("京都府", "UTF-8")}&area=${URLEncoder.encode("大阪府", "UTF-8")}&area=${URLEncoder.encode("兵庫県", "UTF-8")}&area=${URLEncoder.encode("奈良県", "UTF-8")}&area=${URLEncoder.encode("和歌山県", "UTF-8")}"),
+                HomeAreaData("中国地方のプラン", chuugoku, "area=${URLEncoder.encode("鳥取県", "UTF-8")}&area=${URLEncoder.encode("島根県", "UTF-8")}&area=${URLEncoder.encode("岡山県", "UTF-8")}&area=${URLEncoder.encode("広島県", "UTF-8")}&area=${URLEncoder.encode("山口県", "UTF-8")}"),
+                HomeAreaData("四国地方のプラン", shikoku, "area=${URLEncoder.encode("香川県", "UTF-8")}&area=${URLEncoder.encode("愛媛県", "UTF-8")}&area=${URLEncoder.encode("徳島県", "UTF-8")}&area=${URLEncoder.encode("高知県", "UTF-8")}"),
+                HomeAreaData("九州地方のプラン", kyuusyuu, "area=${URLEncoder.encode("福島県", "UTF-8")}&area=${URLEncoder.encode("佐賀県", "UTF-8")}&area=${URLEncoder.encode("長崎県", "UTF-8")}&area=${URLEncoder.encode("熊本県", "UTF-8")}&area=${URLEncoder.encode("大分県", "UTF-8")}&area=${URLEncoder.encode("宮崎県", "UTF-8")}&area=${URLEncoder.encode("鹿児島県", "UTF-8")}&area=${URLEncoder.encode("沖縄県", "UTF-8")}")
         )
     }
 }

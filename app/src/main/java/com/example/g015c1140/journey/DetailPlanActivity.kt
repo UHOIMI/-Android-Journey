@@ -249,7 +249,23 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
                                                 detailPlanSpotData.spotId = resultSpotJsonList[_SpotCnt].getLong("spot_id")
                                                 detailPlanSpotData.spotTitle = resultSpotJsonList[_SpotCnt].getString("spot_title")
                                                 if (resultBmpList!![0][_SpotCnt] != null) {
+
+                                                    val metrics = resources.displayMetrics
+                                                    val scale= 80f * metrics.density
+
+                                                    val resizeScale = if (resultBmpList[0][_SpotCnt]!!.width >= resultBmpList[0][_SpotCnt]!!.height) {
+                                                        scale / resultBmpList[0][_SpotCnt]!!.width
+                                                    } else {// 縦長画像の場合
+                                                        scale / resultBmpList[0][_SpotCnt]!!.height
+                                                    }
+
+                                                    resultBmpList[0][_SpotCnt] = Bitmap.createScaledBitmap(resultBmpList[0][_SpotCnt],
+                                                            (resultBmpList[0][_SpotCnt]!!.width * resizeScale).toInt(),
+                                                            (resultBmpList[0][_SpotCnt]!!.height * resizeScale).toInt(),
+                                                            true)
+
                                                     detailPlanSpotData.spotImage = resultBmpList[0][_SpotCnt]
+
                                                 } else {
                                                     detailPlanSpotData.spotImage = BitmapFactory.decodeResource(resources, R.drawable.no_image)
                                                 }
@@ -399,7 +415,6 @@ class DetailPlanActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem?) = when (item!!.itemId) {
         //戻るボタンタップ時
         android.R.id.home -> {
-            Toast.makeText(this, "もどーるぼたんたっぷど", Toast.LENGTH_SHORT).show()
             finish()
             true
         }
